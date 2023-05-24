@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
 import { BASE_URL } from "../constants";
 import { Box, Button, Input, Text, VStack, useToast } from "@chakra-ui/react";
+import axios from "axios";
 
 const NextPage = () => {
   const location = useLocation();
