@@ -1,6 +1,7 @@
 
 import { Tag, TagLabel } from "@chakra-ui/react";
-import { X } from "phosphor-react";
+
+import { X } from "@phosphor-icons/react";
 
 interface DynamicTagProps {
   height: string;

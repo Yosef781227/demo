@@ -5,6 +5,7 @@ import { FaGoogle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { Box, Button, useToast } from "@chakra-ui/react";
 import { BASE_URL } from "@/constants";
+import Buttons from "@/components/Buttons/Button";
 
 const GoogleOAuth = () => {
   const [error, setError] = useState(null);
@@ -91,16 +92,16 @@ const GoogleOAuth = () => {
       alignItems="center"
       height="100vh"
     >
-      <Button
-        leftIcon={<FaGoogle />}
-        colorScheme="red"
-        variant="outline"
-        isLoading={loading}
-        loadingText="Signing in"
-        onClick={login}
-      >
-        Continue with Google
-      </Button>
+      {/* <Buttons
+      // leftIcon={<FaGoogle />}
+      // colorScheme="red"
+      variant="outline"
+      // isLoading={loading}
+      // loadingText="Signing in"
+      onClick={login}
+      /> */}
+       
+     
     </Box>
   );
 };

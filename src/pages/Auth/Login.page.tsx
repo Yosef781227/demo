@@ -5,15 +5,17 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import {  useToast } from "@chakra-ui/react";
 import { BASE_URL } from "@/constants";
-import { Text, Heading, VStack, FormHelperText } from "@chakra-ui/react";
+import { Text, Heading, VStack, FormHelperText,Button } from "@chakra-ui/react";
 import logo from "@assets/logo.svg";
 import google from "@assets/google.svg";
-import Button from "@/components/Buttons/Button";
 import { NavLink } from "react-router-dom";
 import { chakra } from "@chakra-ui/react";
 import FormRow from "@/components/Form/FormRow";
 import AuthContainer from "@/components/Auth/Containers/AuthContainer";
-import theme from "@/constants/theme";
+import Buttons from "@/components/Buttons/Button";
+// import CustomButtons from "@/components/Button/CustomButtons";
+// import theme from "@/constants/theme";
+// import Buttons from "@/components/Buttons/Button";
 const ChakraNavLink = chakra(NavLink);
 function LoginPage() {
   const [error, setError] = useState(null);
@@ -137,14 +139,12 @@ function LoginPage() {
         />
       </RowContainer>
       <RowContainer>
-        <Button size="full" text="Continue" />
-        <Button
-          size="full"
+        <Buttons size="full" text="Continue" />
+       <Buttons size="full"
           text="Sign In with Google"
           icon={<img alt="logo" src={google} />}
           variant={"outline"}
-          onClick={login}
-        ></Button>
+          onClick={login}/>
       </RowContainer>
       <Text
         align={"center"}

@@ -7,8 +7,9 @@ import {
   Image,
   Text,
   VStack,
+  Button 
 } from "@chakra-ui/react";
-import Button from "@/components/Buttons/Button";
+import Buttons from "@/components/Buttons/Button";
 import AddIcon from "@/assets/icons/AddIcon";
 import instagram from "@/assets/icons/social/instagram.svg";
 import Container from "@components/Container";
@@ -70,9 +71,41 @@ const query = `
 const handleDownload = (url: string) => {
   window.open(url.includes("https://") ? url : "https://" + url, "_current");
 };
+
+const saveNewContent = async () => {
+  axios
+    .post(BASE_URL, { 
+      query : `
+          mutation Mutation {
+            saveStories {
+              message
+              success
+            }
+            savePostsAndReels {
+              message
+              success
+            }
+          }`
+     }, { withCredentials: true })
+    .then((result) => {
+      if (result.data.errors) {
+        console.error("GraphQL errors", result.data.errors);
+      } else if (!result.data.data || !result.data.data.instagram) {
+        console.error("Unexpected server response", result.data);
+      } else {
+        
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      //setIsLoading(false);
+    });
+};
+
 function HomePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState(null);
+
   useEffect(() => {
     axios
       .post(BASE_URL, { query }, { withCredentials: true })
@@ -105,22 +138,21 @@ function HomePage() {
   }
   const { instagram } = data;
   const { stories, reels, posts } = instagram;
-  console.log(instagram);
+  //console.log(instagram);
   return (
     <Container>
       <HStack justifyContent={"space-between"}>
         <Text color={"black"} fontWeight={"bold"} fontSize={"18px"}>Content</Text>
         <HStack>
-          <Button
+          <Buttons
             icon={<Funnel size={16} color="gray" weight="fill" />}
             text="Filters"
-            
             textColor="#525252"
             size="md"
             variant="outline"
             
           />
-          <Button icon={<AddIcon />} text="New" />
+          <Button colorScheme='blue' onClick={saveNewContent}>Save New Content</Button>
         </HStack>
       </HStack>
       <Box sx={{ columnCount: [4] , gap:"16px"}}>
@@ -181,7 +213,7 @@ function getAccess(data: any) {
             controls={true}
             width={"100%"}
             style={{ objectFit: "contain" }}
-            src={data?.ig_contents[0].url}
+            src={data?.ig_contents[0].url.includes("https://") ? data?.ig_contents[0].url : "https://wildsocial." + data?.ig_contents[0].url}
           />
         ) : (
           <Image
@@ -201,10 +233,8 @@ function getAccess(data: any) {
           <video
             width={"100%"}
             style={{ objectFit: "contain" }}
-            
             controls={true}
-            src={data?.ig_content.url}
-            
+            src={data?.ig_content.url.includes("https://") ? data?.ig_content.url : "https://" + data?.ig_content.url}
           />
         ) : (
           <Image

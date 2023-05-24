@@ -1,5 +1,5 @@
 import { Checkbox, CheckboxProps, useColorModeValue, BoxProps, Box } from '@chakra-ui/react';
-import { Check, Minus } from 'phosphor-react';
+import { Check, Minus } from '@phosphor-icons/react';
 import theme from "@/constants/theme";
 import { FC, useState } from 'react';
 

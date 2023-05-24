@@ -1,5 +1,6 @@
 import React from "react";
 import { Button as ChakrauiButton } from "@chakra-ui/react";
+
 interface ButtonProps {
   text: string;
   icon?: React.ReactElement;
@@ -7,14 +8,17 @@ interface ButtonProps {
   color?: string;
   textColor?: string;
   variant?: "solid" | "outline" | "ghost" | "link" | "unstyled";
+  onClick?: () => void;
 }
-function Button({
+
+function Buttons({
   text = "",
   textColor,
   icon = <></>,
   size = "md",
   color = "primary",
   variant = "solid",
+  onClick = () => {},
   ...rest
 }: ButtonProps) {
   return (
@@ -24,6 +28,7 @@ function Button({
       {...(textColor ? { color: textColor } : {})}
       variant={variant}
       leftIcon={icon}
+      onClick={onClick}
       {...rest}
     >
       {text}
@@ -31,4 +36,4 @@ function Button({
   );
 }
 
-export default Button;
+export default Buttons;
