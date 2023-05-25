@@ -239,7 +239,7 @@ function Card({ data }: { data: any }) {
         : data?.ig_content?.is_video}
       {getAccess(data)}
 
-      <HStack px={5} py={5} justify={"space-between"}>
+      <HStack px={5}  justify={"space-between"}>
         <Text>8 months ago</Text>
         <IconButton
           aria-label="Download"
