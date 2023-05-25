@@ -9,16 +9,26 @@ interface ButtonProps {
   textColor?: string;
   variant?: "solid" | "outline" | "ghost" | "link" | "unstyled";
   onClick?: () => void;
+  width?: string;
+  height?: string;
+  fontweight?: string;
+  fontsize?: string;
+  isLoading?: boolean;
 }
 
 function Buttons({
   text = "",
+  fontweight,
+  fontsize,
   textColor,
-  icon = <></>,
+  icon,
   size = "md",
   color = "primary",
+  width = "full",
+  height = "40px",
   variant = "solid",
   onClick = () => {},
+  isLoading,
   ...rest
 }: ButtonProps) {
   return (
@@ -29,6 +39,11 @@ function Buttons({
       variant={variant}
       leftIcon={icon}
       onClick={onClick}
+      width={width}
+      height={height}
+      fontWeight={fontweight}
+      fontSize={fontsize}
+      isLoading={isLoading}
       {...rest}
     >
       {text}

@@ -44,6 +44,7 @@ function sideBarListBuilder() {
       width={"full"}
       gap={3}
       pt={8}
+      pr={5}
     >
       {sideBarElements.map(({ link, text, icon }, i) => {
         return (
@@ -69,6 +70,7 @@ function SideBar() {
       position={"fixed"}
       h="100vh"
       padding={4}
+      w={"20vw"}
       alignItems={"stretch"}
       justifyContent={"space-between"}
     >

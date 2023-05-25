@@ -1,18 +1,17 @@
 import {
   Avatar,
   Box,
-  CircularProgressLabel,
   HStack,
   IconButton,
   Image,
   Text,
   VStack,
-  Button 
+  Button,
+  CircularProgress,
 } from "@chakra-ui/react";
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Buttons from "@/components/Buttons/Button";
-import AddIcon from "@/assets/icons/AddIcon";
 import instagram from "@/assets/icons/social/instagram.svg";
 import Container from "@components/Container";
 import { useEffect, useState } from "react";
@@ -20,6 +19,8 @@ import axios from "axios";
 import { BASE_URL } from "@/constants";
 import { AiOutlineDownload } from "react-icons/ai";
 import { Funnel, Plus } from "@phosphor-icons/react";
+
+
 const query = `
   query {
     instagram {
@@ -76,8 +77,10 @@ const handleDownload = (url: string) => {
 
 const saveNewContent = async () => {
   axios
-    .post(BASE_URL, { 
-      query : `
+    .post(
+      BASE_URL,
+      {
+        query: `
           mutation Mutation {
             saveStories {
               message
@@ -87,37 +90,46 @@ const saveNewContent = async () => {
               message
               success
             }
-          }`
-     }, { withCredentials: true })
+          }`,
+      },
+      { withCredentials: true }
+    )
     .then((result) => {
       if (result.data.errors) {
         console.error("GraphQL errors", result.data.errors);
         toast.error("GraphQL errors: " + JSON.stringify(result.data.errors));
       } else if (
-          !result.data.data || 
-          !result.data.data.saveStories || 
-          !result.data.data.savePostsAndReels
-        ) {
+        !result.data.data ||
+        !result.data.data.saveStories ||
+        !result.data.data.savePostsAndReels
+      ) {
         console.error("Unexpected server response", result.data);
-        toast.error("Unexpected server response: " + JSON.stringify(result.data));
+        toast.error(
+          "Unexpected server response: " + JSON.stringify(result.data)
+        );
       } else {
-        // Check success status of both operations
+      
         let toastMessage = "";
-        if(result.data.data.saveStories.success) {
-          // Add success message
-          toastMessage += "Stories: " + result.data.data.saveStories.message + "\n";
+        if (result.data.data.saveStories.success) {
+          
+          toastMessage +=
+            "Stories: " + result.data.data.saveStories.message + "\n";
         } else {
-          // Add error message if success is false
-          toastMessage += "Stories: Error - " + result.data.data.saveStories.message + "\n";
+          
+          toastMessage +=
+            "Stories: Error - " + result.data.data.saveStories.message + "\n";
         }
-        if(result.data.data.savePostsAndReels.success) {
-          // Add success message
-          toastMessage += "Posts and Reels: " + result.data.data.savePostsAndReels.message;
+        if (result.data.data.savePostsAndReels.success) {
+        
+          toastMessage +=
+            "Posts and Reels: " + result.data.data.savePostsAndReels.message;
         } else {
-          // Add error message if success is false
-          toastMessage += "Posts and Reels: Error - " + result.data.data.savePostsAndReels.message;
+          
+          toastMessage +=
+            "Posts and Reels: Error - " +
+            result.data.data.savePostsAndReels.message;
         }
-        // Show a single toast with the combined message
+        
         toast(toastMessage);
       }
     })
@@ -126,8 +138,6 @@ const saveNewContent = async () => {
       toast.error("Network error: " + error.message);
     });
 };
-
-
 
 function HomePage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -159,31 +169,43 @@ function HomePage() {
         alignItems="center"
         height="100vh"
       >
-        <CircularProgressLabel color="green.500" />
+      <CircularProgress isIndeterminate color="#8B5CF6" />
       </Box>
     );
   }
   const { instagram } = data;
   const { stories, reels, posts } = instagram;
-  //console.log(instagram);
+  
   return (
     <Container>
       <HStack justifyContent={"space-between"}>
-        <Text color={"black"} fontWeight={"bold"} fontSize={"18px"}>Content</Text>
+        <Text color={"black"} fontWeight={"bold"} fontSize={"18px"}>
+          Content
+        </Text>
         <HStack>
           <Buttons
             icon={<Funnel size={16} color="gray" weight="fill" />}
             text="Filters"
             textColor="#525252"
-            size="md"
+             height="40px"
+             width="91px"
             variant="outline"
-            
           />
-            <Button colorScheme='primary' width={"91px"} height={"40px"} leftIcon={<Plus size={16} color="white" weight="fill" />}  fontSize={"md"}>New</Button>
-          <Button colorScheme='primary' onClick={saveNewContent}>Save New Content</Button>
+          <Button
+            colorScheme="primary"
+            width={"91px"}
+            height={"40px"}
+            leftIcon={<Plus size={16} color="white" weight="fill" />}
+            fontSize={"md"}
+          >
+            New
+          </Button>
+          <Button colorScheme="primary" onClick={saveNewContent}>
+            Save New Content
+          </Button>
         </HStack>
       </HStack>
-      <Box sx={{ columnCount: [4] , gap:"16px"}}>
+      <Box sx={{ columnCount: [1,1,3,4], gap: "16px" }}>
         {[...stories, ...reels, ...posts].map((instadata, i) => {
           return <Card data={instadata} key={i} />;
         })}
@@ -195,13 +217,12 @@ function Card({ data }: { data: any }) {
   return (
     <VStack
       display={"inline-block"}
-      sx={{ breakInside: "avoid" }}
+      sx={{ breakInside: "avoid", breakAfter: "auto", breakBefore: "auto" }}
       border={"1px solid #EDEDED"}
       align={"stretch"}
       my={4}
       rounded={"xl"}
       boxShadow={"0px 8px 8px -4px rgba(16, 24, 40, 0.03);"}
-      w="330px"
     >
       <HStack px={4} mt={2} py={2} justify={"space-between"}>
         <HStack>
@@ -241,7 +262,11 @@ function getAccess(data: any) {
             controls={true}
             width={"100%"}
             style={{ objectFit: "contain" }}
-            src={data?.ig_contents[0].url.includes("https://") ? data?.ig_contents[0].url : "https://wildsocial." + data?.ig_contents[0].url}
+            src={
+              data?.ig_contents[0].url.includes("https://")
+                ? data?.ig_contents[0].url
+                : "https://wildsocial." + data?.ig_contents[0].url
+            }
           />
         ) : (
           <Image
@@ -262,7 +287,11 @@ function getAccess(data: any) {
             width={"100%"}
             style={{ objectFit: "contain" }}
             controls={true}
-            src={data?.ig_content.url.includes("https://") ? data?.ig_content.url : "https://" + data?.ig_content.url}
+            src={
+              data?.ig_content.url.includes("https://")
+                ? data?.ig_content.url
+                : "https://" + data?.ig_content.url
+            }
           />
         ) : (
           <Image
@@ -282,7 +311,7 @@ function dataAccess(data: any) {
     ? data?.ig_contents[0]?.display_url
     : data?.ig_content?.display_url;
 }
-function dataAccessDownload(data: any) {
-  return data?.ig_contents ? data?.ig_contents[0]?.url : data?.ig_content?.url;
-}
+// function dataAccessDownload(data: any) {
+//   return data?.ig_contents ? data?.ig_contents[0]?.url : data?.ig_content?.url;
+// }
 export default HomePage;

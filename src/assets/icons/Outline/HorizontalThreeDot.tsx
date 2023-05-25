@@ -6,6 +6,7 @@ function HorizontalThreeDot({ fill = "#fff" }: { fill?: string }) {
       width="21"
       height="4"
       viewBox="0 0 21 4"
+     
       fill={fill}
       xmlns="http://www.w3.org/2000/svg"
     >

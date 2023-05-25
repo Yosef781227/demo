@@ -4,7 +4,7 @@ import App from "./App";
 import { ChakraProvider } from "@chakra-ui/react";
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { ToastContainer } from 'react-toastify';
+
 
 import { BASE_URL } from "@/constants/";
 import theme from "./constants/theme";
