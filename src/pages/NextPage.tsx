@@ -6,7 +6,7 @@ import axios from "axios";
 import { FaFacebook } from "react-icons/fa";
 import app_store from "../assets/images/app_store.png";
 import play_store from "../assets/images/play_store.png";
-import Insta from "../assets/images/insta.png";
+import Insta from "../assets/images/Insta.png";
 // import fb_logo from "../assets/images/fb_logo.png";
 
 const NextPage = () => {
