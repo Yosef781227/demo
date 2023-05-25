@@ -52,8 +52,6 @@ function LoginPage() {
                   }
                   success
                 }
-              
-              
               }
               `,
               variables: {
@@ -64,6 +62,7 @@ function LoginPage() {
               withCredentials: true,
             }
           );
+          console.log(res);
 
           if (res.data.data.signWithGoogle.success) {
             if (res.data.data.signWithGoogle.me.is_insta_connected) {

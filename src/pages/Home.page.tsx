@@ -9,6 +9,8 @@ import {
   VStack,
   Button 
 } from "@chakra-ui/react";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Buttons from "@/components/Buttons/Button";
 import AddIcon from "@/assets/icons/AddIcon";
 import instagram from "@/assets/icons/social/instagram.svg";
@@ -17,7 +19,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "@/constants";
 import { AiOutlineDownload } from "react-icons/ai";
-import { Funnel } from "@phosphor-icons/react";
+import { Funnel, Plus } from "@phosphor-icons/react";
 const query = `
   query {
     instagram {
@@ -90,17 +92,42 @@ const saveNewContent = async () => {
     .then((result) => {
       if (result.data.errors) {
         console.error("GraphQL errors", result.data.errors);
-      } else if (!result.data.data || !result.data.data.instagram) {
+        toast.error("GraphQL errors: " + JSON.stringify(result.data.errors));
+      } else if (
+          !result.data.data || 
+          !result.data.data.saveStories || 
+          !result.data.data.savePostsAndReels
+        ) {
         console.error("Unexpected server response", result.data);
+        toast.error("Unexpected server response: " + JSON.stringify(result.data));
       } else {
-        
+        // Check success status of both operations
+        let toastMessage = "";
+        if(result.data.data.saveStories.success) {
+          // Add success message
+          toastMessage += "Stories: " + result.data.data.saveStories.message + "\n";
+        } else {
+          // Add error message if success is false
+          toastMessage += "Stories: Error - " + result.data.data.saveStories.message + "\n";
+        }
+        if(result.data.data.savePostsAndReels.success) {
+          // Add success message
+          toastMessage += "Posts and Reels: " + result.data.data.savePostsAndReels.message;
+        } else {
+          // Add error message if success is false
+          toastMessage += "Posts and Reels: Error - " + result.data.data.savePostsAndReels.message;
+        }
+        // Show a single toast with the combined message
+        toast(toastMessage);
       }
     })
     .catch((error) => {
       console.error(error);
-      //setIsLoading(false);
+      toast.error("Network error: " + error.message);
     });
 };
+
+
 
 function HomePage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -152,7 +179,8 @@ function HomePage() {
             variant="outline"
             
           />
-          <Button colorScheme='blue' onClick={saveNewContent}>Save New Content</Button>
+            <Button colorScheme='primary' width={"91px"} height={"40px"} leftIcon={<Plus size={16} color="white" weight="fill" />}  fontSize={"md"}>New</Button>
+          <Button colorScheme='primary' onClick={saveNewContent}>Save New Content</Button>
         </HStack>
       </HStack>
       <Box sx={{ columnCount: [4] , gap:"16px"}}>

@@ -8,6 +8,8 @@ import Setting from "@pages/Setting.page";
 import SignupPage from "@pages/Auth/Signup.page";
 import ResetPassword from "@pages/Auth/ResetPassword";
 import NextPage from "@pages/NextPage";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const router = createBrowserRouter([
   {
@@ -57,7 +59,12 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <>
+      <ToastContainer />
+      <RouterProvider router={router} />
+    </>
+  );
 }
 
 export default App;
