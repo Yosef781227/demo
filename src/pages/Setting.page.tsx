@@ -235,11 +235,15 @@ function Setting() {
             <Link color="#7C3AED">Manage Payment Method</Link>
           </HStack>
 
-       
           <FAQ />
         </RowContainer>
         <Box pt="8">
-          <Buttons text="Save Changes"  width="150px" height="45px" color="primary"/>
+          <Buttons
+            text="Save Changes"
+            width="150px"
+            height="45px"
+            color="primary"
+          />
         </Box>
       </Box>
     </Container>
@@ -287,7 +291,7 @@ function FAQ() {
         <h2>
           <AccordionButton>
             <Box as="span" flex="1" textAlign="left">
-            What are my payment options?
+              What are my payment options?
             </Box>
             <AccordionIcon />
           </AccordionButton>
@@ -299,7 +303,6 @@ function FAQ() {
           aliquip ex ea commodo consequat.
         </AccordionPanel>
       </AccordionItem>
-
     </Accordion>
   );
 }
@@ -313,7 +316,6 @@ function RowContainer({ children, height = "auto" }: RowContainerProps) {
     <VStack
       alignItems={"stretch"}
       shadow={"lg"}
-      width={"950px"}
       height={height}
       mt="32px"
       px={10}

@@ -8,8 +8,10 @@ import Setting from "@pages/Setting.page";
 import SignupPage from "@pages/Auth/Signup.page";
 import ResetPassword from "@pages/Auth/ResetPassword";
 import NextPage from "@pages/NextPage";
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import TiktokPage from "./pages/integrations/Tiktok.page";
+import InstagramPage from "./pages/integrations/Instagram.page";
 
 const router = createBrowserRouter([
   {
@@ -40,10 +42,19 @@ const router = createBrowserRouter([
         path: "collections",
         element: <Collections />,
       },
-      // {
-      //   path: "integration",
-      //   element: <Integration />,
-      // },
+      {
+        path: "integration",
+        children: [
+          {
+            path: "tiktok",
+            element: <TiktokPage />,
+          },
+          {
+            path: "instagram",
+            element: <InstagramPage />,
+          },
+        ],
+      },
       {
         path: "settings",
         element: <Setting />,

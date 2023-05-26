@@ -4,7 +4,7 @@ import IntegrationIcon from "@/assets/icons/Filled/IntegrationIcon";
 import CollectionIcon from "@/assets/icons/Filled/CollectionIcon";
 import SettingIcon from "@/assets/icons/Filled/SettingIcon";
 import Logo from "../Logo";
-import { NavLink } from "react-router-dom";
+import { NavLink, Navigate, useMatches, useNavigate } from "react-router-dom";
 const ChakraNavLink = chakra(NavLink);
 
 const sideBarElements = [
@@ -14,14 +14,14 @@ const sideBarElements = [
     icon: <ContentIcon />,
   },
   {
-    text: "Integration",
-    link: "/home/integration",
-    icon: <IntegrationIcon />,
-  },
-  {
     text: "Collections",
     link: "/home/collections",
     icon: <CollectionIcon />,
+  },
+  {
+    text: "Integration",
+    link: "/home/integration",
+    icon: <IntegrationIcon />,
   },
   {
     text: "Settings",
@@ -29,7 +29,7 @@ const sideBarElements = [
     icon: <SettingIcon />,
   },
 ];
-function sideBarListBuilder() {
+function sideBarListBuilder(pathname: string) {
   return (
     <VStack
       sx={{
@@ -47,6 +47,9 @@ function sideBarListBuilder() {
       pr={5}
     >
       {sideBarElements.map(({ link, text, icon }, i) => {
+        if ("/home/integration" === pathname) {
+          return <Navigate to="/home/integration/tiktok" />;
+        }
         return (
           <ChakraNavLink
             rounded={"lg"}
@@ -65,6 +68,7 @@ function sideBarListBuilder() {
   );
 }
 function SideBar() {
+  const matches = useMatches();
   return (
     <VStack
       position={"fixed"}
@@ -78,7 +82,7 @@ function SideBar() {
         <Box width={"full"} alignSelf={"flex-start"}>
           <Logo />
         </Box>
-        {sideBarListBuilder()}
+        {sideBarListBuilder(matches[matches.length - 1].pathname)}
       </VStack>
       <HStack>
         <Avatar name="Jone Doe" />
