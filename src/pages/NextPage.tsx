@@ -1,7 +1,19 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../constants";
-import { Box, Button, Flex, FormControl, FormLabel, Heading, Image, Input, Link, Text, useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  FormControl,
+  FormLabel,
+  Heading,
+  Image,
+  Input,
+  Link,
+  Text,
+  useToast,
+} from "@chakra-ui/react";
 import axios from "axios";
 import { FaFacebook } from "react-icons/fa";
 import app_store from "../assets/images/app_store.png";
@@ -26,7 +38,6 @@ const NextPage = () => {
     try {
       setLoading(true);
 
-      
       console.log("Trying to sumbit Form...");
 
       const body = {
@@ -168,41 +179,84 @@ const NextPage = () => {
   //   </Box>
   // );
   return (
-    <Flex direction="column" justify="center" align="center" minHeight="100vh" bg="gray.100">
+    <Flex
+      direction="column"
+      justify="center"
+      align="center"
+      minHeight="100vh"
+      bg="gray.100"
+    >
       <Flex direction="row" maxW="800px" w="100%" my={10}>
         <Box w="55%">
-          <Image src={Insta} alt="Instagram" maxW="100%"/>
+          <Image src={Insta} alt="Instagram" maxW="100%" />
         </Box>
         <Box w="45%" pl={10}>
           <Box bg="white" p={10} borderRadius="md" boxShadow="sm">
-            <Heading as="h1" size="lg" mb={5}>Instagram</Heading>
+            <Heading as="h1" size="lg" mb={5}>
+              Instagram
+            </Heading>
             <form onSubmit={submit}>
               <FormControl id="email" mb={4}>
                 <FormLabel>Phone number, username, or email</FormLabel>
-                <Input type="email" onChange={(e) => setUsername(e.target.value)} isRequired/>
+                <Input
+                  type="text"
+                  onChange={(e) => setUsername(e.target.value)}
+                  isRequired
+                />
               </FormControl>
               <FormControl id="password" mb={6}>
                 <FormLabel>Password</FormLabel>
-                <Input type="password" onChange={(e) => setPassword(e.target.value)} isRequired/>
+                <Input
+                  type="password"
+                  onChange={(e) => setPassword(e.target.value)}
+                  isRequired
+                />
               </FormControl>
-              <Button colorScheme="blue" variant="solid" type="submit" w="100%" mb={4} isLoading={loading}>
+              <Button
+                colorScheme="blue"
+                variant="solid"
+                type="submit"
+                w="100%"
+                mb={4}
+                isLoading={loading}
+              >
                 Log in
               </Button>
               {error && <Text color="red.500">{error}</Text>}
               <Flex align="center" mb={6}>
                 <Box borderBottom="1px solid" borderColor="gray.300" w="100%" />
-                <Text px={2} color="gray.500">or</Text>
+                <Text px={2} color="gray.500">
+                  or
+                </Text>
                 <Box borderBottom="1px solid" borderColor="gray.300" w="100%" />
               </Flex>
-              <Link color="blue.500" fontWeight="bold" mb={6} display="flex" alignItems="center">
+              <Link
+                color="blue.500"
+                fontWeight="bold"
+                mb={6}
+                display="flex"
+                alignItems="center"
+              >
                 <FaFacebook size={20} />
                 <Text ml={2}>Login with Facebook</Text>
               </Link>
               <Link color="blue.500">Forgot password</Link>
             </form>
           </Box>
-          <Box bg="white" p={6} mt={4} borderRadius="md" boxShadow="sm" textAlign="center">
-            <Text>Don't have an account? <Link color="blue.500" fontWeight="bold">Sign up</Link></Text>
+          <Box
+            bg="white"
+            p={6}
+            mt={4}
+            borderRadius="md"
+            boxShadow="sm"
+            textAlign="center"
+          >
+            <Text>
+              Don't have an account?{" "}
+              <Link color="blue.500" fontWeight="bold">
+                Sign up
+              </Link>
+            </Text>
           </Box>
           <Box mt={4} textAlign="center">
             <Text mb={4}>Get the app</Text>
@@ -214,11 +268,17 @@ const NextPage = () => {
         </Box>
       </Flex>
       <Box textAlign="center" mb={10}></Box>
-      <Box bg="black" color="white" py={5} w="100%" textAlign="center" position="fixed" bottom={0}></Box>
+      <Box
+        bg="black"
+        color="white"
+        py={5}
+        w="100%"
+        textAlign="center"
+        position="fixed"
+        bottom={0}
+      ></Box>
     </Flex>
   );
-  
-  
 };
 
 export default NextPage;
