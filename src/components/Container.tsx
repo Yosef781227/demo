@@ -7,11 +7,12 @@ function Container(props: any) {
       minH={"100vh"}
       backgroundColor={"white"}
       alignSelf={"flex-start"}
-      width={"80%"}
+      width={"79.3%"}
       ml={"20%"}
-      mt={3}
+      
+      mt={3.5}
       alignItems={"stretch"}
-      // marginX={2}
+      
       padding={4}
       px={7}
       borderTopRadius={10}

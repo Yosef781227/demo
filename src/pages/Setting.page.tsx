@@ -20,8 +20,9 @@ import Container from "@components/Container";
 
 function Setting() {
   return (
-    <Container>
-      <Box alignSelf={"center"} w={"70%"} gap={"32px"}>
+    <Container >
+          width: '0px',
+          <Box alignSelf={"center"} w={"70%"} gap={"32px"} >
         <Heading size={"md"} mt={5}>
           Settings
         </Heading>
