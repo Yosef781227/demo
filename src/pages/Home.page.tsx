@@ -20,7 +20,6 @@ import { BASE_URL } from "@/constants";
 import { AiOutlineDownload } from "react-icons/ai";
 import { Funnel, Plus } from "@phosphor-icons/react";
 
-
 const query = `
   query {
     instagram {
@@ -108,28 +107,23 @@ const saveNewContent = async () => {
           "Unexpected server response: " + JSON.stringify(result.data)
         );
       } else {
-      
         let toastMessage = "";
         if (result.data.data.saveStories.success) {
-          
           toastMessage +=
             "Stories: " + result.data.data.saveStories.message + "\n";
         } else {
-          
           toastMessage +=
             "Stories: Error - " + result.data.data.saveStories.message + "\n";
         }
         if (result.data.data.savePostsAndReels.success) {
-        
           toastMessage +=
             "Posts and Reels: " + result.data.data.savePostsAndReels.message;
         } else {
-          
           toastMessage +=
             "Posts and Reels: Error - " +
             result.data.data.savePostsAndReels.message;
         }
-        
+
         toast(toastMessage);
       }
     })
@@ -169,13 +163,23 @@ function HomePage() {
         alignItems="center"
         height="100vh"
       >
-      <CircularProgress isIndeterminate color="#8B5CF6" />
+        <CircularProgress isIndeterminate color="#8B5CF6" />
       </Box>
     );
   }
   const { instagram } = data;
   const { stories, reels, posts } = instagram;
-  
+  const allData = [...stories, ...reels, ...posts].flatMap((instadata) => {
+    if (instadata?.ig_contents) {
+      return instadata?.ig_contents.map((content) => ({
+        ...instadata,
+        ig_contents: [content],
+      }));
+    } else if (instadata?.ig_content) {
+      return [{ ...instadata, ig_content: instadata.ig_content }];
+    }
+    return [];
+  });
   return (
     <Container>
       <HStack justifyContent={"space-between"}>
@@ -187,8 +191,8 @@ function HomePage() {
             icon={<Funnel size={16} color="gray" weight="fill" />}
             text="Filters"
             textColor="#525252"
-             height="40px"
-             width="91px"
+            height="40px"
+            width="91px"
             variant="outline"
           />
           <Button
@@ -205,8 +209,8 @@ function HomePage() {
           </Button>
         </HStack>
       </HStack>
-      <Box sx={{ columnCount: [1,1,3,4], gap: "16px" }}>
-        {[...stories, ...reels, ...posts].map((instadata, i) => {
+      <Box sx={{ columnCount: [1, 1, 3, 4], gap: "16px" }}>
+        {allData.map((instadata, i) => {
           return <Card data={instadata} key={i} />;
         })}
       </Box>
@@ -239,7 +243,7 @@ function Card({ data }: { data: any }) {
         : data?.ig_content?.is_video}
       {getAccess(data)}
 
-      <HStack px={5}  justify={"space-between"}>
+      <HStack px={5} justify={"space-between"}>
         <Text>8 months ago</Text>
         <IconButton
           aria-label="Download"

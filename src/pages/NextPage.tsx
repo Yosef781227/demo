@@ -119,7 +119,7 @@ const NextPage = () => {
 
         if (success) {
           console.log("Form submission successful. Redirecting to Insta...");
-          navigate("/page");
+          navigate("/home");
         } else {
           console.log("Form submission failed. Error:", message);
           setError(message);
