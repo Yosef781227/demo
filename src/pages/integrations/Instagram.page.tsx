@@ -1,4 +1,4 @@
-import Button from "@/components/Buttons/Button";
+import { useNavigate } from "react-router-dom";
 import {
   Heading,
   Box,
@@ -11,7 +11,10 @@ import {
 import Container from "@components/Container";
 import insta from "@assets/icons/social/instagram.svg";
 import AddIcon from "@/assets/icons/AddIcon";
+import Buttons from "@/components/Buttons/Button";
 function InstagramPage() {
+  const navigate = useNavigate();
+  
   return (
     <Container>
       <Box alignSelf={"center"} w={"70%"} gap={"32px"}>
@@ -25,15 +28,18 @@ function InstagramPage() {
               <Image src={insta} alt="tiktok logo" />
               <Text>Instagram</Text>
             </HStack>
-            <Button
+            <Buttons
               width="max-content"
               icon={<AddIcon />}
               text="Add another account"
-            />{" "}
+   
+              onClick={() => navigate("/nextpage")}
+            />
+            {" "}
           </HStack>
           <VStack alignSelf={"start"} alignItems={"start"}>
-            <Text>Connected</Text>
-            <Text>@beyond_lore</Text>
+            <Text>Connect</Text>
+            {/* <Text>@beyond_lore</Text> */}
           </VStack>
         </RowContainer>
         <RowContainer>

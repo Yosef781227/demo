@@ -4,7 +4,7 @@ import IntegrationIcon from "@/assets/icons/Filled/IntegrationIcon";
 import CollectionIcon from "@/assets/icons/Filled/CollectionIcon";
 import SettingIcon from "@/assets/icons/Filled/SettingIcon";
 import Logo from "../Logo";
-import { NavLink, Navigate, useMatches, useNavigate } from "react-router-dom";
+import { NavLink, Navigate, useMatches } from "react-router-dom";
 const ChakraNavLink = chakra(NavLink);
 
 const sideBarElements = [
@@ -20,7 +20,7 @@ const sideBarElements = [
   },
   {
     text: "Integration",
-    link: "/home/integration",
+    link: "/home/integration/instagram",
     icon: <IntegrationIcon />,
   },
   {
