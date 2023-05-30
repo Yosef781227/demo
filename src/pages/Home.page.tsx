@@ -1,4 +1,3 @@
-//@ts-nocheck
 import {
   Avatar,
   Box,
@@ -12,6 +11,7 @@ import {
   useDisclosure,
   Checkbox,
   Select,
+  Input,
 } from "@chakra-ui/react";
 import DatePicker from "react-datepicker";
 
@@ -36,6 +36,7 @@ import {
   ModalBody,
   ModalCloseButton,
 } from "@chakra-ui/react";
+import theme from "@/constants/theme";
 const query = `
   query {
     instagram {
@@ -153,6 +154,12 @@ function HomePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isOpen1,
+    onOpen: onOpen1,
+    onClose: onClose1,
+  } = useDisclosure();
+
   const [startDate, setStartDate] = useState(new Date());
   useEffect(() => {
     axios
@@ -187,9 +194,9 @@ function HomePage() {
   const { instagram } = data;
 
   const { stories, reels, posts } = instagram;
-  const allData = [...stories, ...reels, ...posts].flatMap((instadata) => {
+  const allData = [...stories, ...reels, ...posts].flatMap((instadata: any) => {
     if (instadata?.ig_contents) {
-      return instadata?.ig_contents.map((content) => ({
+      return instadata?.ig_contents.map((content: any) => ({
         ...instadata,
         ig_contents: [content],
       }));
@@ -198,14 +205,17 @@ function HomePage() {
     }
     return [];
   });
+
   return (
     <>
-      <Modal isOpen={isOpen} isCentered={false} size={"md"} onClose={onClose}>
+      <Modal isOpen={isOpen1} isCentered={false} size={"md"} onClose={onClose1}>
         <ModalOverlay />
+
         <ModalContent
           containerProps={{
             justifyContent: "flex-end",
-            paddingRight: "0rem",
+            paddingRight: "0.9rem",
+            paddingTop: "0.9rem",
           }}
           sx={{
             "&:first-child": {
@@ -215,48 +225,104 @@ function HomePage() {
             },
           }}
         >
-          <ModalHeader>Filters</ModalHeader>
+          
+          <ModalCloseButton size={"lg"} mt={4} mr={4} color={"gray.500"} />
+
+          <ModalBody mt={20} ml={2}>
+            <Text fontWeight={"bold"} ml={6} fontSize={"2xl"}>Save New Content</Text>
+            <Box mt={2} ml={6}>
+              
+                Sometimes Social Profiles forget to @mention your brand, but
+                it's all good. Copy and paste a link to the UGC here; we'll add
+                it to your asset library with all the usual details.
+              
+            </Box>
+            <Text mt={35} ml={6}>Link</Text>
+                 <Input ml={8}  mt={3} width={"330px"} height={"40px"} placeholder="https://"/>
+                 <Text fontSize={"sm"} ml={9} mt={2} textColor={"gray.500"}>Past a tik tok or instagram Link</Text>
+          </ModalBody>
+
+          <ModalFooter mb={10}>
+            <Button variant="ghost"  mr={3}>
+              Go Back
+            </Button>
+            <Button colorScheme={"purple"}>Save Post</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      <Modal isOpen={isOpen} isCentered={false} size={"md"} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent
+          containerProps={{
+            justifyContent: "flex-end",
+            paddingRight: "0.9rem",
+            paddingTop: "0.9rem",
+          }}
+          sx={{
+            "&:first-child": {
+              margin: 0,
+              height: "100vh",
+              overflowY: "scroll",
+            },
+          }}
+        >
+          <ModalHeader fontSize={"xl"} fontWeight={"bold"} mt={5}>
+            Filters
+          </ModalHeader>
           <ModalCloseButton />
-          <ModalBody>
+
+          <Box borderBottom="1px" borderColor="gray.100" width="100%" my={2} />
+          <ModalBody mt={5} ml={2}>
             <Box>
-              <Text>Post Type</Text>
+              <Text textColor={"gray.500"}>Post Type</Text>
 
               <DatePicker
                 selected={startDate}
-                onChange={(date) => setStartDate(date)}
+                onChange={(date: Date | null) =>
+                  setStartDate((prevDate) => date || prevDate)
+                }
               />
             </Box>
-            <Box>
-              <Text>Post Type</Text>
-              <Box>
+            <Box mt={5}>
+              <Text textColor={"gray.500"}>Post Type</Text>
+              <Box mt={3}>
                 <Box>
-                  <Text>Instagram</Text>
-                  <HStack>
+                  <Text textColor={"gray.500"} fontSize={"sm"}>
+                    Instagram
+                  </Text>
+                  <HStack mt={1.5}>
+                    <Checkbox>Reel</Checkbox>
                     <Checkbox>Feed</Checkbox>
                     <Checkbox>Story</Checkbox>
-                    <Checkbox>Reel</Checkbox>
                   </HStack>
                 </Box>
-                <Box>
-                  <Text>Tiktok</Text>
-                  <Checkbox>Video</Checkbox>
+                <Box mt={3}>
+                  <Text textColor={"gray.500"} fontSize={"sm"}>
+                    Tiktok
+                  </Text>
+                  <Checkbox mt={3}>Video</Checkbox>
                 </Box>
               </Box>
             </Box>
-            <Box>
-              <Text>Source</Text>
-              <Box>
+            <Box mt={5}>
+              <Text textColor={"gray.500"}>Source</Text>
+              <Box mt={3}>
                 <Box>
-                  <Text>Instagram</Text>
-                  <Checkbox>@beyond_lore</Checkbox>
+                  <Text textColor={"gray.500"} fontSize={"sm"} mt={2}>
+                    Instagram
+                  </Text>
+                  <Checkbox size={"sm"}>@beyond_lore</Checkbox>
                 </Box>
-                <Box>
-                  <Text>Tiktok</Text>
-                  <Checkbox>@beyond_lore</Checkbox>
+                <Box mt={2}>
+                  <Text textColor={"gray.500"} fontSize={"sm"} mt={2}>
+                    Tiktok
+                  </Text>
+                  <Checkbox size={"sm"}>@beyond_lore</Checkbox>
                 </Box>
               </Box>
             </Box>
-            <Box>
+            <Box mt={8}>
               <Text>Tags</Text>
               <Tabs>
                 <TabList>
@@ -403,6 +469,7 @@ function HomePage() {
           </ModalFooter>
         </ModalContent>
       </Modal>
+
       <Container>
         <HStack justifyContent={"space-between"}>
           <Text color={"black"} fontWeight={"bold"} fontSize={"18px"}>
@@ -418,12 +485,14 @@ function HomePage() {
               width="91px"
               variant="outline"
             />
+
             <Button
               colorScheme="primary"
               width={"91px"}
               height={"40px"}
               leftIcon={<Plus size={16} color="white" weight="fill" />}
               fontSize={"md"}
+              onClick={onOpen1}
             >
               New
             </Button>
