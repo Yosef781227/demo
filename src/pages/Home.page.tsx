@@ -9,7 +9,14 @@ import {
   VStack,
   Button,
   CircularProgress,
+  useDisclosure,
+  Checkbox,
+  Select,
 } from "@chakra-ui/react";
+import DatePicker from "react-datepicker";
+
+import "react-datepicker/dist/react-datepicker.css";
+import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Buttons from "@/components/Buttons/Button";
@@ -20,7 +27,15 @@ import axios from "axios";
 import { BASE_URL } from "@/constants";
 import { AiOutlineDownload } from "react-icons/ai";
 import { Funnel, Plus } from "@phosphor-icons/react";
-
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+} from "@chakra-ui/react";
 const query = `
   query {
     instagram {
@@ -137,7 +152,8 @@ const saveNewContent = async () => {
 function HomePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState(null);
-
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [startDate, setStartDate] = useState(new Date());
   useEffect(() => {
     axios
       .post(BASE_URL, { query }, { withCredentials: true })
@@ -169,6 +185,7 @@ function HomePage() {
     );
   }
   const { instagram } = data;
+
   const { stories, reels, posts } = instagram;
   const allData = [...stories, ...reels, ...posts].flatMap((instadata) => {
     if (instadata?.ig_contents) {
@@ -182,40 +199,246 @@ function HomePage() {
     return [];
   });
   return (
-    <Container>
-      <HStack justifyContent={"space-between"}>
-        <Text color={"black"} fontWeight={"bold"} fontSize={"18px"}>
-          Content
-        </Text>
-        <HStack>
-          <Buttons
-            icon={<Funnel size={16} color="gray" weight="fill" />}
-            text="Filters"
-            textColor="#525252"
-            height="40px"
-            width="91px"
-            variant="outline"
-          />
-          <Button
-            colorScheme="primary"
-            width={"91px"}
-            height={"40px"}
-            leftIcon={<Plus size={16} color="white" weight="fill" />}
-            fontSize={"md"}
-          >
-            New
-          </Button>
-          <Button colorScheme="primary" onClick={saveNewContent}>
-            Save New Content
-          </Button>
+    <>
+      <Modal isOpen={isOpen} isCentered={false} size={"md"} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent
+          containerProps={{
+            justifyContent: "flex-end",
+            paddingRight: "0rem",
+          }}
+          sx={{
+            "&:first-child": {
+              margin: 0,
+              height: "100vh",
+              overflowY: "scroll",
+            },
+          }}
+        >
+          <ModalHeader>Filters</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Box>
+              <Text>Post Type</Text>
+
+              <DatePicker
+                selected={startDate}
+                onChange={(date) => setStartDate(date)}
+              />
+            </Box>
+            <Box>
+              <Text>Post Type</Text>
+              <Box>
+                <Box>
+                  <Text>Instagram</Text>
+                  <HStack>
+                    <Checkbox>Feed</Checkbox>
+                    <Checkbox>Story</Checkbox>
+                    <Checkbox>Reel</Checkbox>
+                  </HStack>
+                </Box>
+                <Box>
+                  <Text>Tiktok</Text>
+                  <Checkbox>Video</Checkbox>
+                </Box>
+              </Box>
+            </Box>
+            <Box>
+              <Text>Source</Text>
+              <Box>
+                <Box>
+                  <Text>Instagram</Text>
+                  <Checkbox>@beyond_lore</Checkbox>
+                </Box>
+                <Box>
+                  <Text>Tiktok</Text>
+                  <Checkbox>@beyond_lore</Checkbox>
+                </Box>
+              </Box>
+            </Box>
+            <Box>
+              <Text>Tags</Text>
+              <Tabs>
+                <TabList>
+                  <Tab>All</Tab>
+                  <Tab>Assets</Tab>
+                  <Tab>Social Profile</Tab>
+                </TabList>
+                <TabPanels>
+                  <TabPanel>
+                    <HStack>
+                      <Checkbox>No Tags</Checkbox>
+                    </HStack>
+                  </TabPanel>
+                  <TabPanel>
+                    <p>two!</p>
+                  </TabPanel>
+                </TabPanels>
+              </Tabs>
+            </Box>
+            <Box>
+              <Text>Usage Right</Text>
+              <HStack>
+                <Checkbox>Pending</Checkbox>
+                <Checkbox>Approved</Checkbox>
+                <Checkbox>Rejected</Checkbox>
+              </HStack>
+            </Box>
+            <Box>
+              <Text>Followers</Text>
+              <HStack>
+                <Select placeholder="Select">
+                  <option value="option1" selected>
+                    1k
+                  </option>
+                  <option value="option2">2k</option>
+                  <option value="option3">3k</option>
+                </Select>
+                <Select placeholder="Select">
+                  <option value="option1">1k</option>
+                  <option value="option2"> 2k</option>
+                  <option value="option3" selected>
+                    {" "}
+                    3k
+                  </option>
+                </Select>
+              </HStack>
+            </Box>
+            <Box>
+              <Text>Content Type</Text>
+              <HStack>
+                <Checkbox>Video</Checkbox>
+                <Checkbox>Audio</Checkbox>
+              </HStack>
+            </Box>
+            <Box>
+              <Text>Engagement</Text>
+              <VStack>
+                <Checkbox alignSelf={"flex-start"} checked={true}>
+                  {" "}
+                  Views
+                </Checkbox>
+                <HStack>
+                  <Select placeholder="Select">
+                    <option value="option1" selected>
+                      1k
+                    </option>
+                    <option value="option2">2k</option>
+                    <option value="option3">3k</option>
+                  </Select>
+                  <Select placeholder="Select">
+                    <option value="option1">1k</option>
+                    <option value="option2"> 2k</option>
+                    <option value="option3" selected>
+                      {" "}
+                      3k
+                    </option>
+                  </Select>
+                </HStack>
+              </VStack>
+              <VStack>
+                <Checkbox alignSelf={"flex-start"} checked={true}>
+                  {" "}
+                  Plays
+                </Checkbox>
+                <HStack>
+                  <Select placeholder="Select">
+                    <option value="option1" selected>
+                      1k
+                    </option>
+                    <option value="option2">2k</option>
+                    <option value="option3">3k</option>
+                  </Select>
+                  <Select placeholder="Select">
+                    <option value="option1">1k</option>
+                    <option value="option2"> 2k</option>
+                    <option value="option3" selected>
+                      {" "}
+                      3k
+                    </option>
+                  </Select>
+                </HStack>
+              </VStack>
+              <VStack alignItems={"flex-start"}>
+                <Checkbox> Likes</Checkbox>
+                <Checkbox> Comments</Checkbox>
+                <Checkbox> Share</Checkbox>
+              </VStack>
+            </Box>
+            <Box>
+              <Text>Collections</Text>
+              <Tabs>
+                <TabList>
+                  <Tab>Include</Tab>
+                  <Tab>Exclude</Tab>
+                </TabList>
+                <TabPanels>
+                  <TabPanel>
+                    <HStack>
+                      <Checkbox>All Collection</Checkbox>
+                      <Checkbox>Random</Checkbox>
+                      <Checkbox>Large Inflencers</Checkbox>
+                    </HStack>
+                  </TabPanel>
+                  <TabPanel>
+                    <p>two!</p>
+                  </TabPanel>
+                </TabPanels>
+              </Tabs>
+            </Box>
+            <Box>
+              <Text>Verification</Text>
+              <HStack>
+                <Checkbox>Verified</Checkbox>
+                <Checkbox>Not Verified</Checkbox>
+              </HStack>
+            </Box>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onClose}>
+              Close
+            </Button>
+            <Button variant="ghost">Secondary Action</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+      <Container>
+        <HStack justifyContent={"space-between"}>
+          <Text color={"black"} fontWeight={"bold"} fontSize={"18px"}>
+            Content
+          </Text>
+          <HStack>
+            <Buttons
+              icon={<Funnel size={16} color="gray" weight="fill" />}
+              text="Filters"
+              textColor="#525252"
+              onClick={onOpen}
+              height="40px"
+              width="91px"
+              variant="outline"
+            />
+            <Button
+              colorScheme="primary"
+              width={"91px"}
+              height={"40px"}
+              leftIcon={<Plus size={16} color="white" weight="fill" />}
+              fontSize={"md"}
+            >
+              New
+            </Button>
+            <Button colorScheme="primary" onClick={saveNewContent}>
+              Save New Content
+            </Button>
+          </HStack>
         </HStack>
-      </HStack>
-      <Box sx={{ columnCount: [1, 1, 3, 4], gap: "16px" }}>
-        {allData.map((instadata, i) => {
-          return <Card data={instadata} key={i} />;
-        })}
-      </Box>
-    </Container>
+        <Box sx={{ columnCount: [1, 1, 3, 4], gap: "16px" }}>
+          {allData.map((instadata, i) => {
+            return <Card data={instadata} key={i} />;
+          })}
+        </Box>
+      </Container>
+    </>
   );
 }
 function Card({ data }: { data: any }) {
