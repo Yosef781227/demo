@@ -16,7 +16,7 @@ function InstagramPage() {
   const navigate = useNavigate();
   
   return (
-    <Container>
+    <Container background={"neutral.50"}>
       <Box alignSelf={"center"} w={"70%"} gap={"32px"}>
         <Heading size={"md"} mt={5}>
           Integrations
@@ -68,6 +68,7 @@ function RowContainer({ children, height = "auto" }: RowContainerProps) {
       alignItems={"stretch"}
       shadow={"lg"}
       height={height}
+      backgroundColor={"white"}
       mt="32px"
       px={10}
       py={5}

@@ -18,14 +18,14 @@ import FilterIcon from "@/assets/icons/FilterIcon";
 import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
 function Collections() {
   return (
-    <Container>
-      <HStack justifyContent={"space-between"}>
-        <Text>Content</Text>
+    <Container  background ={"neutral.50"} >
+      <HStack justifyContent={"space-between"} mt={8}>
+        <Text fontSize={"xl"} fontWeight={"bold"}>Content</Text>
         <HStack>
           <Button icon={<AddIcon />} text="New Collection" />
         </HStack>
       </HStack>
-      <Wrap spacing={8} gap={2}>
+      <Wrap spacing={8} gap={2} pt={5}>
         {Array(...["Favorites", "Random", "Large Influencers"]).map(
           (text, i) => {
             return (
@@ -41,7 +41,7 @@ function Collections() {
 }
 function Card({ text }: { text: string }) {
   return (
-    <VStack position={"relative"} overflow={"hidden"} shadow={"md"} mb={10}>
+    <VStack position={"relative"} overflow={"hidden"} shadow={"md"} mb={10} backgroundColor={"white"}>
       <Box position={"absolute"} right="0" top="3">
         <Menu>
           <MenuButton

@@ -12,7 +12,7 @@ import {
   Checkbox,
   Select,
   Input,
-  Divider,
+  
 } from "@chakra-ui/react";
 import DatePicker from "react-datepicker";
 
@@ -255,7 +255,7 @@ function HomePage() {
             <Button variant="ghost" mr={3}>
               Go Back
             </Button>
-            <Button colorScheme={"purple"}>Save Post</Button>
+            <Button colorScheme="primary">Save Post</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
@@ -276,11 +276,12 @@ function HomePage() {
             },
           }}
         >
-          <ModalHeader fontSize={"xl"} fontWeight={"bold"} mt={5}>
+          <ModalHeader fontSize={"xl"} fontWeight={"bold"} mt={6}>
             Filters
           </ModalHeader>
-          <ModalCloseButton />
-          <Divider />
+          <ModalCloseButton size={"lg"} color={"gray.500"}  mt={2}/>
+
+          <Box borderBottom="1px" borderColor="gray.100" width="100%" my={2} />
           <ModalBody mt={5} ml={2}>
             <Box>
               <Text textColor={"gray.500"}>Post Date</Text>
@@ -464,10 +465,10 @@ function HomePage() {
           </ModalBody>
 
           <ModalFooter>
-            <Button w="full" variant="ghost">
+            <Button variant="ghost">
               Reset All
             </Button>
-            <Button w="full" colorScheme="primary" mr={3} onClick={onClose}>
+            <Button  colorScheme="primary" mr={3} onClick={onClose}>
               Apply All
             </Button>
           </ModalFooter>
@@ -505,9 +506,10 @@ function HomePage() {
             </Button>
           </HStack>
         </HStack>
-        <Box sx={{ columnCount: [1, 1, 3, 4], gap: "16px" }}>
+        <Box borderBottom="1px" borderColor="gray.200" width="100%"  pt={5} />
+        <Box pt={10}  sx={{ columnCount: [1, 1, 3, 4], gap: "16px" }}>
           {allData.map((instadata, i) => {
-            return <Card data={instadata} key={i} />;
+            return <Card  data={instadata} key={i} />;
           })}
         </Box>
       </Container>
@@ -521,6 +523,7 @@ function Card({ data }: { data: any }) {
       display={"inline-block"}
       sx={{ breakInside: "avoid", breakAfter: "auto", breakBefore: "auto" }}
       border={"1px solid #EDEDED"}
+      backgroundColor={"white"}
       align={"stretch"}
       my={4}
       rounded={"xl"}
@@ -617,3 +620,4 @@ function dataAccess(data: any) {
 //   return data?.ig_contents ? data?.ig_contents[0]?.url : data?.ig_content?.url;
 // }
 export default HomePage;
+
