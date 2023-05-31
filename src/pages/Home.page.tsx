@@ -12,6 +12,7 @@ import {
   Checkbox,
   Select,
   Input,
+  Divider,
 } from "@chakra-ui/react";
 import DatePicker from "react-datepicker";
 
@@ -36,7 +37,6 @@ import {
   ModalBody,
   ModalCloseButton,
 } from "@chakra-ui/react";
-import theme from "@/constants/theme";
 const query = `
   query {
     instagram {
@@ -225,25 +225,34 @@ function HomePage() {
             },
           }}
         >
-          
           <ModalCloseButton size={"lg"} mt={4} mr={4} color={"gray.500"} />
 
           <ModalBody mt={20} ml={2}>
-            <Text fontWeight={"bold"} ml={6} fontSize={"2xl"}>Save New Content</Text>
+            <Text fontWeight={"bold"} ml={6} fontSize={"2xl"}>
+              Save New Content
+            </Text>
             <Box mt={2} ml={6}>
-              
-                Sometimes Social Profiles forget to @mention your brand, but
-                it's all good. Copy and paste a link to the UGC here; we'll add
-                it to your asset library with all the usual details.
-              
+              Sometimes Social Profiles forget to @mention your brand, but it's
+              all good. Copy and paste a link to the UGC here; we'll add it to
+              your asset library with all the usual details.
             </Box>
-            <Text mt={35} ml={6}>Link</Text>
-                 <Input ml={8}  mt={3} width={"330px"} height={"40px"} placeholder="https://"/>
-                 <Text fontSize={"sm"} ml={9} mt={2} textColor={"gray.500"}>Past a tik tok or instagram Link</Text>
+            <Text mt={35} ml={6}>
+              Link
+            </Text>
+            <Input
+              ml={8}
+              mt={3}
+              width={"330px"}
+              height={"40px"}
+              placeholder="https://"
+            />
+            <Text fontSize={"sm"} ml={9} mt={2} textColor={"gray.500"}>
+              Past a tik tok or instagram Link
+            </Text>
           </ModalBody>
 
           <ModalFooter mb={10}>
-            <Button variant="ghost"  mr={3}>
+            <Button variant="ghost" mr={3}>
               Go Back
             </Button>
             <Button colorScheme={"purple"}>Save Post</Button>
@@ -271,11 +280,10 @@ function HomePage() {
             Filters
           </ModalHeader>
           <ModalCloseButton />
-
-          <Box borderBottom="1px" borderColor="gray.100" width="100%" my={2} />
+          <Divider />
           <ModalBody mt={5} ml={2}>
             <Box>
-              <Text textColor={"gray.500"}>Post Type</Text>
+              <Text textColor={"gray.500"}>Post Date</Text>
 
               <DatePicker
                 selected={startDate}
@@ -322,9 +330,9 @@ function HomePage() {
                 </Box>
               </Box>
             </Box>
-            <Box mt={8}>
-              <Text>Tags</Text>
-              <Tabs>
+            <Box mt={5}>
+              <Text textColor={"gray.500"}>Tags</Text>
+              <Tabs w={"max-content"}>
                 <TabList>
                   <Tab>All</Tab>
                   <Tab>Assets</Tab>
@@ -342,17 +350,17 @@ function HomePage() {
                 </TabPanels>
               </Tabs>
             </Box>
-            <Box>
-              <Text>Usage Right</Text>
-              <HStack>
+            <Box mt={5}>
+              <Text textColor={"gray.500"}>Usage Right</Text>
+              <HStack mt={3}>
                 <Checkbox>Pending</Checkbox>
                 <Checkbox>Approved</Checkbox>
                 <Checkbox>Rejected</Checkbox>
               </HStack>
             </Box>
-            <Box>
-              <Text>Followers</Text>
-              <HStack>
+            <Box mt={5}>
+              <Text textColor={"gray.500"}>Followers</Text>
+              <HStack mt={3} ml="10%" w="max-content">
                 <Select placeholder="Select">
                   <option value="option1" selected>
                     1k
@@ -370,44 +378,18 @@ function HomePage() {
                 </Select>
               </HStack>
             </Box>
-            <Box>
-              <Text>Content Type</Text>
-              <HStack>
+            <Box mt={5}>
+              <Text textColor={"gray.500"}>Content Type</Text>
+              <HStack mt={3}>
                 <Checkbox>Video</Checkbox>
                 <Checkbox>Audio</Checkbox>
               </HStack>
             </Box>
-            <Box>
-              <Text>Engagement</Text>
-              <VStack>
-                <Checkbox alignSelf={"flex-start"} checked={true}>
-                  {" "}
-                  Views
-                </Checkbox>
-                <HStack>
-                  <Select placeholder="Select">
-                    <option value="option1" selected>
-                      1k
-                    </option>
-                    <option value="option2">2k</option>
-                    <option value="option3">3k</option>
-                  </Select>
-                  <Select placeholder="Select">
-                    <option value="option1">1k</option>
-                    <option value="option2"> 2k</option>
-                    <option value="option3" selected>
-                      {" "}
-                      3k
-                    </option>
-                  </Select>
-                </HStack>
-              </VStack>
-              <VStack>
-                <Checkbox alignSelf={"flex-start"} checked={true}>
-                  {" "}
-                  Plays
-                </Checkbox>
-                <HStack>
+            <Box mt={5}>
+              <Text textColor={"gray.500"}>Engagement</Text>
+              <VStack alignItems={"flex-start"} mt={3}>
+                <Checkbox checked={true}>Views</Checkbox>
+                <HStack pl="10%">
                   <Select placeholder="Select">
                     <option value="option1" selected>
                       1k
@@ -426,14 +408,34 @@ function HomePage() {
                 </HStack>
               </VStack>
               <VStack alignItems={"flex-start"}>
+                <Checkbox checked={true}> Plays</Checkbox>
+                <HStack pl="10%">
+                  <Select placeholder="Select">
+                    <option value="option1" selected>
+                      1k
+                    </option>
+                    <option value="option2">2k</option>
+                    <option value="option3">3k</option>
+                  </Select>
+                  <Select placeholder="Select">
+                    <option value="option1">1k</option>
+                    <option value="option2"> 2k</option>
+                    <option value="option3" selected>
+                      {" "}
+                      3k
+                    </option>
+                  </Select>
+                </HStack>
+              </VStack>
+              <VStack mt={3} alignItems={"flex-start"}>
                 <Checkbox> Likes</Checkbox>
                 <Checkbox> Comments</Checkbox>
                 <Checkbox> Share</Checkbox>
               </VStack>
             </Box>
-            <Box>
-              <Text>Collections</Text>
-              <Tabs>
+            <Box mt={5}>
+              <Text textColor={"gray.500"}>Collections</Text>
+              <Tabs w="max-content">
                 <TabList>
                   <Tab>Include</Tab>
                   <Tab>Exclude</Tab>
@@ -452,9 +454,9 @@ function HomePage() {
                 </TabPanels>
               </Tabs>
             </Box>
-            <Box>
-              <Text>Verification</Text>
-              <HStack>
+            <Box mt={5}>
+              <Text textColor={"gray.500"}>Verification</Text>
+              <HStack mt={3}>
                 <Checkbox>Verified</Checkbox>
                 <Checkbox>Not Verified</Checkbox>
               </HStack>
@@ -462,10 +464,12 @@ function HomePage() {
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Close
+            <Button w="full" variant="ghost">
+              Reset All
             </Button>
-            <Button variant="ghost">Secondary Action</Button>
+            <Button w="full" colorScheme="primary" mr={3} onClick={onClose}>
+              Apply All
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
@@ -510,6 +514,7 @@ function HomePage() {
     </>
   );
 }
+
 function Card({ data }: { data: any }) {
   return (
     <VStack
