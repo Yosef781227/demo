@@ -195,19 +195,35 @@ function HomePage() {
           withCredentials: true,
         }
       );
-
+      console.log(response.data);
       if (response.data.data == null || response.data?.errors) {
         console.log("User is not logged in");
         navigate("/login");
+        return {
+          loggedIn: false,
+        }
       } else if (!response.data.data.me.has_instagram) {
         navigate("/nextpage");
+        return {
+          loggedIn: true,
+          hasInstagram: false,
+        }
       } else {
-        const instagrams = response.data.data.me.instagrams;
-        setInstagrams(instagrams);
-        setInstaID(0);
-        localStorage.setItem('selectedInstagramIndex', "0");
-        localStorage.removeItem('instagrams');
-        localStorage.setItem('instagrams', JSON.stringify(instagrams));
+        const index: number = localStorage.getItem("selectedInstagramIndex") !== null ? parseInt(localStorage.getItem("selectedInstagramIndex") || "") : 0;
+
+        const instas: any = JSON.parse(localStorage.getItem("instagrams") || "[]") || [];
+        if (instas.length === 0) {
+          localStorage.setItem('selectedInstagramIndex', "0");
+          localStorage.setItem('instagrams', JSON.stringify(response.data.data.me.instagrams));
+        } else {
+          setInstaID(index);
+          setInstagramId(instas[index]?.id);
+          setInstagrams(response.data.data.me.instagrams);
+        }
+        return {
+          loggedIn: true,
+          hasInstagram: true,
+        }
       }
     } catch (error) {
 
@@ -250,115 +266,111 @@ function HomePage() {
     }
   }
   useEffect(() => {
-    Authenticate();
-    const index: number = localStorage.getItem("selectedInstagramIndex") !== null ? parseInt(localStorage.getItem("selectedInstagramIndex") || "") : 0;
+    Authenticate().then((result: any) => {
+      if (!result.loggedIn || (result.loggedIn && !result.hasInstagram)) {
+        return;
+      }
+      const jsonInput = JSON.stringify({
+        instagram_id: instagramId, // use the Instagram ID from state
+        // include any other data required by your API
+      });
 
-    const instas: any = JSON.parse(localStorage.getItem("instagrams") || "[]") || [];
-    const instagramId = instas[index]?.id;
-    if (instagramId) {
-      setInstaID(index);
-      setInstagramId(instagramId);
-    } else {
-      navigate("/nextpage");
-    }
+      axios
+        .post(
+          BASE_URL,
+          { query, variables: { jsonInput } },
+          { withCredentials: true }
+        )
+        .then((result) => {
+          if (result.data.errors) {
+            console.error("GraphQL errors", result.data.errors);
+          } else if (!result.data.data || !result.data.data.getInstagramAccount) {
+            console.error("Unexpected server response", result.data);
+          } else {
+            const instaposts: [] = result.data.data.getInstagramAccount.posts;
 
-    const jsonInput = JSON.stringify({
-      instagram_id: instagramId, // use the Instagram ID from state
-      // include any other data required by your API
+            let posts: any[] = [];
+
+            instaposts.forEach(post => {
+              const { ig_contents }: { ig_contents: [] } = post;
+              const {
+                owner_username,
+                owner_profile_pic_url,
+                owner_full_name,
+                owner_followers,
+                caption,
+                id,
+              }: {
+                owner_username: string;
+                owner_profile_pic_url: string;
+                owner_full_name: string;
+                owner_followers: number;
+                caption: string | null;
+                id: string;
+              } = post;
+              posts = [...posts, ...ig_contents.map((content) => {
+                return {
+                  owner_username,
+                  owner_profile_pic_url,
+                  owner_full_name,
+                  owner_followers,
+                  id,
+                  caption,
+                  ig_content: content,
+                };
+              })]
+            });
+
+            const instastories: [] = result.data.data.getInstagramAccount.stories;
+            let stories: any[] = [];
+
+            instastories.forEach(story => {
+              const { ig_contents }: { ig_contents: [] } = story;
+              const {
+                owner_username,
+                owner_profile_pic_url,
+                owner_full_name,
+                owner_followers,
+                id,
+              }: {
+                owner_username: string;
+                owner_profile_pic_url: string;
+                owner_full_name: string;
+                owner_followers: number;
+                id: string;
+              } = story;
+
+              stories = [...stories, ...ig_contents.map((content) => {
+                return {
+                  owner_username,
+                  owner_profile_pic_url,
+                  owner_full_name,
+                  owner_followers,
+                  id,
+                  ig_content: content,
+                };
+              })]
+            })
+            const { connected, followers, full_name, id } =
+              result.data.data.getInstagramAccount;
+            setData({
+              connected,
+              followers,
+              full_name,
+              id,
+            });
+            setContents([...stories, ...posts, ...result.data.data.getInstagramAccount.reels]);
+          }
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          console.error(error);
+          setIsLoading(false);
+        });
     });
 
-    axios
-      .post(
-        BASE_URL,
-        { query, variables: { jsonInput } },
-        { withCredentials: true }
-      )
-      .then((result) => {
-        if (result.data.errors) {
-          console.error("GraphQL errors", result.data.errors);
-        } else if (!result.data.data || !result.data.data.getInstagramAccount) {
-          console.error("Unexpected server response", result.data);
-        } else {
-          const instaposts: [] = result.data.data.getInstagramAccount.posts;
 
-          let posts: any[] = [];
 
-          instaposts.forEach(post => {
-            const { ig_contents }: { ig_contents: [] } = post;
-            const {
-              owner_username,
-              owner_profile_pic_url,
-              owner_full_name,
-              owner_followers,
-              caption,
-              id,
-            }: {
-              owner_username: string;
-              owner_profile_pic_url: string;
-              owner_full_name: string;
-              owner_followers: number;
-              caption: string | null;
-              id: string;
-            } = post;
-            posts = [...posts, ...ig_contents.map((content) => {
-              return {
-                owner_username,
-                owner_profile_pic_url,
-                owner_full_name,
-                owner_followers,
-                id,
-                caption,
-                ig_content: content,
-              };
-            })]
-          });
-
-          const instastories: [] = result.data.data.getInstagramAccount.stories;
-          let stories: any[] = [];
-
-          instastories.forEach(story => {
-            const { ig_contents }: { ig_contents: [] } = story;
-            const {
-              owner_username,
-              owner_profile_pic_url,
-              owner_full_name,
-              owner_followers,
-              id,
-            }: {
-              owner_username: string;
-              owner_profile_pic_url: string;
-              owner_full_name: string;
-              owner_followers: number;
-              id: string;
-            } = story;
-
-            stories = [...stories, ...ig_contents.map((content) => {
-              return {
-                owner_username,
-                owner_profile_pic_url,
-                owner_full_name,
-                owner_followers,
-                id,
-                ig_content: content,
-              };
-            })]
-          })
-          const { connected, followers, full_name, id } =
-            result.data.data.getInstagramAccount;
-          setData({
-            connected,
-            followers,
-            full_name,
-            id,
-          });
-          setContents([...stories, ...posts, ...result.data.data.getInstagramAccount.reels]);
-        }
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        console.error(error);
-        setIsLoading(false);
-      });
   }, [instagramId]);
 
   if (isLoading || !data) {
