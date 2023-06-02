@@ -1,1 +1,1 @@
-export const BASE_URL = "https://wildsocial-backend.onrender.com/";
+export const BASE_URL = "https://wildsocial-backend.onrender.com/graphql";

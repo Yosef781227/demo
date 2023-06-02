@@ -53,7 +53,11 @@ const NextPage = () => {
         withCredentials: true,
       }
     ).then((response) => {
-      console.log("response", response.data.data.me.instagrams);
+      //console.log("response", response.data);
+      if (response.data.errors || response.data.data == null) {
+        navigate("/login");
+        return;
+      }
       const instagrams = response.data.data.me.instagrams;
       if (instagrams.length > 0) {
         localStorage.removeItem('instagrams');
