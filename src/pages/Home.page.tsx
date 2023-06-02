@@ -257,6 +257,8 @@ function HomePage() {
       );
       console.log(response.data);
       if (response.data.data.logout.success) {
+        localStorage.removeItem("selectedInstagramIndex");
+        localStorage.removeItem("instagrams");
         navigate("/login");
       } else {
         toast.error(response.data.data.logout.message);
