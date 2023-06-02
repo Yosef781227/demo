@@ -9,23 +9,27 @@ const ChakraNavLink = chakra(NavLink);
 
 const sideBarElements = [
   {
+    id: 'content',
     text: "Content",
-    link: "/home",
+    link: "/",
     icon: <ContentIcon />,
   },
   {
+    id: 'collections',
     text: "Collections",
-    link: "/home/collections",
+    link: "/collections",
     icon: <CollectionIcon />,
   },
   {
+    id: 'integration',
     text: "Integration",
-    link: "/home/integration/instagram",
+    link: "/integration/instagram",
     icon: <IntegrationIcon />,
   },
   {
+    id: 'settings',
     text: "Settings",
-    link: "/home/settings",
+    link: "/settings",
     icon: <SettingIcon />,
   },
 ];
@@ -46,12 +50,13 @@ function sideBarListBuilder(pathname: string) {
       pt={8}
       pr={5}
     >
-      {sideBarElements.map(({ link, text, icon }, i) => {
-        if ("/home/integration" === pathname) {
-          return <Navigate to="/home/integration/tiktok" />;
+      {sideBarElements.map(({ id, link, text, icon }, i) => {
+        if ("/integration" === pathname) {
+          return <Navigate to="/integration/tiktok" />;
         }
         return (
           <ChakraNavLink
+            key={id}
             rounded={"lg"}
             end={true}
             style={{ width: "100%" }}

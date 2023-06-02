@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -12,16 +12,56 @@ import { chakra } from "@chakra-ui/react";
 import FormRow from "@/components/Form/FormRow";
 import AuthContainer from "@/components/Auth/Containers/AuthContainer";
 import Buttons from "@/components/Buttons/Button";
-
-
-
-
 const ChakraNavLink = chakra(NavLink);
+
 function LoginPage() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const toast = useToast();
+
+  const Authenticate = async () => {
+    try {
+      const response: any = await axios.post(
+        BASE_URL,
+        {
+          query: `
+          query Query {
+            me {
+              id
+              has_instagram
+              has_tiktok
+            }
+          }
+          `,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      if (response.data.data !== null) {
+        if (!response.data.data.me.has_instagram) {
+          navigate("/nextpage");
+        } else {
+          navigate("/");
+        }
+      }
+    } catch (error) {
+
+    }
+  };
+
+  useEffect(() => {
+    Authenticate();
+  }, []);
+
+  type Instagram = {
+    connected: boolean;
+    id: string;
+    username: string;
+  };
 
   const login = useGoogleLogin({
     onSuccess: async (response) => {
@@ -31,18 +71,22 @@ function LoginPage() {
           const body = {
             access_token: response.access_token,
           };
-          const res = await axios.post(
+          const res: any = await axios.post(
             BASE_URL,
             {
               query: `
               mutation Mutation($jsonInput: String!) {
                 signWithGoogle(json_input: $jsonInput) {
-                  message
                   me {
-                    is_insta_connected
-                    is_tiktok_connected
                     email
+                    has_instagram
+                    has_tiktok
                     id
+                    instagrams {
+                      connected
+                      id
+                      username
+                    }
                     is_varified
                     name
                     permissions
@@ -50,6 +94,7 @@ function LoginPage() {
                     pricing_id
                     pricing_plan
                   }
+                  message
                   success
                 }
               }
@@ -62,20 +107,29 @@ function LoginPage() {
               withCredentials: true,
             }
           );
-          //console.log(res);
 
           if (res.data.data.signWithGoogle.success) {
-            if (res.data.data.signWithGoogle.me.is_insta_connected) {
-              navigate("/home");
+
+            const me = res.data.data.signWithGoogle.me;
+
+            if (me.has_instagram) {
+              const connectedInstagrams = me.instagrams.filter((instagram: Instagram) => instagram.connected);
+
+              console.log('Number of connected Instagram accounts:', connectedInstagrams.length);
+              localStorage.setItem('selectedInstagramIndex', "0");
+              localStorage.setItem('instagrams', JSON.stringify(me.instagrams));
+              navigate("/");
             } else {
-              navigate("/nextpage", {
-                state: { accessToken: response.access_token },
-              });
+              console.log('User has no Instagram. Navigating to /nextpage');
+              // If the user does not have Instagram, navigate to the next page
+              navigate("/nextpage");
             }
           } else {
+            console.log('Login with Google Failed');
             throw new Error("Login with Google Failed");
           }
         } catch (err: any) {
+          console.error('Error:', err.message);
           setError(err.message);
           toast({
             title: "Error",
@@ -92,6 +146,83 @@ function LoginPage() {
       }
     },
   });
+  const LoginWithEmail = async () => {
+    try {
+      setLoading(true);
+      if (!email || !password) {
+        throw new Error("Please fill all the fields");
+      }
+      const body = {
+        email,
+        password,
+      };
+      console.log(body);
+      const res: any = await axios.post(
+        BASE_URL,
+        {
+          query: `
+          mutation Mutation($jsonInput: String!) {
+            logInWithEmail(json_input: $jsonInput) {
+              success
+              message
+              me {
+                id
+                has_tiktok
+                has_instagram
+                name
+                pricing_plan
+                pricing_id
+                picture
+                instagrams {
+                  id
+                  username
+                  connected
+                }
+              }
+            }
+          }
+          `,
+          variables: {
+            jsonInput: JSON.stringify(body),
+          },
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      console.log(res.data);
+      if (res.data.data.logInWithEmail.success) {
+        const me = res.data.data.logInWithEmail.me;
+        if (me.has_instagram) {
+          const connectedInstagrams = me.instagrams.filter((instagram: Instagram) => instagram.connected);
+          console.log('Number of connected Instagram accounts:', connectedInstagrams.length);
+          localStorage.setItem('selectedInstagramIndex', "0");
+          localStorage.setItem('instagrams', JSON.stringify(me.instagrams));
+          navigate("/");
+        } else {
+          console.log('User has no Instagram. Navigating to /nextpage');
+          // If the user does not have Instagram, navigate to the next page
+          navigate("/nextpage");
+        }
+      } else {
+        console.log('Login Failed');
+        throw new Error("Login Failed");
+      }
+    } catch (err: any) {
+      console.error('Error:', err.message);
+      setError(err.message);
+      toast({
+        title: "Error",
+        description: err.message,
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   error && console.error(error);
   loading && console.log("Loading...");
@@ -119,6 +250,7 @@ function LoginPage() {
           placeholder="janedoe@gmail.com"
           type="email"
           label="work Email"
+          onChange={(e) => { setEmail(e.target.value) }}
         />
         <FormRow
           placeholder="password"
@@ -135,10 +267,11 @@ function LoginPage() {
           }
           type="password"
           label="password"
+          onChange={(e) => { setPassword(e.target.value) }}
         />
       </RowContainer>
       <RowContainer>
-        <Buttons size="full" text="Continue" />
+        <Buttons size="full" text="Continue" onClick={LoginWithEmail} />
         <Buttons
           size="full"
           isLoading={loading}

@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
 import HomePage from "@pages/Home.page";
 import Root from "@layouts/Root";
 import LoginPage from "@pages/Auth/Login.page";
@@ -11,6 +11,9 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import TiktokPage from "./pages/integrations/Tiktok.page";
 import InstagramPage from "./pages/integrations/Instagram.page";
+import ChooseInstagram from "./pages/Auth/chooseInstagram";
+import RedirectToHomeOrLogin from "./pages/RedirectToHomeOrLogin";
+
 
 const router = createBrowserRouter([
   {
@@ -30,7 +33,11 @@ const router = createBrowserRouter([
     element: <NextPage />,
   },
   {
-    path: "home",
+    path: "ChooseInstagram",
+    element: <ChooseInstagram />,
+  },
+  {
+    path: "/",
     element: <Root />,
     children: [
       {
@@ -60,12 +67,10 @@ const router = createBrowserRouter([
       },
     ],
   },
-  {
-    path: "/",
-    element: <LoginPage />,
-    // element: <Root />,
-    // errorElement: <ErrorPage />,
-  },
+  // {
+  //   path: "/",
+  //   element: <RedirectToHomeOrLogin />, // Use the new component here
+  // },
 ]);
 
 function App() {

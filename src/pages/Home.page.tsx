@@ -12,10 +12,9 @@ import {
   Checkbox,
   Select,
   Input,
-  
 } from "@chakra-ui/react";
 import DatePicker from "react-datepicker";
-
+import { useLocation } from "react-router-dom";
 import "react-datepicker/dist/react-datepicker.css";
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
 import { toast } from "react-toastify";
@@ -23,6 +22,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Buttons from "@/components/Buttons/Button";
 import instagram from "@/assets/icons/social/instagram.svg";
 import Container from "@components/Container";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "@/constants";
@@ -38,75 +38,83 @@ import {
   ModalCloseButton,
 } from "@chakra-ui/react";
 const query = `
-  query {
-    instagram {
-      stories {
-        id
-        owner_profile_pic_url
-        owner_full_name
-        owner_followers
-        ig_contents {
-          display_url
-          is_video
-          taken_at
-          id
-          url
-        }
-      }
-      reels {
-        id
-        owner_followers
-        owner_full_name
-        owner_profile_pic_url
-        ig_content {
-          display_url
-          taken_at
-          url
-          id
-          is_video
-        }
-      }
-      posts {
-        id
-        caption
-        owner_followers
-        owner_profile_pic_url
-        owner_full_name
-        ig_contents {
-          display_url
-          taken_at
-          is_video
-          url
-        }
-      }
-      username
-      followers
+query Query($jsonInput: String!) {
+  getInstagramAccount(json_input: $jsonInput) {
+    connected
+    followers
+    full_name
+    id
+    posts {
+      owner_username
+      owner_profile_pic_url
+      owner_full_name
+      owner_followers
       id
-      connected
-      active
+      caption
+      ig_contents {
+        display_url
+        id
+        is_video
+        url
+      }
+    }
+    reels {
+      caption
+      id
+      owner_username
+      owner_profile_pic_url
+      owner_followers
+      owner_full_name
+      ig_content {
+        display_url
+        url
+        is_video
+        id
+      }
+    }
+    stories {
+      owner_username
+      owner_profile_pic_url
+      owner_full_name
+      owner_followers
+      id
+      ig_contents {
+        url
+        display_url
+        id
+        is_video
+      }
     }
   }
+}
 `;
 const handleDownload = (url: string) => {
   window.open(url.includes("https://") ? url : "https://" + url, "_current");
 };
 
 const saveNewContent = async () => {
+  const index: number = localStorage.getItem("selectedInstagramIndex") !== null ? parseInt(localStorage.getItem("selectedInstagramIndex") || "") : 0;
+
+  const instas: any = JSON.parse(localStorage.getItem("instagrams") || "[]") || [];
+  const instagramId = instas[index]?.id;
   axios
     .post(
       BASE_URL,
       {
         query: `
-          mutation Mutation {
-            saveStories {
-              message
-              success
-            }
-            savePostsAndReels {
-              message
-              success
-            }
-          }`,
+        mutation Mutation($jsonInput: String!) {
+          savePostsAndReels(json_input: $jsonInput) {
+            success
+            message
+          }
+        } 
+        `,
+        variables: {
+          jsonInput: JSON.stringify({
+            instagram_id: instagramId,
+            // include any other data required by your API
+          }),
+        },
       },
       { withCredentials: true }
     )
@@ -114,24 +122,20 @@ const saveNewContent = async () => {
       if (result.data.errors) {
         console.error("GraphQL errors", result.data.errors);
         toast.error("GraphQL errors: " + JSON.stringify(result.data.errors));
-      } else if (
-        !result.data.data ||
-        !result.data.data.saveStories ||
-        !result.data.data.savePostsAndReels
-      ) {
+      } else if (!result.data.data) {
         console.error("Unexpected server response", result.data);
         toast.error(
           "Unexpected server response: " + JSON.stringify(result.data)
         );
       } else {
         let toastMessage = "";
-        if (result.data.data.saveStories.success) {
-          toastMessage +=
-            "Stories: " + result.data.data.saveStories.message + "\n";
-        } else {
-          toastMessage +=
-            "Stories: Error - " + result.data.data.saveStories.message + "\n";
-        }
+        // if (result.data.data.saveStories.success) {
+        //   toastMessage +=
+        //     "Stories: " + result.data.data.saveStories.message + "\n";
+        // } else {
+        //   toastMessage +=
+        //     "Stories: Error - " + result.data.data.saveStories.message + "\n";
+        // }
         if (result.data.data.savePostsAndReels.success) {
           toastMessage +=
             "Posts and Reels: " + result.data.data.savePostsAndReels.message;
@@ -152,8 +156,13 @@ const saveNewContent = async () => {
 
 function HomePage() {
   const [isLoading, setIsLoading] = useState(false);
-  const [data, setData] = useState(null);
+  const [instagrams, setInstagrams] = useState([{}]); // [{id: "", username: "", connected: false}
+  const [instaID, setInstaID] = useState(0);
+  const [instagramId, setInstagramId] = useState("");
+  const [data, setData] = useState({});
+  const [contents, setContents] = useState([{}]);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const navigate = useNavigate();
   const {
     isOpen: isOpen1,
     onOpen: onOpen1,
@@ -161,16 +170,188 @@ function HomePage() {
   } = useDisclosure();
 
   const [startDate, setStartDate] = useState(new Date());
+
+  const Authenticate = async () => {
+    try {
+      const response = await axios.post(
+        BASE_URL,
+        {
+          query: `
+          query Query {
+            me {
+              id
+              has_tiktok
+              has_instagram
+              instagrams {
+                id
+                username
+                connected
+              }
+            }
+          }
+          `,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+
+      if (response.data.data == null || response.data?.errors) {
+        console.log("User is not logged in");
+        navigate("/login");
+      } else if (!response.data.data.me.has_instagram) {
+        navigate("/nextpage");
+      } else {
+        const instagrams = response.data.data.me.instagrams;
+        setInstagrams(instagrams);
+        setInstaID(0);
+        localStorage.setItem('selectedInstagramIndex', "0");
+        localStorage.removeItem('instagrams');
+        localStorage.setItem('instagrams', JSON.stringify(instagrams));
+      }
+    } catch (error) {
+
+    }
+  };
+  const changeAcount = (e: any) => {
+    const index = e.target.selectedIndex - 1;
+    localStorage.removeItem("selectedInstagramIndex");
+    localStorage.setItem("selectedInstagramIndex", index.toString());
+    const instagramId = e.target.value;
+    setInstaID(index);
+    setInstagramId(instagramId);
+  };
+  const logout = async () => {
+    try {
+      const response: any = await axios.post(
+        BASE_URL,
+        {
+          query: `
+          mutation Mutation {
+            logout {
+              success
+              message
+            }
+          }
+          `,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      console.log(response.data);
+      if (response.data.data.logout.success) {
+        navigate("/login");
+      } else {
+        toast.error(response.data.data.logout.message);
+      }
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  }
   useEffect(() => {
+    Authenticate();
+    const index: number = localStorage.getItem("selectedInstagramIndex") !== null ? parseInt(localStorage.getItem("selectedInstagramIndex") || "") : 0;
+
+    const instas: any = JSON.parse(localStorage.getItem("instagrams") || "[]") || [];
+    const instagramId = instas[index]?.id;
+    if (instagramId) {
+      setInstaID(index);
+      setInstagramId(instagramId);
+    } else {
+      navigate("/nextpage");
+    }
+
+    const jsonInput = JSON.stringify({
+      instagram_id: instagramId, // use the Instagram ID from state
+      // include any other data required by your API
+    });
+
     axios
-      .post(BASE_URL, { query }, { withCredentials: true })
+      .post(
+        BASE_URL,
+        { query, variables: { jsonInput } },
+        { withCredentials: true }
+      )
       .then((result) => {
         if (result.data.errors) {
           console.error("GraphQL errors", result.data.errors);
-        } else if (!result.data.data || !result.data.data.instagram) {
+        } else if (!result.data.data || !result.data.data.getInstagramAccount) {
           console.error("Unexpected server response", result.data);
         } else {
-          setData(result.data.data);
+          const instaposts: [] = result.data.data.getInstagramAccount.posts;
+
+          let posts: any[] = [];
+
+          instaposts.forEach(post => {
+            const { ig_contents }: { ig_contents: [] } = post;
+            const {
+              owner_username,
+              owner_profile_pic_url,
+              owner_full_name,
+              owner_followers,
+              caption,
+              id,
+            }: {
+              owner_username: string;
+              owner_profile_pic_url: string;
+              owner_full_name: string;
+              owner_followers: number;
+              caption: string | null;
+              id: string;
+            } = post;
+            posts = [...posts, ...ig_contents.map((content) => {
+              return {
+                owner_username,
+                owner_profile_pic_url,
+                owner_full_name,
+                owner_followers,
+                id,
+                caption,
+                ig_content: content,
+              };
+            })]
+          });
+
+          const instastories: [] = result.data.data.getInstagramAccount.stories;
+          let stories: any[] = [];
+
+          instastories.forEach(story => {
+            const { ig_contents }: { ig_contents: [] } = story;
+            const {
+              owner_username,
+              owner_profile_pic_url,
+              owner_full_name,
+              owner_followers,
+              id,
+            }: {
+              owner_username: string;
+              owner_profile_pic_url: string;
+              owner_full_name: string;
+              owner_followers: number;
+              id: string;
+            } = story;
+
+            stories = [...stories, ...ig_contents.map((content) => {
+              return {
+                owner_username,
+                owner_profile_pic_url,
+                owner_full_name,
+                owner_followers,
+                id,
+                ig_content: content,
+              };
+            })]
+          })
+          const { connected, followers, full_name, id } =
+            result.data.data.getInstagramAccount;
+          setData({
+            connected,
+            followers,
+            full_name,
+            id,
+          });
+          setContents([...stories, ...posts, ...result.data.data.getInstagramAccount.reels]);
         }
         setIsLoading(false);
       })
@@ -178,7 +359,8 @@ function HomePage() {
         console.error(error);
         setIsLoading(false);
       });
-  }, []);
+  }, [instagramId]);
+
   if (isLoading || !data) {
     return (
       <Box
@@ -191,24 +373,10 @@ function HomePage() {
       </Box>
     );
   }
-  const { instagram } = data;
-
-  const { stories, reels, posts } = instagram;
-  const allData = [...stories, ...reels, ...posts].flatMap((instadata: any) => {
-    if (instadata?.ig_contents) {
-      return instadata?.ig_contents.map((content: any) => ({
-        ...instadata,
-        ig_contents: [content],
-      }));
-    } else if (instadata?.ig_content) {
-      return [{ ...instadata, ig_content: instadata.ig_content }];
-    }
-    return [];
-  });
 
   return (
     <>
-      <Modal isOpen={isOpen1} isCentered={false} size={"md"} onClose={onClose1}>
+      {/* <Modal isOpen={isOpen1} isCentered={false} size={"md"} onClose={onClose1}>
         <ModalOverlay />
 
         <ModalContent
@@ -279,7 +447,7 @@ function HomePage() {
           <ModalHeader fontSize={"xl"} fontWeight={"bold"} mt={6}>
             Filters
           </ModalHeader>
-          <ModalCloseButton size={"lg"} color={"gray.500"}  mt={2}/>
+          <ModalCloseButton size={"lg"} color={"gray.500"} mt={2} />
 
           <Box borderBottom="1px" borderColor="gray.100" width="100%" my={2} />
           <ModalBody mt={5} ml={2}>
@@ -412,11 +580,9 @@ function HomePage() {
                 <Checkbox checked={true}> Plays</Checkbox>
                 <HStack pl="10%">
                   <Select placeholder="Select">
-                    <option value="option1" selected>
-                      1k
-                    </option>
-                    <option value="option2">2k</option>
-                    <option value="option3">3k</option>
+                    <option value="1k" selected>1k</option>
+                    <option value="2k">2k</option>
+                    <option value="3k">3k</option>
                   </Select>
                   <Select placeholder="Select">
                     <option value="option1">1k</option>
@@ -468,12 +634,12 @@ function HomePage() {
             <Button variant="ghost">
               Reset All
             </Button>
-            <Button  colorScheme="primary" mr={3} onClick={onClose}>
+            <Button colorScheme="primary" mr={3} onClick={onClose}>
               Apply All
             </Button>
           </ModalFooter>
         </ModalContent>
-      </Modal>
+      </Modal> */}
 
       <Container>
         <HStack justifyContent={"space-between"}>
@@ -504,12 +670,23 @@ function HomePage() {
             <Button colorScheme="primary" onClick={saveNewContent}>
               Save New Content
             </Button>
+            <Select placeholder="Select" width={24} onChange={changeAcount} value={instaID + 1}>
+              {
+                instagrams.map((instagram: any, index: number) => {
+                  return <option key={index + 1} value={instagram.id}  >{instagram.username}</option>
+                }
+                )
+              }
+            </Select>
+            <Button colorScheme="primary" onClick={logout}>
+              Logout
+            </Button>
           </HStack>
         </HStack>
-        <Box borderBottom="1px" borderColor="gray.200" width="100%"  pt={5} />
-        <Box pt={10}  sx={{ columnCount: [1, 1, 3, 4], gap: "16px" }}>
-          {allData.map((instadata, i) => {
-            return <Card  data={instadata} key={i} />;
+        <Box borderBottom="1px" borderColor="gray.200" width="100%" pt={5} />
+        <Box pt={10} sx={{ columnCount: [1, 1, 3, 4], gap: "16px" }}>
+          {contents.map((instadata, i) => {
+            return <Card data={instadata} key={i} />;
           })}
         </Box>
       </Container>
@@ -616,8 +793,5 @@ function dataAccess(data: any) {
     ? data?.ig_contents[0]?.display_url
     : data?.ig_content?.display_url;
 }
-// function dataAccessDownload(data: any) {
-//   return data?.ig_contents ? data?.ig_contents[0]?.url : data?.ig_content?.url;
-// }
-export default HomePage;
 
+export default HomePage;

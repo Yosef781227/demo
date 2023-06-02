@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../constants";
 import {
@@ -19,7 +19,7 @@ import { FaFacebook } from "react-icons/fa";
 import app_store from "../assets/images/app_store.png";
 import play_store from "../assets/images/play_store.png";
 import Insta from "../assets/images/Insta.png";
-// import fb_logo from "../assets/images/fb_logo.png";
+
 
 const NextPage = () => {
   const location = useLocation();
@@ -32,7 +32,41 @@ const NextPage = () => {
   const toast = useToast();
 
   const accessToken = location.state?.accessToken;
-
+  useEffect(() => {
+    //send me to get instagrams
+    axios.post(
+      BASE_URL,
+      {
+        query: `
+        query Query {
+          me {
+            instagrams {
+              id
+              username
+              connected
+            }
+          }
+        }
+          `,
+      },
+      {
+        withCredentials: true,
+      }
+    ).then((response) => {
+      console.log("response", response.data.data.me.instagrams);
+      const instagrams = response.data.data.me.instagrams;
+      if (instagrams.length > 0) {
+        localStorage.removeItem('instagrams');
+        localStorage.setItem('instagrams', JSON.stringify(instagrams));
+        localStorage.setItem('selectedInstagramIndex', "0");
+        navigate("/");
+      } else {
+        console.log("No Instagrams");
+      }
+    }).catch((error) => {
+      console.log("error", error);
+    });
+  }, []);
   const submit = async (e: any) => {
     e.preventDefault();
     try {
@@ -45,85 +79,74 @@ const NextPage = () => {
         password,
       };
 
-      console.log("Checking if already connected...");
-      const response = await axios.post(
+
+      console.log(" Is_Connected is False try Form submission...");
+      const connectionResponse: any = await axios.post(
         BASE_URL,
         {
           query: `
-            query Query {
-              me {
-                id
-                email
-                instagram {
-                  following
-                  followers
-                  posts_count
-                  reels_count
-                  stories_count
-                  connected
-                  username
-                }
-                is_insta_connected
-                name
-                pricing_id
-                pricing_plan
+            mutation Mutation($jsonInput: String!) {
+              connectToInstagram(json_input: $jsonInput) {
+                message
+                success
               }
             }
-          `,
+            `,
+          variables: {
+            jsonInput: JSON.stringify(body),
+          },
         },
         {
           withCredentials: true,
         }
       );
 
-      console.log("Connection check response:", response.data);
+      console.log("Form submission response:", connectionResponse.data);
 
-      const isConnected = response.data?.data?.me?.instagram?.connected;
-      if (isConnected) {
-        console.log("Already connected. Redirecting to Insta...");
-        navigate("/home");
-      } else {
-        console.log(" Is_Connected is False try Form submission...");
-        const connectionResponse = await axios.post(
+      if (connectionResponse.data.errors) {
+        const serverError = connectionResponse.data.errors[0];
+        throw new Error(serverError.message);
+      }
+
+      const { success, message } = connectionResponse.data.data.connectToInstagram;
+
+
+      if (success) {
+        console.log("Form submission successful. Redirecting to Insta...");
+        axios.post(
           BASE_URL,
           {
             query: `
-              mutation Mutation($jsonInput: String!) {
-                connectToInstagram(json_input: $jsonInput) {
-                  success
-                  message
+            query Query {
+              me {
+                instagrams {
+                  id
+                  username
+                  connected
                 }
               }
-            `,
-            variables: {
-              jsonInput: JSON.stringify(body),
-            },
+            }
+              `,
           },
           {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
             withCredentials: true,
           }
-        );
-
-        console.log("Form submission response:", connectionResponse.data);
-
-        if (connectionResponse.data?.errors?.length) {
-          const serverError = connectionResponse.data.errors[0];
-          throw new Error(serverError.message);
-        }
-
-        const { success, message } =
-          connectionResponse.data?.data?.connectToInstagram;
-
-        if (success) {
-          console.log("Form submission successful. Redirecting to Insta...");
-          navigate("/home");
-        } else {
-          console.log("Form submission failed. Error:", message);
-          setError(message);
-        }
+        ).then((response) => {
+          console.log("response", response.data.data.me.instagrams);
+          const instagrams = response.data.data.me.instagrams;
+          if (instagrams.length > 0) {
+            localStorage.removeItem('instagrams');
+            localStorage.setItem('instagrams', JSON.stringify(instagrams));
+            navigate("/");
+          } else {
+            console.log("No Instagrams");
+          }
+        }).catch((error) => {
+          console.log("error", error);
+        });
+      } else {
+        console.log("Form submission failed. Error:", message);
+        setError(message);
       }
     } catch (error: any) {
       console.error("Form submission error:", error);

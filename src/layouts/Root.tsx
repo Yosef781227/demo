@@ -1,5 +1,5 @@
 import SideBar from "@/components/SideBar/SideBar";
-import { Box, Flex, CSSReset } from "@chakra-ui/react";
+import { Box, CSSReset } from "@chakra-ui/react";
 import { Outlet } from "react-router-dom";
 import { Global } from "@emotion/react";
 

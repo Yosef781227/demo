@@ -27,12 +27,16 @@ const GoogleOAuth = () => {
               query: `
               mutation Mutation($jsonInput: String!) {
                 signWithGoogle(json_input: $jsonInput) {
-                  message
                   me {
-                    is_insta_connected
-                    is_tiktok_connected
                     email
+                    has_instagram
+                    has_tiktok
                     id
+                    instagrams {
+                      connected
+                      id
+                      username
+                    }
                     is_varified
                     name
                     permissions
@@ -40,10 +44,9 @@ const GoogleOAuth = () => {
                     pricing_id
                     pricing_plan
                   }
+                  message
                   success
                 }
-              
-              
               }
               `,
               variables: {
