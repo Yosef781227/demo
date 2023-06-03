@@ -20,7 +20,6 @@ import app_store from "../assets/images/app_store.png";
 import play_store from "../assets/images/play_store.png";
 import Insta from "../assets/images/Insta.png";
 
-
 const NextPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -31,46 +30,6 @@ const NextPage = () => {
 
   const toast = useToast();
 
-  const accessToken = location.state?.accessToken;
-  useEffect(() => {
-    
-    axios.post(
-      BASE_URL,
-      {
-        query: `
-        query Query {
-          me {
-            instagrams {
-              id
-              username
-              connected
-            }
-          }
-        }
-          `,
-      },
-      {
-        withCredentials: true,
-      }
-    ).then((response) => {
-      console.log("response", response.data);
-      if (response.data.errors || response.data.data == null) {
-        navigate("/login");
-        return;
-      }
-      const instagrams = response.data.data.me.instagrams;
-      if (instagrams.length > 0) {
-        localStorage.removeItem('instagrams');
-        localStorage.setItem('instagrams', JSON.stringify(instagrams));
-        localStorage.setItem('selectedInstagramIndex', "0");
-        navigate("/");
-      } else {
-        console.log("No Instagrams");
-      }
-    }).catch((error) => {
-      console.log("error", error);
-    });
-  }, []);
   const submit = async (e: any) => {
     e.preventDefault();
     try {
@@ -82,7 +41,6 @@ const NextPage = () => {
         username,
         password,
       };
-
 
       console.log(" Is_Connected is False try Form submission...");
       const connectionResponse: any = await axios.post(
@@ -112,15 +70,16 @@ const NextPage = () => {
         throw new Error(serverError.message);
       }
 
-      const { success, message } = connectionResponse.data.data.connectToInstagram;
-
+      const { success, message } =
+        connectionResponse.data.data.connectToInstagram;
 
       if (success) {
         console.log("Form submission successful. Redirecting to Insta...");
-        axios.post(
-          BASE_URL,
-          {
-            query: `
+        axios
+          .post(
+            BASE_URL,
+            {
+              query: `
             query Query {
               me {
                 instagrams {
@@ -131,23 +90,25 @@ const NextPage = () => {
               }
             }
               `,
-          },
-          {
-            withCredentials: true,
-          }
-        ).then((response) => {
-          console.log("response", response.data.data.me.instagrams);
-          const instagrams = response.data.data.me.instagrams;
-          if (instagrams.length > 0) {
-            localStorage.removeItem('instagrams');
-            localStorage.setItem('instagrams', JSON.stringify(instagrams));
-            navigate("/");
-          } else {
-            console.log("No Instagrams");
-          }
-        }).catch((error) => {
-          console.log("error", error);
-        });
+            },
+            {
+              withCredentials: true,
+            }
+          )
+          .then((response) => {
+            console.log("response", response.data.data.me.instagrams);
+            const instagrams = response.data.data.me.instagrams;
+            if (instagrams.length > 0) {
+              localStorage.removeItem("instagrams");
+              localStorage.setItem("instagrams", JSON.stringify(instagrams));
+              navigate("/");
+            } else {
+              console.log("No Instagrams");
+            }
+          })
+          .catch((error) => {
+            console.log("error", error);
+          });
       } else {
         console.log("Form submission failed. Error:", message);
         setError(message);
@@ -166,7 +127,6 @@ const NextPage = () => {
       setLoading(false);
     }
   };
-
 
   return (
     <Flex
