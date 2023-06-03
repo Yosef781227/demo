@@ -35,6 +35,10 @@ const authRouter = createBrowserRouter([
     path: "reset-password",
     element: <ResetPassword />,
   },
+  {
+    path: "*", // all routes that are not defined above,
+    element: <Navigate to="/" />, // will be redirected to this route
+  },
 ]);
 const protectedRouter = createBrowserRouter([
   {
