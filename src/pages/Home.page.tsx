@@ -214,10 +214,10 @@ function HomePage() {
       toast.error(error.message);
     }
   };
+  if (instagrams.length === 0) {
+    navigate("/nextpage");
+  }
   useEffect(() => {
-    if (instagrams.length == 0) {
-      navigate("/nextpage");
-    }
     const jsonInput = JSON.stringify({
       instagram_id: instagramId, // use the Instagram ID from state
       // include any other data required by your API
