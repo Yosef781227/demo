@@ -94,6 +94,9 @@ const handleDownload = (url: string) => {
   window.open(url.includes("https://") ? url : "https://" + url, "_current");
 };
 
+
+
+
 const saveNewContent = async () => {
   const index: number =
     localStorage.getItem("selectedInstagramIndex") !== null
@@ -218,6 +221,31 @@ function HomePage() {
     navigate("/nextpage");
   }
   useEffect(() => {
+    const proxy = {
+      host: 'proxy-server.scraperapi.com',
+      port: 8001,
+      auth: {
+          username: 'scraperapi',
+          password: '07d45cdbeeac578f7eb3f793b60159b7'
+      }
+  };
+
+  axios.get('https://google.com/', {
+      proxy: proxy,
+  }).then(response => {
+      console.log(response.data);
+      // fs.writeFile("response with out proxy.html", response.data, 'utf8', function (err) {
+      //     if (err) {
+      //         console.log("An error occured while writing JSON Object to File.");
+      //         return console.log(err);
+      //     }
+
+      //     console.log("JSON file has been saved.");
+      // });
+  }).catch(error => {
+      console.error(error);
+  });
+     
     const jsonInput = JSON.stringify({
       instagram_id: instagramId, // use the Instagram ID from state
       // include any other data required by your API

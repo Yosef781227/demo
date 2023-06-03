@@ -90,7 +90,6 @@ function LoginPage() {
               navigate("/");
             } else {
               console.log("User has no Instagram. Navigating to /nextpage");
-              // If the user does not have Instagram, navigate to the next page
               navigate("/nextpage");
             }
           } else {
@@ -175,7 +174,7 @@ function LoginPage() {
           navigate("/");
         } else {
           console.log("User has no Instagram. Navigating to /nextpage");
-          // If the user does not have Instagram, navigate to the next page
+          
           navigate("/nextpage");
         }
       } else {
