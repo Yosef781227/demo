@@ -171,7 +171,7 @@ function LoginPage() {
           );
           localStorage.setItem("selectedInstagramIndex", "0");
           localStorage.setItem("instagrams", JSON.stringify(me.instagrams));
-          navigate("/");
+          navigate("/home");
         } else {
           console.log("User has no Instagram. Navigating to /nextpage");
           

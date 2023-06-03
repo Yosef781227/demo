@@ -166,7 +166,7 @@ function App() {
 
   useEffect(() => {
     authenticate();
-  });
+  },[]);
   if (isLoading) {
     return (
       <Box
