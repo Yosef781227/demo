@@ -39,6 +39,7 @@ import {
   ModalCloseButton,
 } from "@chakra-ui/react";
 import { UserContext } from "@/App";
+
 const query = `
 query Query($jsonInput: String!) {
   getInstagramAccount(json_input: $jsonInput) {
@@ -90,83 +91,12 @@ query Query($jsonInput: String!) {
   }
 }
 `;
-const handleDownload = (url: string) => {
-  window.open(url.includes("https://") ? url : "https://" + url, "_current");
-};
 
-
-
-
-const saveNewContent = async () => {
-  const index: number =
-    localStorage.getItem("selectedInstagramIndex") !== null
-      ? parseInt(localStorage.getItem("selectedInstagramIndex") || "")
-      : 0;
-
-  const instas: any =
-    JSON.parse(localStorage.getItem("instagrams") || "[]") || [];
-  const instagramId = instas[index]?.id;
-  axios
-    .post(
-      BASE_URL,
-      {
-        query: `
-        mutation Mutation($jsonInput: String!) {
-          savePostsAndReels(json_input: $jsonInput) {
-            success
-            message
-          }
-        } 
-        `,
-        variables: {
-          jsonInput: JSON.stringify({
-            instagram_id: instagramId,
-            // include any other data required by your API
-          }),
-        },
-      },
-      { withCredentials: true }
-    )
-    .then((result) => {
-      if (result.data.errors) {
-        console.error("GraphQL errors", result.data.errors);
-        toast.error("GraphQL errors: " + JSON.stringify(result.data.errors));
-      } else if (!result.data.data) {
-        console.error("Unexpected server response", result.data);
-        toast.error(
-          "Unexpected server response: " + JSON.stringify(result.data)
-        );
-      } else {
-        let toastMessage = "";
-        // if (result.data.data.saveStories.success) {
-        //   toastMessage +=
-        //     "Stories: " + result.data.data.saveStories.message + "\n";
-        // } else {
-        //   toastMessage +=
-        //     "Stories: Error - " + result.data.data.saveStories.message + "\n";
-        // }
-        if (result.data.data.savePostsAndReels.success) {
-          toastMessage +=
-            "Posts and Reels: " + result.data.data.savePostsAndReels.message;
-        } else {
-          toastMessage +=
-            "Posts and Reels: Error - " +
-            result.data.data.savePostsAndReels.message;
-        }
-
-        toast(toastMessage);
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-      toast.error("Network error: " + error.message);
-    });
-};
 
 function HomePage() {
   const User = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
-  const instagrams = useState(User.instagrams); // [{id: "", username: "", connected: false}
+  const instagrams = useState(User.instagrams); 
   const [instaID, setInstaID] = useState(User.instaID);
   const [instagramId, setInstagramId] = useState(User.instagramId);
   const [data, setData] = useState({});
@@ -180,6 +110,7 @@ function HomePage() {
   } = useDisclosure();
 
   const [startDate, setStartDate] = useState(new Date());
+
 
   const changeAcount = (e: any) => {
     const index = e.target.selectedIndex - 1;
@@ -211,7 +142,7 @@ function HomePage() {
       if (response.data.data.logout.success) {
         localStorage.removeItem("selectedInstagramIndex");
         localStorage.removeItem("instagrams");
-        
+
         navigate("/login");
       } else {
         toast.error(response.data.data.logout.message);
@@ -220,13 +151,18 @@ function HomePage() {
       toast.error(error.message);
     }
   };
-  if (instagrams.length === 0) {
-    navigate("/nextpage");
-  }
+
+ 
+
   useEffect(() => {
-  
+    setIsLoading(true);
+   if (instagrams[0].length === 0) {
+      navigate("/nextpage");
+    }
+
+ else {
     const jsonInput = JSON.stringify({
-      instagram_id: instagramId, 
+      instagram_id: instagramId,
     });
 
     axios
@@ -237,7 +173,9 @@ function HomePage() {
       )
       .then((result) => {
         if (result.data.errors) {
-          console.error("GraphQL errors", result.data.errors);
+          console.log("Got you");
+          console.error("GraphQL errors", result.data.errors.message);
+         
         } else if (!result.data.data || !result.data.data.getInstagramAccount) {
           console.error("Unexpected server response", result.data);
         } else {
@@ -331,6 +269,7 @@ function HomePage() {
         console.error(error);
         setIsLoading(false);
       });
+ }
   }, []);
 
   if (isLoading || !data) {
@@ -343,8 +282,10 @@ function HomePage() {
       >
         <CircularProgress isIndeterminate color="#8B5CF6" />
       </Box>
+      
     );
   }
+  
 
   return (
     <>
@@ -671,6 +612,69 @@ function HomePage() {
     </>
   );
 }
+
+const handleDownload = (url: string) => {
+  window.open(url.includes("https://") ? url : "https://" + url, "_current");
+};
+
+const saveNewContent = async () => {
+  const index: number =
+    localStorage.getItem("selectedInstagramIndex") !== null
+      ? parseInt(localStorage.getItem("selectedInstagramIndex") || "")
+      : 0;
+
+  const instas: any =
+    JSON.parse(localStorage.getItem("instagrams") || "[]") || [];
+  const instagramId = instas[index]?.id;
+  axios
+    .post(
+      BASE_URL,
+      {
+        query: `
+        mutation Mutation($jsonInput: String!) {
+          savePostsAndReels(json_input: $jsonInput) {
+            success
+            message
+          }
+        } 
+        `,
+        variables: {
+          jsonInput: JSON.stringify({
+            instagram_id: instagramId,
+          }),
+        },
+      },
+      { withCredentials: true }
+    )
+    .then((result) => {
+      if (result.data.errors) {
+        console.error("GraphQL errors", result.data.errors);
+        toast.error("GraphQL errors: " + JSON.stringify(result.data.errors));
+      } else if (!result.data.data) {
+        console.error("Unexpected server response", result.data);
+        toast.error(
+          "Unexpected server response: " + JSON.stringify(result.data)
+        );
+      } else {
+        let toastMessage = "";
+
+        if (result.data.data.savePostsAndReels.success) {
+          toastMessage +=
+            "Posts and Reels: " + result.data.data.savePostsAndReels.message;
+        } else {
+          toastMessage +=
+            "Posts and Reels: Error - " +
+            result.data.data.savePostsAndReels.message;
+        }
+
+        toast(toastMessage);
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      toast.error("Network error: " + error.message);
+    });
+};
 
 function Card({ data }: { data: any }) {
   return (

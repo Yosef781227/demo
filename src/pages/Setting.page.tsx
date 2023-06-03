@@ -20,9 +20,9 @@ import Container from "@components/Container";
 
 function Setting() {
   return (
-    <Container background ={"neutral.50"}>
-          width: '0px',
-          <Box alignSelf={"center"} w={"70%"} gap={"32px"} >
+    <Container background={"neutral.50"}>
+      width: '0px',
+      <Box alignSelf={"center"} w={"70%"} gap={"32px"} >
         <Heading size={"md"} mt={5}>
           Settings
         </Heading>
@@ -44,18 +44,15 @@ function Setting() {
               Your Hashtags
             </Heading>
             <HStack>
-              <Select width={"770px"} height={"38px"}>
-                <option
-                  selected
-                  style={{ fontSize: "14px", fontWeight: "regular" }}
-                >
+              <Select width={"770px"} height={"38px"} defaultValue={"option1"}>
+                <option value={"option1"} style={{ fontSize: "14px", fontWeight: "regular" }}>
                   #Hashtags....
                 </option>
-                <option>option1</option>
-                <option>option1</option>
-                <option>option1</option>
-                <option>option1</option>
+                <option value={"option2"}>option2</option>
+                <option value={"option3"}>option3</option>
+                <option value={"option4"}>option4</option>
               </Select>
+
               <Buttons
                 text="Add"
                 fontsize="14px"

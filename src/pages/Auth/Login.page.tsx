@@ -74,8 +74,9 @@ function LoginPage() {
           );
 
           if (res.data.data.signWithGoogle.success) {
-            const me = res.data.data.signWithGoogle.me;
 
+            const me = res.data.data.signWithGoogle.me;
+            console.log(me);
             if (me.has_instagram) {
               const connectedInstagrams = me.instagrams.filter(
                 (instagram: Instagram) => instagram.connected
@@ -89,8 +90,8 @@ function LoginPage() {
               localStorage.setItem("instagrams", JSON.stringify(me.instagrams));
               navigate("/");
             } else {
-              console.log("User has no Instagram. Navigating to /nextpage");
-              navigate("/nextpage");
+              console.log("User has no Instagram. Navigating to /nextpages");
+                navigate("/nextpage");
             }
           } else {
             console.log("Login with Google Failed");
@@ -174,7 +175,7 @@ function LoginPage() {
           navigate("/home");
         } else {
           console.log("User has no Instagram. Navigating to /nextpage");
-          
+  
           navigate("/nextpage");
         }
       } else {
