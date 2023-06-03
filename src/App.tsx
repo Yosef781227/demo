@@ -22,6 +22,7 @@ import { BASE_URL } from "./constants";
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
 import { Box, CircularProgress } from "@chakra-ui/react";
+
 const authRouter = createBrowserRouter([
   {
     path: "/",
@@ -36,11 +37,23 @@ const authRouter = createBrowserRouter([
     element: <ResetPassword />,
   },
   {
-    path: "*", // all routes that are not defined above,
-    element: <Navigate to="/" />, // will be redirected to this route
+    path: "*", 
+    element: <Navigate to="/" />, 
   },
 ]);
 const protectedRouter = createBrowserRouter([
+  {
+    path: "login",
+    element: <LoginPage />,
+  },
+  {
+    path: "signup",
+    element: <SignupPage />,
+  },
+  {
+    path: "reset-password",
+    element: <ResetPassword />,
+  },
   {
     path: "nextpage",
     element: <NextPage />,
@@ -80,10 +93,7 @@ const protectedRouter = createBrowserRouter([
       },
     ],
   },
-  // {
-  //   path: "/",
-  //   element: <RedirectToHomeOrLogin />, // Use the new component here
-  // },
+
 ]);
 export const UserContext = createContext(null);
 function App() {
