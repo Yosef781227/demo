@@ -81,7 +81,7 @@ const protectedRouter = createBrowserRouter([
   //   element: <RedirectToHomeOrLogin />, // Use the new component here
   // },
 ]);
-const UserContext = createContext(null);
+export const UserContext = createContext(null);
 function App() {
   const [isAuth, setIsAuth] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -125,6 +125,9 @@ function App() {
         setIsLoading(false);
         setHasInstagram(false);
       } else {
+        setIsAuth(true);
+        setIsLoading(false);
+        setHasInstagram(false);
         const index: number =
           localStorage.getItem("selectedInstagramIndex") !== null
             ? parseInt(localStorage.getItem("selectedInstagramIndex") || "")

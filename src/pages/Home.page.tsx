@@ -1,3 +1,4 @@
+//@ts-nocheck
 import {
   Avatar,
   Box,
@@ -23,7 +24,7 @@ import Buttons from "@/components/Buttons/Button";
 import instagram from "@/assets/icons/social/instagram.svg";
 import Container from "@components/Container";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { BASE_URL } from "@/constants";
 import { AiOutlineDownload } from "react-icons/ai";
@@ -37,6 +38,7 @@ import {
   ModalBody,
   ModalCloseButton,
 } from "@chakra-ui/react";
+import { UserContext } from "@/App";
 const query = `
 query Query($jsonInput: String!) {
   getInstagramAccount(json_input: $jsonInput) {
@@ -159,10 +161,11 @@ const saveNewContent = async () => {
 };
 
 function HomePage() {
+  const User = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
-  const [instagrams, setInstagrams] = useState([{}]); // [{id: "", username: "", connected: false}
-  const [instaID, setInstaID] = useState(0);
-  const [instagramId, setInstagramId] = useState("");
+  const instagrams = useState(User.instagrams); // [{id: "", username: "", connected: false}
+  const [instaID, setInstaID] = useState(User.instaID);
+  const [instagramId, setInstagramId] = useState(User.instagramId);
   const [data, setData] = useState({});
   const [contents, setContents] = useState([{}]);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -175,69 +178,6 @@ function HomePage() {
 
   const [startDate, setStartDate] = useState(new Date());
 
-  const Authenticate = async () => {
-    try {
-      const response = await axios.post(
-        BASE_URL,
-        {
-          query: `
-          query Query {
-            me {
-              id
-              has_tiktok
-              has_instagram
-              instagrams {
-                id
-                username
-                connected
-              }
-            }
-          }
-          `,
-        },
-        {
-          withCredentials: true,
-        }
-      );
-      console.log(response.data);
-      if (response.data.data == null || response.data?.errors) {
-        console.log("User is not logged in");
-        navigate("/login");
-        return {
-          loggedIn: false,
-        };
-      } else if (!response.data.data.me.has_instagram) {
-        navigate("/nextpage");
-        return {
-          loggedIn: true,
-          hasInstagram: false,
-        };
-      } else {
-        const index: number =
-          localStorage.getItem("selectedInstagramIndex") !== null
-            ? parseInt(localStorage.getItem("selectedInstagramIndex") || "")
-            : 0;
-
-        const instas: any =
-          JSON.parse(localStorage.getItem("instagrams") || "[]") || [];
-        if (instas.length === 0) {
-          localStorage.setItem("selectedInstagramIndex", "0");
-          localStorage.setItem(
-            "instagrams",
-            JSON.stringify(response.data.data.me.instagrams)
-          );
-        } else {
-          setInstaID(index);
-          setInstagramId(instas[index]?.id);
-          setInstagrams(response.data.data.me.instagrams);
-        }
-        return {
-          loggedIn: true,
-          hasInstagram: true,
-        };
-      }
-    } catch (error) {}
-  };
   const changeAcount = (e: any) => {
     const index = e.target.selectedIndex - 1;
     localStorage.removeItem("selectedInstagramIndex");
@@ -275,6 +215,9 @@ function HomePage() {
     }
   };
   useEffect(() => {
+    if (instagrams.length == 0) {
+      navigate("/nextpage");
+    }
     const jsonInput = JSON.stringify({
       instagram_id: instagramId, // use the Instagram ID from state
       // include any other data required by your API
