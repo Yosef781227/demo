@@ -21,6 +21,7 @@ import RedirectToHomeOrLogin from "./pages/RedirectToHomeOrLogin";
 import { BASE_URL } from "./constants";
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
+import { Box, CircularProgress } from "@chakra-ui/react";
 const authRouter = createBrowserRouter([
   {
     path: "/",
@@ -150,11 +151,29 @@ function App() {
     authenticate();
   });
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+      >
+        <CircularProgress isIndeterminate color="#8B5CF6" />
+      </Box>
+    );
   }
   return (
     <UserContext.Provider
-      value={{ isAuth, hasInstagram, instaID, instagramId, instagrams }}
+      value={{
+        isAuth,
+        hasInstagram,
+        instaID,
+        instagramId,
+        instagrams,
+        setHasInstagram,
+        setInstagrams,
+        setInstaID,
+      }}
     >
       <ToastContainer />
       <RouterProvider router={isAuth ? authRouter : protectedRouter} />
