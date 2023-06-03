@@ -31,46 +31,8 @@ const NextPage = () => {
 
   const toast = useToast();
 
-  const accessToken = location.state?.accessToken;
-  useEffect(() => {
-    
-    axios.post(
-      BASE_URL,
-      {
-        query: `
-        query Query {
-          me {
-            instagrams {
-              id
-              username
-              connected
-            }
-          }
-        }
-          `,
-      },
-      {
-        withCredentials: true,
-      }
-    ).then((response) => {
-      console.log("response", response.data);
-      if (response.data.errors || response.data.data == null) {
-        navigate("/login");
-        return;
-      }
-      const instagrams = response.data.data.me.instagrams;
-      if (instagrams.length > 0) {
-        localStorage.removeItem('instagrams');
-        localStorage.setItem('instagrams', JSON.stringify(instagrams));
-        localStorage.setItem('selectedInstagramIndex', "0");
-        navigate("/");
-      } else {
-        console.log("No Instagrams");
-      }
-    }).catch((error) => {
-      console.log("error", error);
-    });
-  }, []);
+
+ 
   const submit = async (e: any) => {
     e.preventDefault();
     try {
