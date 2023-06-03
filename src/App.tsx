@@ -179,7 +179,7 @@ function App() {
       }}
     >
       <ToastContainer />
-      <RouterProvider router={isAuth ? authRouter : protectedRouter} />
+      <RouterProvider router={isAuth ? protectedRouter : authRouter} />
     </UserContext.Provider>
   );
 }
