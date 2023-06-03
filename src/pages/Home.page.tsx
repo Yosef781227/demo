@@ -642,7 +642,7 @@ function HomePage() {
               onChange={changeAcount}
               value={instaID + 1}
             >
-              {instagrams.map((instagram: any, index: number) => {
+              {User.instagrams.map((instagram: any, index: number) => {
                 return (
                   <option key={index + 1} value={instagram.id}>
                     {instagram.username}
