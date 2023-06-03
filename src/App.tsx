@@ -1,4 +1,9 @@
-import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
+//@ts-nocheck
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from "react-router-dom";
 import HomePage from "@pages/Home.page";
 import Root from "@layouts/Root";
 import LoginPage from "@pages/Auth/Login.page";
@@ -13,11 +18,12 @@ import TiktokPage from "./pages/integrations/Tiktok.page";
 import InstagramPage from "./pages/integrations/Instagram.page";
 import ChooseInstagram from "./pages/Auth/chooseInstagram";
 import RedirectToHomeOrLogin from "./pages/RedirectToHomeOrLogin";
-
-
-const router = createBrowserRouter([
+import { BASE_URL } from "./constants";
+import axios from "axios";
+import { createContext, useContext, useEffect, useState } from "react";
+const authRouter = createBrowserRouter([
   {
-    path: "login",
+    path: "/",
     element: <LoginPage />,
   },
   {
@@ -28,6 +34,8 @@ const router = createBrowserRouter([
     path: "reset-password",
     element: <ResetPassword />,
   },
+]);
+const protectedRouter = createBrowserRouter([
   {
     path: "nextpage",
     element: <NextPage />,
@@ -72,13 +80,85 @@ const router = createBrowserRouter([
   //   element: <RedirectToHomeOrLogin />, // Use the new component here
   // },
 ]);
-
+const UserContext = createContext(null);
 function App() {
+  const [isAuth, setIsAuth] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [instagramId, setInstagramId] = useState("");
+  const [instagrams, setInstagrams] = useState([]);
+  const [instaID, setInstaID] = useState(0);
+  const [hasInstagram, setHasInstagram] = useState(false);
+  const authenticate = async () => {
+    try {
+      const response = await axios.post(
+        BASE_URL,
+        {
+          query: `
+          query Query {
+            me {
+              id
+              has_tiktok
+              has_instagram
+              instagrams {
+                id
+                username
+                connected
+              }
+            }
+          }
+          `,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      if (response.data.data == null || response.data?.errors) {
+        console.log("User is not logged in");
+        setIsAuth(false);
+        setIsLoading(false);
+        return {
+          loggedIn: false,
+        };
+      } else if (!response.data.data.me.has_instagram) {
+        setIsAuth(true);
+        setIsLoading(false);
+        setHasInstagram(false);
+      } else {
+        const index: number =
+          localStorage.getItem("selectedInstagramIndex") !== null
+            ? parseInt(localStorage.getItem("selectedInstagramIndex") || "")
+            : 0;
+
+        const instas: any =
+          JSON.parse(localStorage.getItem("instagrams") || "[]") || [];
+        if (instas.length === 0) {
+          localStorage.setItem("selectedInstagramIndex", "0");
+          localStorage.setItem(
+            "instagrams",
+            JSON.stringify(response.data.data.me.instagrams)
+          );
+        } else {
+          setInstaID(index);
+          setInstagramId(instas[index]?.id);
+          setInstagrams(response.data.data.me.instagrams);
+        }
+      }
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    authenticate();
+  });
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
   return (
-    <>
+    <UserContext.Provider
+      value={{ isAuth, hasInstagram, instaID, instagramId, instagrams }}
+    >
       <ToastContainer />
-      <RouterProvider router={router} />
-    </>
+      <RouterProvider router={isAuth ? authRouter : protectedRouter} />
+    </UserContext.Provider>
   );
 }
 

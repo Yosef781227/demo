@@ -22,41 +22,6 @@ function LoginPage() {
   const navigate = useNavigate();
   const toast = useToast();
 
-  const Authenticate = async () => {
-    try {
-      const response: any = await axios.post(
-        BASE_URL,
-        {
-          query: `
-          query Query {
-            me {
-              id
-              has_instagram
-              has_tiktok
-            }
-          }
-          `,
-        },
-        {
-          withCredentials: true,
-        }
-      );
-      if (response.data.data !== null) {
-        if (!response.data.data.me.has_instagram) {
-          navigate("/nextpage");
-        } else {
-          navigate("/");
-        }
-      }
-    } catch (error) {
-
-    }
-  };
-
-  useEffect(() => {
-    Authenticate();
-  }, []);
-
   type Instagram = {
     connected: boolean;
     id: string;
@@ -109,27 +74,31 @@ function LoginPage() {
           );
 
           if (res.data.data.signWithGoogle.success) {
-
             const me = res.data.data.signWithGoogle.me;
 
             if (me.has_instagram) {
-              const connectedInstagrams = me.instagrams.filter((instagram: Instagram) => instagram.connected);
+              const connectedInstagrams = me.instagrams.filter(
+                (instagram: Instagram) => instagram.connected
+              );
 
-              console.log('Number of connected Instagram accounts:', connectedInstagrams.length);
-              localStorage.setItem('selectedInstagramIndex', "0");
-              localStorage.setItem('instagrams', JSON.stringify(me.instagrams));
+              console.log(
+                "Number of connected Instagram accounts:",
+                connectedInstagrams.length
+              );
+              localStorage.setItem("selectedInstagramIndex", "0");
+              localStorage.setItem("instagrams", JSON.stringify(me.instagrams));
               navigate("/");
             } else {
-              console.log('User has no Instagram. Navigating to /nextpage');
+              console.log("User has no Instagram. Navigating to /nextpage");
               // If the user does not have Instagram, navigate to the next page
               navigate("/nextpage");
             }
           } else {
-            console.log('Login with Google Failed');
+            console.log("Login with Google Failed");
             throw new Error("Login with Google Failed");
           }
         } catch (err: any) {
-          console.error('Error:', err.message);
+          console.error("Error:", err.message);
           setError(err.message);
           toast({
             title: "Error",
@@ -194,22 +163,27 @@ function LoginPage() {
       if (res.data.data.logInWithEmail.success) {
         const me = res.data.data.logInWithEmail.me;
         if (me.has_instagram) {
-          const connectedInstagrams = me.instagrams.filter((instagram: Instagram) => instagram.connected);
-          console.log('Number of connected Instagram accounts:', connectedInstagrams.length);
-          localStorage.setItem('selectedInstagramIndex', "0");
-          localStorage.setItem('instagrams', JSON.stringify(me.instagrams));
+          const connectedInstagrams = me.instagrams.filter(
+            (instagram: Instagram) => instagram.connected
+          );
+          console.log(
+            "Number of connected Instagram accounts:",
+            connectedInstagrams.length
+          );
+          localStorage.setItem("selectedInstagramIndex", "0");
+          localStorage.setItem("instagrams", JSON.stringify(me.instagrams));
           navigate("/");
         } else {
-          console.log('User has no Instagram. Navigating to /nextpage');
+          console.log("User has no Instagram. Navigating to /nextpage");
           // If the user does not have Instagram, navigate to the next page
           navigate("/nextpage");
         }
       } else {
-        console.log('Login Failed');
+        console.log("Login Failed");
         throw new Error("Login Failed");
       }
     } catch (err: any) {
-      console.error('Error:', err.message);
+      console.error("Error:", err.message);
       setError(err.message);
       toast({
         title: "Error",
@@ -222,7 +196,6 @@ function LoginPage() {
       setLoading(false);
     }
   };
-
 
   error && console.error(error);
   loading && console.log("Loading...");
@@ -250,7 +223,9 @@ function LoginPage() {
           placeholder="janedoe@gmail.com"
           type="email"
           label="work Email"
-          onChange={(e) => { setEmail(e.target.value) }}
+          onChange={(e) => {
+            setEmail(e.target.value);
+          }}
         />
         <FormRow
           placeholder="password"
@@ -267,7 +242,9 @@ function LoginPage() {
           }
           type="password"
           label="password"
-          onChange={(e) => { setPassword(e.target.value) }}
+          onChange={(e) => {
+            setPassword(e.target.value);
+          }}
         />
       </RowContainer>
       <RowContainer>
