@@ -112,7 +112,7 @@ function HomePage() {
 
 
   const changeAcount = (e: any) => {
-    const index = e.target.selectedIndex - 1;
+    const index = e.target.selectedIndex;
     localStorage.removeItem("selectedInstagramIndex");
     localStorage.setItem("selectedInstagramIndex", index.toString());
     const instagramId = e.target.value;
@@ -153,7 +153,6 @@ function HomePage() {
   };
 
   useEffect(() => {
-    console.log("useEffect", instagramId);
     setIsLoading(true);
     if (User.isAuth && instagrams[0].length === 0) {
       navigate("/nextpage");
@@ -582,7 +581,6 @@ function HomePage() {
               Save New Content
             </Button>
             <Select
-              placeholder="Select"
               width={"auto"}
               onChange={changeAcount}
               defaultValue={instagramId}
