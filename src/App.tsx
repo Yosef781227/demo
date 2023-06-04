@@ -17,7 +17,6 @@ import "react-toastify/dist/ReactToastify.css";
 import TiktokPage from "./pages/integrations/Tiktok.page";
 import InstagramPage from "./pages/integrations/Instagram.page";
 import ChooseInstagram from "./pages/Auth/chooseInstagram";
-import RedirectToHomeOrLogin from "./pages/RedirectToHomeOrLogin";
 import { BASE_URL } from "./constants";
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
@@ -103,6 +102,8 @@ function App() {
   const [instagrams, setInstagrams] = useState([]);
   const [instaID, setInstaID] = useState(0);
   const [hasInstagram, setHasInstagram] = useState(false);
+
+  
   const authenticate = async () => {
     try {
       const response = await axios.post(

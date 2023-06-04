@@ -12,6 +12,7 @@ import { chakra } from "@chakra-ui/react";
 import FormRow from "@/components/Form/FormRow";
 import AuthContainer from "@/components/Auth/Containers/AuthContainer";
 import Buttons from "@/components/Buttons/Button";
+import { set } from "date-fns";
 const ChakraNavLink = chakra(NavLink);
 
 function LoginPage() {
@@ -21,6 +22,7 @@ function LoginPage() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const toast = useToast();
+  const [forceRender, setForceRender] = useState(0);
 
   type Instagram = {
     connected: boolean;
@@ -89,9 +91,10 @@ function LoginPage() {
               localStorage.setItem("selectedInstagramIndex", "0");
               localStorage.setItem("instagrams", JSON.stringify(me.instagrams));
               navigate("/");
-            } else {
-              console.log("User has no Instagram. Navigating to /nextpages");
-                navigate("/nextpage");
+            }  else  {
+              console.log("User has no Instagram. Navigating to /nextpagesss");
+                navigate("/");
+              
             }
           } else {
             console.log("Login with Google Failed");
@@ -115,6 +118,7 @@ function LoginPage() {
       }
     },
   });
+
   const LoginWithEmail = async () => {
     try {
       setLoading(true);
