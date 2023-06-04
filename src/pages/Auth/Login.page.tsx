@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -13,9 +13,11 @@ import FormRow from "@/components/Form/FormRow";
 import AuthContainer from "@/components/Auth/Containers/AuthContainer";
 import Buttons from "@/components/Buttons/Button";
 import { set } from "date-fns";
+import { UserContext } from "@/App";
 const ChakraNavLink = chakra(NavLink);
 
 function LoginPage() {
+  const User: any = useContext(UserContext);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
@@ -29,7 +31,12 @@ function LoginPage() {
     id: string;
     username: string;
   };
-
+  useEffect(() => {
+    if (User && User.isAuth) {
+      console.log("User is Authenticated");
+      navigate("/");
+    }
+  }, []);
   const login = useGoogleLogin({
     onSuccess: async (response) => {
       if (response && response.access_token) {
@@ -76,7 +83,6 @@ function LoginPage() {
           );
 
           if (res.data.data.signWithGoogle.success) {
-
             const me = res.data.data.signWithGoogle.me;
             console.log(me);
             if (me.has_instagram) {
@@ -90,11 +96,12 @@ function LoginPage() {
               );
               localStorage.setItem("selectedInstagramIndex", "0");
               localStorage.setItem("instagrams", JSON.stringify(me.instagrams));
-              navigate("/");
-            }  else  {
+              //navigate("/");
+              window.location.reload();
+            } else {
               console.log("User has no Instagram. Navigating to /nextpagesss");
-                navigate("/");
-              
+              // /navigate("/nextpage");
+              window.location.reload();
             }
           } else {
             console.log("Login with Google Failed");
@@ -163,7 +170,7 @@ function LoginPage() {
           withCredentials: true,
         }
       );
-      console.log(res.data);
+      //console.log(res.data);
       if (res.data.data.logInWithEmail.success) {
         const me = res.data.data.logInWithEmail.me;
         if (me.has_instagram) {
@@ -176,10 +183,9 @@ function LoginPage() {
           );
           localStorage.setItem("selectedInstagramIndex", "0");
           localStorage.setItem("instagrams", JSON.stringify(me.instagrams));
-          navigate("/home");
+          navigate("/");
         } else {
           console.log("User has no Instagram. Navigating to /nextpage");
-  
           navigate("/nextpage");
         }
       } else {

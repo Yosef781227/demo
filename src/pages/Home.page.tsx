@@ -92,11 +92,10 @@ query Query($jsonInput: String!) {
 }
 `;
 
-
 function HomePage() {
   const User = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
-  const instagrams = useState(User.instagrams); 
+  const instagrams = useState(User.instagrams);
   const [instaID, setInstaID] = useState(User.instaID);
   const [instagramId, setInstagramId] = useState(User.instagramId);
   const [data, setData] = useState({});
@@ -120,6 +119,7 @@ function HomePage() {
     setInstaID(index);
     setInstagramId(instagramId);
   };
+
   const logout = async () => {
     try {
       const response: any = await axios.post(
@@ -138,12 +138,12 @@ function HomePage() {
           withCredentials: true,
         }
       );
-      console.log(response.data);
+      //console.log(response.data);
       if (response.data.data.logout.success) {
         localStorage.removeItem("selectedInstagramIndex");
         localStorage.removeItem("instagrams");
-
-        navigate("/login");
+        //navigate("/login");
+        window.location.reload();
       } else {
         toast.error(response.data.data.logout.message);
       }
@@ -152,126 +152,123 @@ function HomePage() {
     }
   };
 
- 
-
   useEffect(() => {
     setIsLoading(true);
-   if (instagrams[0].length === 0) {
+    if (User.isAuth && instagrams[0].length === 0) {
       navigate("/nextpage");
     }
 
- else {
-    const jsonInput = JSON.stringify({
-      instagram_id: instagramId,
-    });
-
-    axios
-      .post(
-        BASE_URL,
-        { query, variables: { jsonInput } },
-        { withCredentials: true }
-      )
-      .then((result) => {
-        if (result.data.errors) {
-          console.log("Got you");
-          console.error("GraphQL errors", result.data.errors.message);
-         
-        } else if (!result.data.data || !result.data.data.getInstagramAccount) {
-          console.error("Unexpected server response", result.data);
-        } else {
-          const instaposts: [] = result.data.data.getInstagramAccount.posts;
-
-          let posts: any[] = [];
-
-          instaposts.forEach((post) => {
-            const { ig_contents }: { ig_contents: [] } = post;
-            const {
-              owner_username,
-              owner_profile_pic_url,
-              owner_full_name,
-              owner_followers,
-              caption,
-              id,
-            }: {
-              owner_username: string;
-              owner_profile_pic_url: string;
-              owner_full_name: string;
-              owner_followers: number;
-              caption: string | null;
-              id: string;
-            } = post;
-            posts = [
-              ...posts,
-              ...ig_contents.map((content) => {
-                return {
-                  owner_username,
-                  owner_profile_pic_url,
-                  owner_full_name,
-                  owner_followers,
-                  id,
-                  caption,
-                  ig_content: content,
-                };
-              }),
-            ];
-          });
-
-          const instastories: [] = result.data.data.getInstagramAccount.stories;
-          let stories: any[] = [];
-
-          instastories.forEach((story) => {
-            const { ig_contents }: { ig_contents: [] } = story;
-            const {
-              owner_username,
-              owner_profile_pic_url,
-              owner_full_name,
-              owner_followers,
-              id,
-            }: {
-              owner_username: string;
-              owner_profile_pic_url: string;
-              owner_full_name: string;
-              owner_followers: number;
-              id: string;
-            } = story;
-
-            stories = [
-              ...stories,
-              ...ig_contents.map((content) => {
-                return {
-                  owner_username,
-                  owner_profile_pic_url,
-                  owner_full_name,
-                  owner_followers,
-                  id,
-                  ig_content: content,
-                };
-              }),
-            ];
-          });
-          const { connected, followers, full_name, id } =
-            result.data.data.getInstagramAccount;
-          setData({
-            connected,
-            followers,
-            full_name,
-            id,
-          });
-          setContents([
-            ...stories,
-            ...posts,
-            ...result.data.data.getInstagramAccount.reels,
-          ]);
-        }
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        console.error(error);
-        setIsLoading(false);
+    else {
+      const jsonInput = JSON.stringify({
+        instagram_id: instagramId,
       });
- }
-  }, []);
 
+      axios
+        .post(
+          BASE_URL,
+          { query, variables: { jsonInput } },
+          { withCredentials: true }
+        )
+        .then((result) => {
+          if (result.data.errors) {
+            console.log("Got you");
+            console.error("GraphQL errors", result.data.errors.message);
+
+          } else if (!result.data.data || !result.data.data.getInstagramAccount) {
+            console.error("Unexpected server response", result.data);
+          } else {
+            const instaposts: [] = result.data.data.getInstagramAccount.posts;
+
+            let posts: any[] = [];
+
+            instaposts.forEach((post) => {
+              const { ig_contents }: { ig_contents: [] } = post;
+              const {
+                owner_username,
+                owner_profile_pic_url,
+                owner_full_name,
+                owner_followers,
+                caption,
+                id,
+              }: {
+                owner_username: string;
+                owner_profile_pic_url: string;
+                owner_full_name: string;
+                owner_followers: number;
+                caption: string | null;
+                id: string;
+              } = post;
+              posts = [
+                ...posts,
+                ...ig_contents.map((content) => {
+                  return {
+                    owner_username,
+                    owner_profile_pic_url,
+                    owner_full_name,
+                    owner_followers,
+                    id,
+                    caption,
+                    ig_content: content,
+                  };
+                }),
+              ];
+            });
+
+            const instastories: [] = result.data.data.getInstagramAccount.stories;
+            let stories: any[] = [];
+
+            instastories.forEach((story) => {
+              const { ig_contents }: { ig_contents: [] } = story;
+              const {
+                owner_username,
+                owner_profile_pic_url,
+                owner_full_name,
+                owner_followers,
+                id,
+              }: {
+                owner_username: string;
+                owner_profile_pic_url: string;
+                owner_full_name: string;
+                owner_followers: number;
+                id: string;
+              } = story;
+
+              stories = [
+                ...stories,
+                ...ig_contents.map((content) => {
+                  return {
+                    owner_username,
+                    owner_profile_pic_url,
+                    owner_full_name,
+                    owner_followers,
+                    id,
+                    ig_content: content,
+                  };
+                }),
+              ];
+            });
+            const { connected, followers, full_name, id } =
+              result.data.data.getInstagramAccount;
+            setData({
+              connected,
+              followers,
+              full_name,
+              id,
+            });
+            setContents([
+              ...stories,
+              ...posts,
+              ...result.data.data.getInstagramAccount.reels,
+            ]);
+          }
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          console.error(error);
+          setIsLoading(false);
+        });
+    }
+  }, [instaID]);
   if (isLoading || !data) {
     return (
       <Box
@@ -282,14 +279,14 @@ function HomePage() {
       >
         <CircularProgress isIndeterminate color="#8B5CF6" />
       </Box>
-      
+
     );
   }
-  
+
 
   return (
     <>
-      {/* <Modal isOpen={isOpen1} isCentered={false} size={"md"} onClose={onClose1}>
+      <Modal isOpen={isOpen1} isCentered={false} size={"md"} onClose={onClose1}>
         <ModalOverlay />
 
         <ModalContent
@@ -552,7 +549,7 @@ function HomePage() {
             </Button>
           </ModalFooter>
         </ModalContent>
-      </Modal> */}
+      </Modal>
 
       <Container>
         <HStack justifyContent={"space-between"}>
@@ -585,9 +582,9 @@ function HomePage() {
             </Button>
             <Select
               placeholder="Select"
-              width={24}
+              width={"auto"}
               onChange={changeAcount}
-              value={instaID + 1}
+              defaultValue={instagramId}
             >
               {User.instagrams.map((instagram: any, index: number) => {
                 return (

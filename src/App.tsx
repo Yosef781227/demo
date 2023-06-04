@@ -36,8 +36,8 @@ const authRouter = createBrowserRouter([
     element: <ResetPassword />,
   },
   {
-    path: "*", 
-    element: <Navigate to="/" />, 
+    path: "*",
+    element: <Navigate to="/" />,
   },
 ]);
 const protectedRouter = createBrowserRouter([
@@ -102,8 +102,6 @@ function App() {
   const [instagrams, setInstagrams] = useState([]);
   const [instaID, setInstaID] = useState(0);
   const [hasInstagram, setHasInstagram] = useState(false);
-
-  
   const authenticate = async () => {
     try {
       const response = await axios.post(
@@ -128,13 +126,11 @@ function App() {
           withCredentials: true,
         }
       );
+      console.log(response.data);
       if (response.data.data == null || response.data?.errors) {
         console.log("User is not logged in");
         setIsAuth(false);
         setIsLoading(false);
-        return {
-          loggedIn: false,
-        };
       } else if (!response.data.data.me.has_instagram) {
         setIsAuth(true);
         setIsLoading(false);
@@ -162,12 +158,12 @@ function App() {
           setInstagrams(response.data.data.me.instagrams);
         }
       }
-    } catch (error) {}
+    } catch (error) { }
   };
 
   useEffect(() => {
     authenticate();
-  },[]);
+  }, [instaID]);
   if (isLoading) {
     return (
       <Box
@@ -188,9 +184,10 @@ function App() {
         instaID,
         instagramId,
         instagrams,
-        setHasInstagram,
-        setInstagrams,
-        setInstaID,
+        setHasInstagram: (value) => { setHasInstagram(value) },
+        setInstagrams: (value) => { setInstagrams(value) },
+        setInstaID: (value) => { setInstaID(value) },
+        setToggled: (value) => { console.log("setToggled" + value) },
       }}
     >
       <ToastContainer />
