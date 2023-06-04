@@ -153,6 +153,7 @@ function HomePage() {
   };
 
   useEffect(() => {
+    console.log("useEffect", instagramId);
     setIsLoading(true);
     if (User.isAuth && instagrams[0].length === 0) {
       navigate("/nextpage");

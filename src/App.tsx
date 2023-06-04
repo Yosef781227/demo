@@ -155,6 +155,10 @@ function App() {
         } else {
           setInstaID(index);
           setInstagramId(instas[index]?.id);
+          localStorage.setItem(
+            "instagrams",
+            JSON.stringify(response.data.data.me.instagrams)
+          );
           setInstagrams(response.data.data.me.instagrams);
         }
       }
