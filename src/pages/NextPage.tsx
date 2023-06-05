@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../constants";
+import { toast } from "react-toastify";
+
+import "react-toastify/dist/ReactToastify.css";
 import {
   Box,
   Button,
@@ -29,11 +32,37 @@ const NextPage = () => {
   const [loading, setLoading] = useState(false);
 
   const toast = useToast();
-
-
-  
-
-
+  const logout = async () => {
+    try {
+      const response: any = await axios.post(
+        BASE_URL,
+        {
+          query: `
+          mutation Mutation {
+            logout {
+              success
+              message
+            }
+          }
+          `,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      console.log(response.data);
+      if (response.data.data.logout.success) {
+        localStorage.removeItem("selectedInstagramIndex");
+        localStorage.removeItem("instagrams");
+        //navigate("/login");
+        window.location.reload();
+      } else {
+        toast(response.data.data.logout.message);
+      }
+    } catch (error: any) {
+      toast(error.message);
+    }
+  };
   const submit = async (e: any) => {
     e.preventDefault();
     try {
@@ -140,6 +169,11 @@ const NextPage = () => {
       minHeight="100vh"
       bg="gray.100"
     >
+      <div style={{ width: "100%", display: "flex", justifyContent: "end", marginRight: "10px" }}>
+        <Button colorScheme="primary" onClick={logout}  >
+          Logout
+        </Button>
+      </div>
       <Flex direction="row" maxW="800px" w="100%" my={10}>
         <Box w="55%">
           <Image src={Insta} alt="Instagram" maxW="100%" />
