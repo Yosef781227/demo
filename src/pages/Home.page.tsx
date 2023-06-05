@@ -22,6 +22,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Buttons from "@/components/Buttons/Button";
 import instagram from "@/assets/icons/social/instagram.svg";
+import tiktok from "@/assets/icons/social/tiktok.svg"
 import Container from "@components/Container";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
@@ -40,7 +41,7 @@ import {
 } from "@chakra-ui/react";
 import { UserContext } from "@/App";
 
-const query = `
+const getInstagramQuery = `
 query Query($jsonInput: String!) {
   getInstagramAccount(json_input: $jsonInput) {
     connected
@@ -92,14 +93,50 @@ query Query($jsonInput: String!) {
 }
 `;
 
+const getTiktokQuery = `
+query Query($jsonInput: String!) {
+  getTikTokAccount(json_input: $jsonInput) {
+    videos {
+      id
+      t_id
+      timestamp
+      width
+      height
+      duration
+      display_url
+      url
+      usage_right
+      caption
+      owner {
+        id
+        uniqueId
+        nickname
+        profileUrl
+        followerCount
+        followingCount
+        bio
+        videoCount
+        heartCount
+      }
+    }
+  }
+}
+`;
+
 function HomePage() {
   const User = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
-  const instagrams = useState(User.instagrams);
-  const [instaID, setInstaID] = useState(User.instaID);
+  const [hasInstagram, setHasInstagram] = useState(User.hasInstagram);
+  const [instagrams, setInstagrams] = useState(User.instagrams);
+  const [instagramIndex, setInstagramIndex] = useState(User.instagramIndex);
   const [instagramId, setInstagramId] = useState(User.instagramId);
+  const [tiktokId, settiktokId] = useState(User.tiktokId);
+  const [tiktoks, settiktoks] = useState(User.tiktoks);
+  const [tiktokIndex, settiktokIndex] = useState(User.tiktokIndex);
+  const [hasTiktok, setHasTiktok] = useState(User.hasTiktok);
   const [data, setData] = useState({});
   const [contents, setContents] = useState([{}]);
+  const [videos, setVideos] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
   const {
@@ -110,13 +147,20 @@ function HomePage() {
 
   const [startDate, setStartDate] = useState(new Date());
 
-
+  const changeTiktokAcount = (e: any) => {
+    const index = e.target.selectedIndex;
+    localStorage.removeItem("selectedTiktokIndex");
+    localStorage.setItem("selectedTiktokIndex", index.toString());
+    const tiktokId = e.target.value;
+    settiktokIndex(index);
+    settiktokId(tiktokId);
+  };
   const changeAcount = (e: any) => {
     const index = e.target.selectedIndex;
     localStorage.removeItem("selectedInstagramIndex");
     localStorage.setItem("selectedInstagramIndex", index.toString());
     const instagramId = e.target.value;
-    setInstaID(index);
+    setInstagramIndex(index);
     setInstagramId(instagramId);
   };
 
@@ -154,122 +198,134 @@ function HomePage() {
 
   useEffect(() => {
     setIsLoading(true);
-    if (User.isAuth && instagrams[0].length === 0) {
+    if (User.isAuth && !hasInstagram) {
       navigate("/nextpage");
-    }
-
-    else {
-      const jsonInput = JSON.stringify({
+    } else {
+      let jsonInput = JSON.stringify({
         instagram_id: instagramId,
       });
 
-      axios
-        .post(
-          BASE_URL,
-          { query, variables: { jsonInput } },
-          { withCredentials: true }
-        )
-        .then((result) => {
-          if (result.data.errors) {
-            console.log("Got you");
-            console.error("GraphQL errors", result.data.errors.message);
+      axios.post(BASE_URL,
+        { query: getInstagramQuery, variables: { jsonInput } },
+        { withCredentials: true }
+      ).then((result) => {
+        if (result.data.errors) {
+          console.log("Got you");
+          console.error("GraphQL errors", result.data.errors.message);
+        } else if (!result.data.data || !result.data.data.getInstagramAccount) {
+          console.error("Unexpected server response", result.data);
+        } else {
+          const instaposts: [] = result.data.data.getInstagramAccount.posts;
 
-          } else if (!result.data.data || !result.data.data.getInstagramAccount) {
+          let posts: any[] = [];
+
+          instaposts.forEach((post) => {
+            const { ig_contents }: { ig_contents: [] } = post;
+            const {
+              owner_username,
+              owner_profile_pic_url,
+              owner_full_name,
+              owner_followers,
+              caption,
+              id,
+            }: {
+              owner_username: string;
+              owner_profile_pic_url: string;
+              owner_full_name: string;
+              owner_followers: number;
+              caption: string | null;
+              id: string;
+            } = post;
+            posts = [
+              ...posts,
+              ...ig_contents.map((content) => {
+                return {
+                  owner_username,
+                  owner_profile_pic_url,
+                  owner_full_name,
+                  owner_followers,
+                  id,
+                  caption,
+                  ig_content: content,
+                };
+              }),
+            ];
+          });
+
+          const instastories: [] = result.data.data.getInstagramAccount.stories;
+          let stories: any[] = [];
+
+          instastories.forEach((story) => {
+            const { ig_contents }: { ig_contents: [] } = story;
+            const {
+              owner_username,
+              owner_profile_pic_url,
+              owner_full_name,
+              owner_followers,
+              id,
+            }: {
+              owner_username: string;
+              owner_profile_pic_url: string;
+              owner_full_name: string;
+              owner_followers: number;
+              id: string;
+            } = story;
+
+            stories = [
+              ...stories,
+              ...ig_contents.map((content) => {
+                return {
+                  owner_username,
+                  owner_profile_pic_url,
+                  owner_full_name,
+                  owner_followers,
+                  id,
+                  ig_content: content,
+                };
+              }),
+            ];
+          });
+          const { connected, followers, full_name, id } =
+            result.data.data.getInstagramAccount;
+          setContents([
+            ...stories,
+            ...posts,
+            ...result.data.data.getInstagramAccount.reels
+          ]);
+        }
+        setIsLoading(false);
+      }).catch((error: any) => {
+        setIsLoading(false);
+        //console.error(error.message);
+      });
+      if (hasTiktok) {
+        //console.log(tiktokId);
+        jsonInput = JSON.stringify({
+          tik_tok_id: tiktokId,
+        });
+        setIsLoading(true);
+        axios.post(BASE_URL,
+          { query: getTiktokQuery, variables: { jsonInput } },
+          { withCredentials: true }
+        ).then((result) => {
+          //console.log(result.data);
+          if (result.data.errors) {
+            console.error("GraphQL errors", result.data.errors);
+          } else if (!result.data.data || !result.data.data.getTikTokAccount) {
             console.error("Unexpected server response", result.data);
           } else {
-            const instaposts: [] = result.data.data.getInstagramAccount.posts;
-
-            let posts: any[] = [];
-
-            instaposts.forEach((post) => {
-              const { ig_contents }: { ig_contents: [] } = post;
-              const {
-                owner_username,
-                owner_profile_pic_url,
-                owner_full_name,
-                owner_followers,
-                caption,
-                id,
-              }: {
-                owner_username: string;
-                owner_profile_pic_url: string;
-                owner_full_name: string;
-                owner_followers: number;
-                caption: string | null;
-                id: string;
-              } = post;
-              posts = [
-                ...posts,
-                ...ig_contents.map((content) => {
-                  return {
-                    owner_username,
-                    owner_profile_pic_url,
-                    owner_full_name,
-                    owner_followers,
-                    id,
-                    caption,
-                    ig_content: content,
-                  };
-                }),
-              ];
-            });
-
-            const instastories: [] = result.data.data.getInstagramAccount.stories;
-            let stories: any[] = [];
-
-            instastories.forEach((story) => {
-              const { ig_contents }: { ig_contents: [] } = story;
-              const {
-                owner_username,
-                owner_profile_pic_url,
-                owner_full_name,
-                owner_followers,
-                id,
-              }: {
-                owner_username: string;
-                owner_profile_pic_url: string;
-                owner_full_name: string;
-                owner_followers: number;
-                id: string;
-              } = story;
-
-              stories = [
-                ...stories,
-                ...ig_contents.map((content) => {
-                  return {
-                    owner_username,
-                    owner_profile_pic_url,
-                    owner_full_name,
-                    owner_followers,
-                    id,
-                    ig_content: content,
-                  };
-                }),
-              ];
-            });
-            const { connected, followers, full_name, id } =
-              result.data.data.getInstagramAccount;
-            setData({
-              connected,
-              followers,
-              full_name,
-              id,
-            });
-            setContents([
-              ...stories,
-              ...posts,
-              ...result.data.data.getInstagramAccount.reels,
-            ]);
+            const videos: [] = result.data.data.getTikTokAccount.videos;
+            setVideos(videos)
           }
           setIsLoading(false);
-        })
-        .catch((error) => {
-          console.error(error);
+        }).catch((error: any) => {
           setIsLoading(false);
+          console.error(error.message);
         });
+      }
     }
-  }, [instaID]);
-  if (isLoading || !data) {
+  }, [instagramIndex, tiktokId]);
+  if (isLoading) {
     return (
       <Box
         display="flex"
@@ -593,6 +649,19 @@ function HomePage() {
                 );
               })}
             </Select>
+            <Select
+              width={"auto"}
+              onChange={changeTiktokAcount}
+              defaultValue={tiktokId}
+            >
+              {User.tiktoks.map((tiktok: any, index: number) => {
+                return (
+                  <option key={index + 1} value={tiktok.id}>
+                    {tiktok.uniqueId}
+                  </option>
+                );
+              })}
+            </Select>
             <Button colorScheme="primary" onClick={logout}>
               Logout
             </Button>
@@ -603,6 +672,11 @@ function HomePage() {
           {contents.map((instadata, i) => {
             return <Card data={instadata} key={i} />;
           })}
+          {
+            videos.map((video, index) => {
+              return <TiktokCard video={video} key={index} />
+            })
+          }
         </Box>
       </Container>
     </>
@@ -672,6 +746,54 @@ const saveNewContent = async () => {
     });
 };
 
+const TiktokCard = ({ video }: { video: any }) => {
+  return (
+    <VStack
+      display={"inline-block"}
+      sx={{ breakInside: "avoid", breakAfter: "auto", breakBefore: "auto" }}
+      border={"1px solid #EDEDED"}
+      backgroundColor={"white"}
+      align={"stretch"}
+      my={4}
+      rounded={"xl"}
+      boxShadow={"0px 8px 8px -4px rgba(16, 24, 40, 0.03);"}
+    >
+      <HStack px={4} mt={2} py={2} justify={"space-between"}>
+        <HStack>
+          <Avatar name={video.owner.nickname} src={video.owner?.profileUrl}></Avatar>
+          <VStack align={"start"}>
+            <Text lineHeight={0.8}>{video.owner.nickname} </Text>
+            <Text lineHeight={0.8}>{video.owner.followerCount} followers</Text>
+          </VStack>
+        </HStack>
+        <img width={"20"} src={tiktok} alt="social media icon" />
+      </HStack>
+      <video
+        width={"100%"}
+        style={{ objectFit: "contain" }}
+        controls={true}
+        src={
+          video.url.includes("https://")
+            ? video.url
+            : "https://" + video.url
+        }
+      />
+
+      <HStack px={5} justify={"space-between"}>
+        <Text>8 months ago</Text>
+        <IconButton
+          aria-label="Download"
+          icon={<AiOutlineDownload />}
+          variant="ghost"
+          size="lg"
+          fontWeight={"bold"}
+          onClick={() => handleDownload(video.display_url)}
+        />
+      </HStack>
+    </VStack>
+  );
+}
+
 function Card({ data }: { data: any }) {
   return (
     <VStack
@@ -686,7 +808,7 @@ function Card({ data }: { data: any }) {
     >
       <HStack px={4} mt={2} py={2} justify={"space-between"}>
         <HStack>
-          <Avatar name="Kent Dodds" src={data.owner_profile_pic_url}></Avatar>
+          <Avatar name={data.owner_full_name} src={data.owner_profile_pic_url}></Avatar>
           <VStack align={"start"}>
             <Text lineHeight={0.8}>{data.owner_full_name} </Text>
             <Text lineHeight={0.8}>{data.owner_followers} followers</Text>
@@ -694,11 +816,7 @@ function Card({ data }: { data: any }) {
         </HStack>
         <img width={"20"} src={instagram} alt="social media icon" />
       </HStack>
-      {Array.isArray(data?.ig_contents)
-        ? data?.ig_contents[0]?.is_video
-        : data?.ig_content?.is_video}
       {getAccess(data)}
-
       <HStack px={5} justify={"space-between"}>
         <Text>8 months ago</Text>
         <IconButton
@@ -714,57 +832,29 @@ function Card({ data }: { data: any }) {
   );
 }
 function getAccess(data: any) {
-  if (data?.ig_contents) {
-    return (
-      <>
-        {data?.ig_contents[0]?.is_video ? (
-          <video
-            controls={true}
-            width={"100%"}
-            style={{ objectFit: "contain" }}
-            src={
-              data?.ig_contents[0].url.includes("https://")
-                ? data?.ig_contents[0].url
-                : "https://wildsocial." + data?.ig_contents[0].url
-            }
-          />
-        ) : (
-          <Image
-            width={"100%"}
-            objectFit={"contain"}
-            src={dataAccess(data)}
-            alt="content img"
-          />
-        )}
-      </>
-    );
-  }
-  if (data?.ig_content) {
-    return (
-      <>
-        {data?.ig_content?.is_video ? (
-          <video
-            width={"100%"}
-            style={{ objectFit: "contain" }}
-            controls={true}
-            src={
-              data?.ig_content.url.includes("https://")
-                ? data?.ig_content.url
-                : "https://" + data?.ig_content.url
-            }
-          />
-        ) : (
-          <Image
-            width={"100%"}
-            objectFit={"contain"}
-            src={dataAccess(data)}
-            alt="content img"
-          />
-        )}
-      </>
-    );
-  }
-  return null;
+  return (
+    <>
+      {data?.ig_content?.is_video ? (
+        <video
+          width={"100%"}
+          style={{ objectFit: "contain" }}
+          controls={true}
+          src={
+            data?.ig_content.url.includes("https://")
+              ? data?.ig_content.url
+              : "https://" + data?.ig_content.url
+          }
+        />
+      ) : (
+        <Image
+          width={"100%"}
+          objectFit={"contain"}
+          src={data?.ig_content?.display_url}
+          alt="Loading..."
+        />
+      )}
+    </>
+  );
 }
 function dataAccess(data: any) {
   return data?.ig_contents

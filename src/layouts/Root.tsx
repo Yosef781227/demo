@@ -9,8 +9,21 @@ function Root() {
       <CSSReset />
       <Global
         styles={{
+          /* width */
           "::-webkit-scrollbar": {
-            width: "0px",
+            width: "7px"
+          },
+
+          /* Track */
+          "::-webkit-scrollbar-track ": {
+            boxShadow: "inset 0 0 5px grey",
+            borderRadius: "5px",
+          },
+
+          /* Handle */
+          "::-webkit-scrollbar-thumb": {
+            background: "grey",
+            borderRadius: "5px",
           },
         }}
       />
