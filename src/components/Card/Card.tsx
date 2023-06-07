@@ -9,7 +9,7 @@ import {
   Image,
 } from "@chakra-ui/react";
 import { AiOutlineDownload } from "react-icons/ai";
-import { handleDownload } from "../utils";
+import { handleDownload } from "../../utils";
 
 function Card({ data }: { data: any }) {
   return (

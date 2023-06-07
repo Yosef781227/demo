@@ -1,14 +1,8 @@
-//@ts-nocheck
 import {
-  Avatar,
   Box,
   HStack,
-  IconButton,
-  Image,
   Text,
-  VStack,
   Button,
-  CircularProgress,
   useDisclosure,
   Select,
   Input,
@@ -17,27 +11,27 @@ import "react-datepicker/dist/react-datepicker.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Buttons from "@/components/Buttons/Button";
-import tiktok from "@/assets/icons/social/tiktok.svg";
 import Container from "@components/Container";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { BASE_URL } from "@/constants";
-import { AiOutlineDownload } from "react-icons/ai";
 import { Funnel, Plus } from "@phosphor-icons/react";
 import {
   Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
-  ModalFooter,
   ModalBody,
   ModalCloseButton,
 } from "@chakra-ui/react";
 import { UserContext } from "@/App";
 import { getInstagramQuery, getTiktokQuery } from "@/query";
-import { handleDownload } from "@/components/utils";
 import FilterModal from "@/components/Modal/FilterModal";
+import TiktokCard from "@/components/Card/TiktokCard";
+import Card from "@/components/Card/Card";
+import { saveNewContent } from "@/utils";
+import Loading from "@/components/Loading";
 
 function HomePage() {
   const User = useContext(UserContext);
@@ -257,16 +251,7 @@ function HomePage() {
     }
   }, [instagramIndex, tiktokId]);
   if (isLoading) {
-    return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height="100vh"
-      >
-        <CircularProgress isIndeterminate color="#8B5CF6" />
-      </Box>
-    );
+    return <Loading />;
   }
 
   return (
@@ -403,113 +388,5 @@ function HomePage() {
     </>
   );
 }
-
-const saveNewContent = async () => {
-  const index: number =
-    localStorage.getItem("selectedInstagramIndex") !== null
-      ? parseInt(localStorage.getItem("selectedInstagramIndex") || "")
-      : 0;
-
-  const instas: any =
-    JSON.parse(localStorage.getItem("instagrams") || "[]") || [];
-  const instagramId = instas[index]?.id;
-  axios
-    .post(
-      BASE_URL,
-      {
-        query: `
-        mutation Mutation($jsonInput: String!) {
-          savePostsAndReels(json_input: $jsonInput) {
-            success
-            message
-          }
-        } 
-        `,
-        variables: {
-          jsonInput: JSON.stringify({
-            instagram_id: instagramId,
-          }),
-        },
-      },
-      { withCredentials: true }
-    )
-    .then((result) => {
-      if (result.data.errors) {
-        console.error("GraphQL errors", result.data.errors);
-        toast.error("GraphQL errors: " + JSON.stringify(result.data.errors));
-      } else if (!result.data.data) {
-        console.error("Unexpected server response", result.data);
-        toast.error(
-          "Unexpected server response: " + JSON.stringify(result.data)
-        );
-      } else {
-        let toastMessage = "";
-
-        if (result.data.data.savePostsAndReels.success) {
-          toastMessage +=
-            "Posts and Reels: " + result.data.data.savePostsAndReels.message;
-        } else {
-          toastMessage +=
-            "Posts and Reels: Error - " +
-            result.data.data.savePostsAndReels.message;
-        }
-
-        toast(toastMessage);
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-      toast.error("Network error: " + error.message);
-    });
-};
-
-const TiktokCard = ({ video }: { video: any }) => {
-  return (
-    <VStack
-      display={"inline-block"}
-      sx={{ breakInside: "avoid", breakAfter: "auto", breakBefore: "auto" }}
-      border={"1px solid #EDEDED"}
-      backgroundColor={"white"}
-      align={"stretch"}
-      my={4}
-      rounded={"xl"}
-      boxShadow={"0px 8px 8px -4px rgba(16, 24, 40, 0.03);"}
-    >
-      <HStack px={4} mt={2} py={2} justify={"space-between"}>
-        <HStack>
-          <Avatar
-            name={video.owner.nickname}
-            src={video.owner?.profileUrl}
-          ></Avatar>
-          <VStack align={"start"}>
-            <Text lineHeight={0.8}>{video.owner.nickname} </Text>
-            <Text lineHeight={0.8}>{video.owner.followerCount} followers</Text>
-          </VStack>
-        </HStack>
-        <img width={"20"} src={tiktok} alt="social media icon" />
-      </HStack>
-      <video
-        width={"100%"}
-        style={{ objectFit: "contain" }}
-        controls={true}
-        src={
-          video.url.includes("https://") ? video.url : "https://" + video.url
-        }
-      />
-
-      <HStack px={5} justify={"space-between"}>
-        <Text>8 months ago</Text>
-        <IconButton
-          aria-label="Download"
-          icon={<AiOutlineDownload />}
-          variant="ghost"
-          size="lg"
-          fontWeight={"bold"}
-          onClick={() => handleDownload(video.display_url)}
-        />
-      </HStack>
-    </VStack>
-  );
-};
 
 export default HomePage;
