@@ -7,8 +7,8 @@ export default defineConfig({
   server: {
     port: 3000,
 
-    host:"localhost"
-},
+    host: "localhost",
+  },
   plugins: [react(), eslint()],
   resolve: {
     alias: {
@@ -17,6 +17,7 @@ export default defineConfig({
       "@components": path.resolve(__dirname, "./src/components"),
       "@pages": path.resolve(__dirname, "./src/pages"),
       "@query": path.resolve(__dirname, "./src/query"),
+      "@interfaces": path.resolve(__dirname, "./src/interfaces"),
       "@layouts": path.resolve(__dirname, "./src/layouts"),
     },
   },

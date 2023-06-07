@@ -6,6 +6,7 @@ import {
   useDisclosure,
   Select,
   Input,
+  ModalFooter,
 } from "@chakra-ui/react";
 import "react-datepicker/dist/react-datepicker.css";
 import { toast } from "react-toastify";
@@ -21,7 +22,6 @@ import {
   Modal,
   ModalOverlay,
   ModalContent,
-  ModalHeader,
   ModalBody,
   ModalCloseButton,
 } from "@chakra-ui/react";
@@ -32,9 +32,10 @@ import TiktokCard from "@/components/Card/TiktokCard";
 import Card from "@/components/Card/Card";
 import { saveNewContent } from "@/utils";
 import Loading from "@/components/Loading";
+import { User } from "@/interfaces/user.interface";
 
 function HomePage() {
-  const User = useContext(UserContext);
+  const User = useContext(UserContext) as User;
   const [isLoading, setIsLoading] = useState(false);
   const [hasInstagram, setHasInstagram] = useState(User.hasInstagram);
   const [instagrams, setInstagrams] = useState(User.instagrams);

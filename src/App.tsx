@@ -1,110 +1,25 @@
-//@ts-nocheck
-import {
-  createBrowserRouter,
-  Navigate,
-  RouterProvider,
-} from "react-router-dom";
-import HomePage from "@pages/Home.page";
-import Root from "@layouts/Root";
-import LoginPage from "@pages/Auth/Login.page";
-import Collections from "@pages/Collections/Collections.page";
-import Setting from "@pages/Setting.page";
-import SignupPage from "@pages/Auth/Signup.page";
-import ResetPassword from "@pages/Auth/ResetPassword";
-import NextPage from "@pages/NextPage";
+import { RouterProvider } from "react-router-dom";
+
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import TiktokPage from "./pages/integrations/Tiktok.page";
-import InstagramPage from "./pages/integrations/Instagram.page";
-import ChooseInstagram from "./pages/Auth/chooseInstagram";
 
 import { BASE_URL } from "./constants";
 import axios from "axios";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { Box, CircularProgress } from "@chakra-ui/react";
+import { authRouter, protectedRouter } from "./utils/routes";
+import { User } from "./interfaces/user.interface";
 
-export const UserContext = createContext(null);
+export const UserContext = createContext<User | null>(null);
 function App() {
-  const authRouter = createBrowserRouter([
-    {
-      path: "/",
-      element: <LoginPage />,
-    },
-    {
-      path: "signup",
-      element: <SignupPage />,
-    },
-    {
-      path: "reset-password",
-      element: <ResetPassword />,
-    },
-    {
-      path: "*",
-      element: <Navigate to="/" />,
-    },
-  ]);
-  const protectedRouter = createBrowserRouter([
-    {
-      path: "login",
-      element: <LoginPage />,
-    },
-    {
-      path: "signup",
-      element: <SignupPage />,
-    },
-    {
-      path: "reset-password",
-      element: <ResetPassword />,
-    },
-    {
-      path: "nextpage",
-      element: <NextPage />,
-    },
-    {
-      path: "ChooseInstagram",
-      element: <ChooseInstagram />,
-    },
-    {
-      path: "/",
-      element: <Root />,
-      children: [
-        {
-          index: true,
-          element: <HomePage />,
-        },
-        {
-          path: "collections",
-          element: <Collections />,
-        },
-        {
-          path: "integration",
-          children: [
-            {
-              path: "tiktok",
-              element: <TiktokPage />,
-            },
-            {
-              path: "instagram",
-              element: <InstagramPage />,
-            },
-          ],
-        },
-        {
-          path: "settings",
-          element: <Setting />,
-        },
-      ],
-    },
-
-  ]);
   const [isAuth, setIsAuth] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [instagramId, setInstagramId] = useState("");
-  const [instagrams, setInstagrams] = useState([]);
+  const [instagrams, setInstagrams] = useState<any[]>([]);
   const [instagramIndex, setInstagramIndex] = useState(0);
   const [hasInstagram, setHasInstagram] = useState(false);
   const [tiktokId, settiktokId] = useState("");
-  const [tiktoks, settiktoks] = useState([]);
+  const [tiktoks, settiktoks] = useState<any[]>([]);
   const [tiktokIndex, settiktokIndex] = useState(0);
   const [hasTiktok, setHasTiktok] = useState(false);
   const authenticate = async () => {
@@ -147,7 +62,9 @@ function App() {
         if (response.data.data.me.has_instagram) {
           console.log("User has instagram");
           const index: number =
-            localStorage.getItem("selectedInstagramIndex") !== null ? parseInt(localStorage.getItem("selectedInstagramIndex") || "") : 0;
+            localStorage.getItem("selectedInstagramIndex") !== null
+              ? parseInt(localStorage.getItem("selectedInstagramIndex") || "")
+              : 0;
           const instagrams = response.data.data.me.instagrams;
           localStorage.setItem("selectedInstagramIndex", index.toString());
           localStorage.setItem("instagrams", JSON.stringify(instagrams));
@@ -163,7 +80,9 @@ function App() {
         if (response.data.data.me.has_tiktok) {
           console.log("User has tiktok");
           const index: number =
-            localStorage.getItem("selectedTiktokIndex") !== null ? parseInt(localStorage.getItem("selectedTiktokIndex") || "") : 0;
+            localStorage.getItem("selectedTiktokIndex") !== null
+              ? parseInt(localStorage.getItem("selectedTiktokIndex") || "")
+              : 0;
           const tiktoks = response.data.data.me.tiktoks;
           localStorage.setItem("selectedTiktokIndex", index.toString());
           localStorage.setItem("tiktoks", JSON.stringify(tiktoks));
@@ -177,7 +96,7 @@ function App() {
           localStorage.removeItem("tiktoks");
         }
       }
-    } catch (error) { }
+    } catch (error) {}
   };
 
   useEffect(() => {
@@ -207,14 +126,30 @@ function App() {
         tiktokId,
         tiktoks,
         tiktokIndex,
-        setHasInstagram: (value) => { setHasInstagram(value) },
-        setInstagrams: (value) => { setInstagrams(value) },
-        setInstagramIndex: (value) => { setInstagramIndex(value) },
-        setInstagramId: (value) => { setInstagramId(value) },
-        setHasTiktok: (value) => { setHasTiktok(value) },
-        settiktoks: (value) => { settiktoks(value) },
-        settiktokId: (value) => { settiktokId(value) },
-        settiktokIndex: (value) => { settiktokIndex(value) },
+        setHasInstagram: (value) => {
+          setHasInstagram(value);
+        },
+        setInstagrams: (value) => {
+          setInstagrams(value);
+        },
+        setInstagramIndex: (value) => {
+          setInstagramIndex(value);
+        },
+        setInstagramId: (value) => {
+          setInstagramId(value);
+        },
+        setHasTiktok: (value) => {
+          setHasTiktok(value);
+        },
+        settiktoks: (value) => {
+          settiktoks(value);
+        },
+        settiktokId: (value) => {
+          settiktokId(value);
+        },
+        settiktokIndex: (value) => {
+          settiktokIndex(value);
+        },
       }}
     >
       <ToastContainer />
