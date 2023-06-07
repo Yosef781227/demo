@@ -5,6 +5,39 @@ import axios from "axios";
 export const handleDownload = (url: string) => {
   window.open(url.includes("https://") ? url : "https://" + url, "_current");
 };
+
+export const logout = async () => {
+  try {
+    const response: any = await axios.post(
+      BASE_URL,
+      {
+        query: `
+        mutation Mutation {
+          logout {
+            success
+            message
+          }
+        }
+        `,
+      },
+      {
+        withCredentials: true,
+      }
+    );
+    //console.log(response.data);
+    if (response.data.data.logout.success) {
+      localStorage.removeItem("selectedInstagramIndex");
+      localStorage.removeItem("instagrams");
+      //navigate("/login");
+      window.location.reload();
+    } else {
+      toast.error(response.data.data.logout.message);
+    }
+  } catch (error: any) {
+    toast.error(error.message);
+  }
+};
+
 export const saveNewContent = async () => {
   const index: number =
     localStorage.getItem("selectedInstagramIndex") !== null

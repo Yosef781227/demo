@@ -9,7 +9,6 @@ import {
   ModalFooter,
 } from "@chakra-ui/react";
 import "react-datepicker/dist/react-datepicker.css";
-import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Buttons from "@/components/Buttons/Button";
 import Container from "@components/Container";
@@ -30,7 +29,7 @@ import { getInstagramQuery, getTiktokQuery } from "@/query";
 import FilterModal from "@/components/Modal/FilterModal";
 import TiktokCard from "@/components/Card/TiktokCard";
 import Card from "@/components/Card/Card";
-import { saveNewContent } from "@/utils";
+import { logout, saveNewContent } from "@/utils";
 import Loading from "@/components/Loading";
 import { User } from "@/interfaces/user.interface";
 
@@ -73,38 +72,6 @@ function HomePage() {
     const instagramId = e.target.value;
     setInstagramIndex(index);
     setInstagramId(instagramId);
-  };
-
-  const logout = async () => {
-    try {
-      const response: any = await axios.post(
-        BASE_URL,
-        {
-          query: `
-          mutation Mutation {
-            logout {
-              success
-              message
-            }
-          }
-          `,
-        },
-        {
-          withCredentials: true,
-        }
-      );
-      //console.log(response.data);
-      if (response.data.data.logout.success) {
-        localStorage.removeItem("selectedInstagramIndex");
-        localStorage.removeItem("instagrams");
-        //navigate("/login");
-        window.location.reload();
-      } else {
-        toast.error(response.data.data.logout.message);
-      }
-    } catch (error: any) {
-      toast.error(error.message);
-    }
   };
 
   useEffect(() => {
