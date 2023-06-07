@@ -10,19 +10,14 @@ import {
   Button,
   CircularProgress,
   useDisclosure,
-  Checkbox,
   Select,
   Input,
 } from "@chakra-ui/react";
-import DatePicker from "react-datepicker";
-import { useLocation } from "react-router-dom";
 import "react-datepicker/dist/react-datepicker.css";
-import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Buttons from "@/components/Buttons/Button";
-import instagram from "@/assets/icons/social/instagram.svg";
-import tiktok from "@/assets/icons/social/tiktok.svg"
+import tiktok from "@/assets/icons/social/tiktok.svg";
 import Container from "@components/Container";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
@@ -40,88 +35,9 @@ import {
   ModalCloseButton,
 } from "@chakra-ui/react";
 import { UserContext } from "@/App";
-
-const getInstagramQuery = `
-query Query($jsonInput: String!) {
-  getInstagramAccount(json_input: $jsonInput) {
-    connected
-    followers
-    full_name
-    id
-    posts {
-      owner_username
-      owner_profile_pic_url
-      owner_full_name
-      owner_followers
-      id
-      caption
-      ig_contents {
-        display_url
-        id
-        is_video
-        url
-      }
-    }
-    reels {
-      caption
-      id
-      owner_username
-      owner_profile_pic_url
-      owner_followers
-      owner_full_name
-      ig_content {
-        display_url
-        url
-        is_video
-        id
-      }
-    }
-    stories {
-      owner_username
-      owner_profile_pic_url
-      owner_full_name
-      owner_followers
-      id
-      ig_contents {
-        url
-        display_url
-        id
-        is_video
-      }
-    }
-  }
-}
-`;
-
-const getTiktokQuery = `
-query Query($jsonInput: String!) {
-  getTikTokAccount(json_input: $jsonInput) {
-    videos {
-      id
-      t_id
-      timestamp
-      width
-      height
-      duration
-      display_url
-      url
-      usage_right
-      caption
-      owner {
-        id
-        uniqueId
-        nickname
-        profileUrl
-        followerCount
-        followingCount
-        bio
-        videoCount
-        heartCount
-      }
-    }
-  }
-}
-`;
+import { getInstagramQuery, getTiktokQuery } from "@/query";
+import { handleDownload } from "@/components/utils";
+import FilterModal from "@/components/Modal/FilterModal";
 
 function HomePage() {
   const User = useContext(UserContext);
@@ -205,123 +121,138 @@ function HomePage() {
         instagram_id: instagramId,
       });
 
-      axios.post(BASE_URL,
-        { query: getInstagramQuery, variables: { jsonInput } },
-        { withCredentials: true }
-      ).then((result) => {
-        if (result.data.errors) {
-          console.log("Got you");
-          console.error("GraphQL errors", result.data.errors.message);
-        } else if (!result.data.data || !result.data.data.getInstagramAccount) {
-          console.error("Unexpected server response", result.data);
-        } else {
-          const instaposts: [] = result.data.data.getInstagramAccount.posts;
+      axios
+        .post(
+          BASE_URL,
+          { query: getInstagramQuery, variables: { jsonInput } },
+          { withCredentials: true }
+        )
+        .then((result) => {
+          if (result.data.errors) {
+            console.log("Got you");
+            console.error("GraphQL errors", result.data.errors.message);
+          } else if (
+            !result.data.data ||
+            !result.data.data.getInstagramAccount
+          ) {
+            console.error("Unexpected server response", result.data);
+          } else {
+            const instaposts: [] = result.data.data.getInstagramAccount.posts;
 
-          let posts: any[] = [];
+            let posts: any[] = [];
 
-          instaposts.forEach((post) => {
-            const { ig_contents }: { ig_contents: [] } = post;
-            const {
-              owner_username,
-              owner_profile_pic_url,
-              owner_full_name,
-              owner_followers,
-              caption,
-              id,
-            }: {
-              owner_username: string;
-              owner_profile_pic_url: string;
-              owner_full_name: string;
-              owner_followers: number;
-              caption: string | null;
-              id: string;
-            } = post;
-            posts = [
-              ...posts,
-              ...ig_contents.map((content) => {
-                return {
-                  owner_username,
-                  owner_profile_pic_url,
-                  owner_full_name,
-                  owner_followers,
-                  id,
-                  caption,
-                  ig_content: content,
-                };
-              }),
-            ];
-          });
+            instaposts.forEach((post) => {
+              const { ig_contents }: { ig_contents: [] } = post;
+              const {
+                owner_username,
+                owner_profile_pic_url,
+                owner_full_name,
+                owner_followers,
+                caption,
+                id,
+              }: {
+                owner_username: string;
+                owner_profile_pic_url: string;
+                owner_full_name: string;
+                owner_followers: number;
+                caption: string | null;
+                id: string;
+              } = post;
+              posts = [
+                ...posts,
+                ...ig_contents.map((content) => {
+                  return {
+                    owner_username,
+                    owner_profile_pic_url,
+                    owner_full_name,
+                    owner_followers,
+                    id,
+                    caption,
+                    ig_content: content,
+                  };
+                }),
+              ];
+            });
 
-          const instastories: [] = result.data.data.getInstagramAccount.stories;
-          let stories: any[] = [];
+            const instastories: [] =
+              result.data.data.getInstagramAccount.stories;
+            let stories: any[] = [];
 
-          instastories.forEach((story) => {
-            const { ig_contents }: { ig_contents: [] } = story;
-            const {
-              owner_username,
-              owner_profile_pic_url,
-              owner_full_name,
-              owner_followers,
-              id,
-            }: {
-              owner_username: string;
-              owner_profile_pic_url: string;
-              owner_full_name: string;
-              owner_followers: number;
-              id: string;
-            } = story;
+            instastories.forEach((story) => {
+              const { ig_contents }: { ig_contents: [] } = story;
+              const {
+                owner_username,
+                owner_profile_pic_url,
+                owner_full_name,
+                owner_followers,
+                id,
+              }: {
+                owner_username: string;
+                owner_profile_pic_url: string;
+                owner_full_name: string;
+                owner_followers: number;
+                id: string;
+              } = story;
 
-            stories = [
+              stories = [
+                ...stories,
+                ...ig_contents.map((content) => {
+                  return {
+                    owner_username,
+                    owner_profile_pic_url,
+                    owner_full_name,
+                    owner_followers,
+                    id,
+                    ig_content: content,
+                  };
+                }),
+              ];
+            });
+            const { connected, followers, full_name, id } =
+              result.data.data.getInstagramAccount;
+            setContents([
               ...stories,
-              ...ig_contents.map((content) => {
-                return {
-                  owner_username,
-                  owner_profile_pic_url,
-                  owner_full_name,
-                  owner_followers,
-                  id,
-                  ig_content: content,
-                };
-              }),
-            ];
-          });
-          const { connected, followers, full_name, id } =
-            result.data.data.getInstagramAccount;
-          setContents([
-            ...stories,
-            ...posts,
-            ...result.data.data.getInstagramAccount.reels
-          ]);
-        }
-        setIsLoading(false);
-      }).catch((error: any) => {
-        setIsLoading(false);
-        //console.error(error.message);
-      });
+              ...posts,
+              ...result.data.data.getInstagramAccount.reels,
+            ]);
+          }
+          setIsLoading(false);
+        })
+        .catch((error: any) => {
+          setIsLoading(false);
+          //console.error(error.message);
+        });
       if (hasTiktok) {
         //console.log(tiktokId);
         jsonInput = JSON.stringify({
           tik_tok_id: tiktokId,
         });
         setIsLoading(true);
-        axios.post(BASE_URL,
-          { query: getTiktokQuery, variables: { jsonInput } },
-          { withCredentials: true }
-        ).then((result) => {
-          //console.log(result.data);
-          if (result.data.errors) {
-            console.error("GraphQL errors", result.data.errors);
-          } else if (!result.data.data || !result.data.data.getTikTokAccount) {
-            console.error("Unexpected server response", result.data);
-          } else {
-            const videos: [] = result.data.data.getTikTokAccount.videos;
-            setVideos(videos)
-          }
-          setIsLoading(false);
-        }).catch((error: any) => {
-          setIsLoading(false);
-          console.error(error.message);
-        });
+        axios
+          .post(
+            BASE_URL,
+            { query: getTiktokQuery, variables: { jsonInput } },
+            { withCredentials: true }
+          )
+          .then((result) => {
+            //console.log(result.data);
+            if (result.data.errors) {
+              console.error("GraphQL errors", result.data.errors);
+            } else if (
+              !result.data.data ||
+              !result.data.data.getTikTokAccount
+            ) {
+              console.error("Unexpected server response", result.data);
+            } else {
+              const videos: [] = result.data.data.getTikTokAccount.videos;
+              setVideos(videos);
+            }
+            setIsLoading(false);
+          })
+          .catch((error: any) => {
+            setIsLoading(false);
+            console.error(error.message);
+          });
       }
     }
   }, [instagramIndex, tiktokId]);
@@ -335,10 +266,8 @@ function HomePage() {
       >
         <CircularProgress isIndeterminate color="#8B5CF6" />
       </Box>
-
     );
   }
-
 
   return (
     <>
@@ -394,218 +323,12 @@ function HomePage() {
         </ModalContent>
       </Modal>
 
-      <Modal isOpen={isOpen} isCentered={false} size={"md"} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent
-          containerProps={{
-            justifyContent: "flex-end",
-            paddingRight: "0.9rem",
-            paddingTop: "0.9rem",
-          }}
-          sx={{
-            "&:first-child": {
-              margin: 0,
-              height: "100vh",
-              overflowY: "scroll",
-            },
-          }}
-        >
-          <ModalHeader fontSize={"xl"} fontWeight={"bold"} mt={6}>
-            Filters
-          </ModalHeader>
-          <ModalCloseButton size={"lg"} color={"gray.500"} mt={2} />
-
-          <Box borderBottom="1px" borderColor="gray.100" width="100%" my={2} />
-          <ModalBody mt={5} ml={2}>
-            <Box>
-              <Text textColor={"gray.500"}>Post Date</Text>
-
-              <DatePicker
-                selected={startDate}
-                onChange={(date: Date | null) =>
-                  setStartDate((prevDate) => date || prevDate)
-                }
-              />
-            </Box>
-            <Box mt={5}>
-              <Text textColor={"gray.500"}>Post Type</Text>
-              <Box mt={3}>
-                <Box>
-                  <Text textColor={"gray.500"} fontSize={"sm"}>
-                    Instagram
-                  </Text>
-                  <HStack mt={1.5}>
-                    <Checkbox>Reel</Checkbox>
-                    <Checkbox>Feed</Checkbox>
-                    <Checkbox>Story</Checkbox>
-                  </HStack>
-                </Box>
-                <Box mt={3}>
-                  <Text textColor={"gray.500"} fontSize={"sm"}>
-                    Tiktok
-                  </Text>
-                  <Checkbox mt={3}>Video</Checkbox>
-                </Box>
-              </Box>
-            </Box>
-            <Box mt={5}>
-              <Text textColor={"gray.500"}>Source</Text>
-              <Box mt={3}>
-                <Box>
-                  <Text textColor={"gray.500"} fontSize={"sm"} mt={2}>
-                    Instagram
-                  </Text>
-                  <Checkbox size={"sm"}>@beyond_lore</Checkbox>
-                </Box>
-                <Box mt={2}>
-                  <Text textColor={"gray.500"} fontSize={"sm"} mt={2}>
-                    Tiktok
-                  </Text>
-                  <Checkbox size={"sm"}>@beyond_lore</Checkbox>
-                </Box>
-              </Box>
-            </Box>
-            <Box mt={5}>
-              <Text textColor={"gray.500"}>Tags</Text>
-              <Tabs w={"max-content"}>
-                <TabList>
-                  <Tab>All</Tab>
-                  <Tab>Assets</Tab>
-                  <Tab>Social Profile</Tab>
-                </TabList>
-                <TabPanels>
-                  <TabPanel>
-                    <HStack>
-                      <Checkbox>No Tags</Checkbox>
-                    </HStack>
-                  </TabPanel>
-                  <TabPanel>
-                    <p>two!</p>
-                  </TabPanel>
-                </TabPanels>
-              </Tabs>
-            </Box>
-            <Box mt={5}>
-              <Text textColor={"gray.500"}>Usage Right</Text>
-              <HStack mt={3}>
-                <Checkbox>Pending</Checkbox>
-                <Checkbox>Approved</Checkbox>
-                <Checkbox>Rejected</Checkbox>
-              </HStack>
-            </Box>
-            <Box mt={5}>
-              <Text textColor={"gray.500"}>Followers</Text>
-              <HStack mt={3} ml="10%" w="max-content">
-                <Select placeholder="Select">
-                  <option value="option1" selected>
-                    1k
-                  </option>
-                  <option value="option2">2k</option>
-                  <option value="option3">3k</option>
-                </Select>
-                <Select placeholder="Select">
-                  <option value="option1">1k</option>
-                  <option value="option2"> 2k</option>
-                  <option value="option3" selected>
-                    {" "}
-                    3k
-                  </option>
-                </Select>
-              </HStack>
-            </Box>
-            <Box mt={5}>
-              <Text textColor={"gray.500"}>Content Type</Text>
-              <HStack mt={3}>
-                <Checkbox>Video</Checkbox>
-                <Checkbox>Audio</Checkbox>
-              </HStack>
-            </Box>
-            <Box mt={5}>
-              <Text textColor={"gray.500"}>Engagement</Text>
-              <VStack alignItems={"flex-start"} mt={3}>
-                <Checkbox checked={true}>Views</Checkbox>
-                <HStack pl="10%">
-                  <Select placeholder="Select">
-                    <option value="option1" selected>
-                      1k
-                    </option>
-                    <option value="option2">2k</option>
-                    <option value="option3">3k</option>
-                  </Select>
-                  <Select placeholder="Select">
-                    <option value="option1">1k</option>
-                    <option value="option2"> 2k</option>
-                    <option value="option3" selected>
-                      {" "}
-                      3k
-                    </option>
-                  </Select>
-                </HStack>
-              </VStack>
-              <VStack alignItems={"flex-start"}>
-                <Checkbox checked={true}> Plays</Checkbox>
-                <HStack pl="10%">
-                  <Select placeholder="Select">
-                    <option value="1k" selected>1k</option>
-                    <option value="2k">2k</option>
-                    <option value="3k">3k</option>
-                  </Select>
-                  <Select placeholder="Select">
-                    <option value="option1">1k</option>
-                    <option value="option2"> 2k</option>
-                    <option value="option3" selected>
-                      {" "}
-                      3k
-                    </option>
-                  </Select>
-                </HStack>
-              </VStack>
-              <VStack mt={3} alignItems={"flex-start"}>
-                <Checkbox> Likes</Checkbox>
-                <Checkbox> Comments</Checkbox>
-                <Checkbox> Share</Checkbox>
-              </VStack>
-            </Box>
-            <Box mt={5}>
-              <Text textColor={"gray.500"}>Collections</Text>
-              <Tabs w="max-content">
-                <TabList>
-                  <Tab>Include</Tab>
-                  <Tab>Exclude</Tab>
-                </TabList>
-                <TabPanels>
-                  <TabPanel>
-                    <HStack>
-                      <Checkbox>All Collection</Checkbox>
-                      <Checkbox>Random</Checkbox>
-                      <Checkbox>Large Inflencers</Checkbox>
-                    </HStack>
-                  </TabPanel>
-                  <TabPanel>
-                    <p>two!</p>
-                  </TabPanel>
-                </TabPanels>
-              </Tabs>
-            </Box>
-            <Box mt={5}>
-              <Text textColor={"gray.500"}>Verification</Text>
-              <HStack mt={3}>
-                <Checkbox>Verified</Checkbox>
-                <Checkbox>Not Verified</Checkbox>
-              </HStack>
-            </Box>
-          </ModalBody>
-
-          <ModalFooter>
-            <Button variant="ghost">
-              Reset All
-            </Button>
-            <Button colorScheme="primary" mr={3} onClick={onClose}>
-              Apply All
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <FilterModal
+        setStartDate={setStartDate}
+        startDate={startDate}
+        isOpen={isOpen}
+        onClose={onClose}
+      />
 
       <Container>
         <HStack justifyContent={"space-between"}>
@@ -672,20 +395,14 @@ function HomePage() {
           {contents.map((instadata, i) => {
             return <Card data={instadata} key={i} />;
           })}
-          {
-            videos.map((video, index) => {
-              return <TiktokCard video={video} key={index} />
-            })
-          }
+          {videos.map((video, index) => {
+            return <TiktokCard video={video} key={index} />;
+          })}
         </Box>
       </Container>
     </>
   );
 }
-
-const handleDownload = (url: string) => {
-  window.open(url.includes("https://") ? url : "https://" + url, "_current");
-};
 
 const saveNewContent = async () => {
   const index: number =
@@ -760,7 +477,10 @@ const TiktokCard = ({ video }: { video: any }) => {
     >
       <HStack px={4} mt={2} py={2} justify={"space-between"}>
         <HStack>
-          <Avatar name={video.owner.nickname} src={video.owner?.profileUrl}></Avatar>
+          <Avatar
+            name={video.owner.nickname}
+            src={video.owner?.profileUrl}
+          ></Avatar>
           <VStack align={"start"}>
             <Text lineHeight={0.8}>{video.owner.nickname} </Text>
             <Text lineHeight={0.8}>{video.owner.followerCount} followers</Text>
@@ -773,9 +493,7 @@ const TiktokCard = ({ video }: { video: any }) => {
         style={{ objectFit: "contain" }}
         controls={true}
         src={
-          video.url.includes("https://")
-            ? video.url
-            : "https://" + video.url
+          video.url.includes("https://") ? video.url : "https://" + video.url
         }
       />
 
@@ -792,74 +510,6 @@ const TiktokCard = ({ video }: { video: any }) => {
       </HStack>
     </VStack>
   );
-}
-
-function Card({ data }: { data: any }) {
-  return (
-    <VStack
-      display={"inline-block"}
-      sx={{ breakInside: "avoid", breakAfter: "auto", breakBefore: "auto" }}
-      border={"1px solid #EDEDED"}
-      backgroundColor={"white"}
-      align={"stretch"}
-      my={4}
-      rounded={"xl"}
-      boxShadow={"0px 8px 8px -4px rgba(16, 24, 40, 0.03);"}
-    >
-      <HStack px={4} mt={2} py={2} justify={"space-between"}>
-        <HStack>
-          <Avatar name={data.owner_full_name} src={data.owner_profile_pic_url}></Avatar>
-          <VStack align={"start"}>
-            <Text lineHeight={0.8}>{data.owner_full_name} </Text>
-            <Text lineHeight={0.8}>{data.owner_followers} followers</Text>
-          </VStack>
-        </HStack>
-        <img width={"20"} src={instagram} alt="social media icon" />
-      </HStack>
-      {getAccess(data)}
-      <HStack px={5} justify={"space-between"}>
-        <Text>8 months ago</Text>
-        <IconButton
-          aria-label="Download"
-          icon={<AiOutlineDownload />}
-          variant="ghost"
-          size="lg"
-          fontWeight={"bold"}
-          onClick={() => handleDownload(dataAccess(data))}
-        />
-      </HStack>
-    </VStack>
-  );
-}
-function getAccess(data: any) {
-  return (
-    <>
-      {data?.ig_content?.is_video ? (
-        <video
-          width={"100%"}
-          style={{ objectFit: "contain" }}
-          controls={true}
-          src={
-            data?.ig_content.url.includes("https://")
-              ? data?.ig_content.url
-              : "https://" + data?.ig_content.url
-          }
-        />
-      ) : (
-        <Image
-          width={"100%"}
-          objectFit={"contain"}
-          src={data?.ig_content?.display_url}
-          alt="Loading..."
-        />
-      )}
-    </>
-  );
-}
-function dataAccess(data: any) {
-  return data?.ig_contents
-    ? data?.ig_contents[0]?.display_url
-    : data?.ig_content?.display_url;
-}
+};
 
 export default HomePage;
