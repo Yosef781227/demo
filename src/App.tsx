@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, RouterProvider, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -7,11 +7,17 @@ import { BASE_URL } from "./constants";
 import axios from "axios";
 import { createContext, useEffect, useState } from "react";
 import { Box, CircularProgress } from "@chakra-ui/react";
-import { authRouter, protectedRouter } from "./utils/routes";
 import { User } from "./interfaces/user.interface";
-import { Browser } from "@phosphor-icons/react";
 import Root from "./layouts/Root";
 import HomePage from "./pages/Home.page";
+import Collections from "@pages/Collections/Collections.page";
+import Setting from "@pages/Setting.page";
+import TiktokPage from "@pages/integrations/Tiktok.page";
+import InstagramPage from "@pages/integrations/Instagram.page";
+import LoginPage from "@pages/Auth/Login.page";
+import ResetPassword from "@pages/Auth/ResetPassword";
+import SignupPage from "@pages/Auth/Signup.page";
+import Router from "./utils/routes";
 
 export const UserContext = createContext<User | null>(null);
 function App() {
@@ -129,38 +135,18 @@ function App() {
         tiktokId,
         tiktoks,
         tiktokIndex,
-        setHasInstagram: (value) => {
-          setHasInstagram(value);
-        },
-        setInstagrams: (value) => {
-          setInstagrams(value);
-        },
-        setInstagramIndex: (value) => {
-          setInstagramIndex(value);
-        },
-        setInstagramId: (value) => {
-          setInstagramId(value);
-        },
-        setHasTiktok: (value) => {
-          setHasTiktok(value);
-        },
-        settiktoks: (value) => {
-          settiktoks(value);
-        },
-        settiktokId: (value) => {
-          settiktokId(value);
-        },
-        settiktokIndex: (value) => {
-          settiktokIndex(value);
-        },
+        setHasInstagram,
+        setInstagrams,
+        setInstagramIndex,
+        setInstagramId,
+        setHasTiktok,
+        settiktoks,
+        settiktokId,
+        settiktokIndex,
       }}
     >
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Root />}>
-            <Route path="/" element={<HomePage />} />
-          </Route>
-        </Routes>
+        <Router isAuth={isAuth} />
       </BrowserRouter>
       <ToastContainer />
       {/* <RouterProvider router={protectedRouter} /> */}
