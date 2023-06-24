@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import HomePage from "@pages/Home.page";
 import Root from "@layouts/Root";
 import LoginPage from "@pages/Auth/Login.page";
@@ -13,7 +13,7 @@ import ChooseInstagram from "@pages/Auth/chooseInstagram";
 
 function Router({ isAuth }: { isAuth: boolean }) {
   return (
-    <>
+    <BrowserRouter>
       {isAuth ? (
         <Routes>
           <Route path="/" element={<Root />}>
@@ -37,7 +37,7 @@ function Router({ isAuth }: { isAuth: boolean }) {
           </Route>
         </Routes>
       )}
-    </>
+    </BrowserRouter>
   );
 }
 export default Router;

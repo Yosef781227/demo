@@ -5,10 +5,10 @@ export default function useGetInstagramData(
   isLoading: boolean
 ): any[] {
   //TODO: Err handling
-  if (isLoading) {
+  if (isLoading || !instagramData) {
     return [];
   }
-  const instaposts: [] = instagramData.getInstagramAccount.posts;
+  const instaposts: [] = instagramData?.getInstagramAccount?.posts;
 
   let posts: any[] = [];
 

@@ -4,7 +4,6 @@ import "react-toastify/dist/ReactToastify.css";
 import Container from "@components/Container";
 import { useState, useContext, ChangeEvent } from "react";
 import { UserContext } from "@/App";
-import { GetInstagramQuery } from "@/query";
 import FilterModal from "@/components/Modal/FilterModal";
 import TiktokCard from "@/components/Card/TiktokCard";
 import Card from "@/components/Card/Card";
@@ -15,9 +14,12 @@ import useGetInstagramData from "@/hooks/instagram";
 import useGetTiktokData from "@/hooks/tiktok";
 import HomePageTopNavBar from "@/components/Navbar/HomePageTopNavBar";
 import NewModal from "@/components/Modal/NewModal";
+import { GetInstagramQuery } from "@/query/instagram";
+import { GetTiktokQuery } from "@/query/tiktok";
 
 function HomePage() {
   const User = useContext(UserContext) as User;
+
   const hasInstagram = User.hasInstagram;
   const hasTiktok = User.hasTiktok;
   const [instagramIndex, setInstagramIndex] = useState(User.instagramIndex);
@@ -65,7 +67,7 @@ function HomePage() {
     loading: tiktokLoading,
     error: tiktokError, //TODO: error handling
     data: tiktokData,
-  } = useQuery(GetInstagramQuery, {
+  } = useQuery(GetTiktokQuery, {
     skip: !hasTiktok,
     variables: {
       jsonInput: JSON.stringify({
