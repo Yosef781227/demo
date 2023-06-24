@@ -1,4 +1,4 @@
-import { RouterProvider } from "react-router-dom";
+import { BrowserRouter, Route, RouterProvider, Routes } from "react-router-dom";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -9,6 +9,9 @@ import { createContext, useEffect, useState } from "react";
 import { Box, CircularProgress } from "@chakra-ui/react";
 import { authRouter, protectedRouter } from "./utils/routes";
 import { User } from "./interfaces/user.interface";
+import { Browser } from "@phosphor-icons/react";
+import Root from "./layouts/Root";
+import HomePage from "./pages/Home.page";
 
 export const UserContext = createContext<User | null>(null);
 function App() {
@@ -152,8 +155,15 @@ function App() {
         },
       }}
     >
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Root />}>
+            <Route path="/" element={<HomePage />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
       <ToastContainer />
-      <RouterProvider router={isAuth ? protectedRouter : authRouter} />
+      {/* <RouterProvider router={protectedRouter} /> */}
     </UserContext.Provider>
   );
 }

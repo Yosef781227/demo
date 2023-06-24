@@ -2,14 +2,21 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import { ChakraProvider } from "@chakra-ui/react";
-import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  createHttpLink,
+} from "@apollo/client";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
-
-import { BASE_URL } from "@/constants/";
+import { BASE_URL } from "./constants";
 import theme from "./constants/theme";
 const client = new ApolloClient({
-  uri: BASE_URL,
+  link: createHttpLink({
+    uri: BASE_URL,
+    credentials: "include",
+  }),
   cache: new InMemoryCache(),
 });
 

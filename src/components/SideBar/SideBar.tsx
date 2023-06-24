@@ -9,25 +9,25 @@ const ChakraNavLink = chakra(NavLink);
 
 const sideBarElements = [
   {
-    id: 'content',
+    id: "content",
     text: "Content",
     link: "/",
     icon: <ContentIcon />,
   },
   {
-    id: 'collections',
+    id: "collections",
     text: "Collections",
     link: "/collections",
     icon: <CollectionIcon />,
   },
   {
-    id: 'integration',
+    id: "integration",
     text: "Integration",
     link: "/integration/instagram",
     icon: <IntegrationIcon />,
   },
   {
-    id: 'settings',
+    id: "settings",
     text: "Settings",
     link: "/settings",
     icon: <SettingIcon />,
@@ -73,7 +73,7 @@ function sideBarListBuilder(pathname: string) {
   );
 }
 function SideBar() {
-  const matches = useMatches();
+  const matches = [];
   return (
     <VStack
       position={"fixed"}
@@ -87,7 +87,7 @@ function SideBar() {
         <Box width={"full"} alignSelf={"flex-start"}>
           <Logo />
         </Box>
-        {sideBarListBuilder(matches[matches.length - 1].pathname)}
+        {sideBarListBuilder(matches[matches.length - 1]?.pathname)}
       </VStack>
       <HStack>
         <Avatar name="Jone Doe" />

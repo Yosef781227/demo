@@ -10,6 +10,7 @@ import NextPage from "@pages/NextPage";
 import TiktokPage from "@pages/integrations/Tiktok.page";
 import InstagramPage from "@pages/integrations/Instagram.page";
 import ChooseInstagram from "@pages/Auth/chooseInstagram";
+
 export const authRouter = createBrowserRouter([
   {
     path: "/",
