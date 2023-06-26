@@ -11,7 +11,7 @@ function Container(props: any) {
       // background={gradientBackground}
       alignSelf={"flex-start"}
       // width={"7%"}
-      width={"80%"}
+      width={"calc(100vw - 20.5%)"}
       ml={"20%"}
       mt={3.5}
       alignItems={"stretch"}

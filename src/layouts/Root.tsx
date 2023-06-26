@@ -11,7 +11,7 @@ function Root() {
         styles={{
           /* width */
           "::-webkit-scrollbar": {
-            width: "7px"
+            width: "7px",
           },
 
           /* Track */

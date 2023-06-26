@@ -33,7 +33,7 @@ function Router({ isAuth }: { isAuth: boolean }) {
             <Route index element={<LoginPage />} />
             <Route path="signup" element={<SignupPage />} />
             <Route path="reset-password" element={<ResetPassword />} />
-            <Route path="signup" element={<Navigate to="/" />} />
+            <Route path="*" element={<Navigate to="/" />} />
           </Route>
         </Routes>
       )}

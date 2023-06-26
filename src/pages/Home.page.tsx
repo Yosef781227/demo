@@ -6,7 +6,7 @@ import { useState, useContext, ChangeEvent } from "react";
 import { UserContext } from "@/App";
 import FilterModal from "@/components/Modal/FilterModal";
 import TiktokCard from "@/components/Card/TiktokCard";
-import Card from "@/components/Card/Card";
+import InstagramCard from "@/components/Card/InstagramCard";
 import Loading from "@/components/Loading";
 import { User } from "@/interfaces/user.interface";
 import { useQuery } from "@apollo/client";
@@ -16,6 +16,7 @@ import HomePageTopNavBar from "@/components/Navbar/HomePageTopNavBar";
 import NewModal from "@/components/Modal/NewModal";
 import { GetInstagramQuery } from "@/query/instagram";
 import { GetTiktokQuery } from "@/query/tiktok";
+import TestCard from "@/components/Card/TestCard";
 
 function HomePage() {
   const User = useContext(UserContext) as User;
@@ -110,7 +111,7 @@ function HomePage() {
           sx={{ columnCount: [1, 1, 3, 4], gap: "16px", marginTop: "0px" }}
         >
           {instagramContents.map((instadata, i) => {
-            return <Card data={instadata} key={i} />;
+            return <InstagramCard data={instadata} key={i} />;
           })}
           {tiktokContents.map((video, index) => {
             return <TiktokCard video={video} key={index} />;
