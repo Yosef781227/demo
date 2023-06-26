@@ -16,7 +16,7 @@ import HomePageTopNavBar from "@/components/Navbar/HomePageTopNavBar";
 import NewModal from "@/components/Modal/NewModal";
 import { GetInstagramQuery } from "@/query/instagram";
 import { GetTiktokQuery } from "@/query/tiktok";
-import TestCard from "@/components/Card/TestCard";
+import MasonryLayout from "@/layouts/MansoryLayout";
 
 function HomePage() {
   const User = useContext(UserContext) as User;
@@ -103,19 +103,19 @@ function HomePage() {
           tiktokId={tiktokId}
           instagramId={instagramId}
         />
-        <Box
-          pt={10}
-          bg="#FAfbfb"
-          px="5"
-          mt="0"
-          sx={{ columnCount: [1, 1, 3, 4], gap: "16px", marginTop: "0px" }}
-        >
-          {instagramContents.map((instadata, i) => {
-            return <InstagramCard data={instadata} key={i} />;
-          })}
-          {tiktokContents.map((video, index) => {
-            return <TiktokCard video={video} key={index} />;
-          })}
+        <Box bg="#FAFAFA" px={5} pb={20}>
+          <MasonryLayout
+            items={[
+              ...instagramContents.map((instadata, i) => {
+                return <InstagramCard data={instadata} key={i} />;
+              }),
+              ...tiktokContents.map((video, index) => {
+                return <TiktokCard video={video} key={index} />;
+              }),
+            ]}
+            columnWidth={0}
+            gap={10}
+          />
         </Box>
       </Container>
     </>

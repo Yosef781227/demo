@@ -1,9 +1,6 @@
-import { VStack, HStack, Avatar, IconButton, Text } from "@chakra-ui/react";
-import { AiOutlineDownload } from "react-icons/ai";
-import { handleDownload } from "../../utils";
+import { VStack, HStack, Avatar, Text } from "@chakra-ui/react";
 import tiktok from "@/assets/icons/social/tiktok.svg";
 import {
-  Image,
   Checkbox,
   Box,
   Menu,
@@ -46,7 +43,7 @@ const TiktokCard = ({ video }: { video: any }) => {
         <img width={"20"} src={tiktok} alt="social media icon" />
       </HStack>
 
-      <Box position="relative" height="443px" width="350px">
+      <Box position="relative" maxH="443px" minWidth="350px">
         <video
           width={"100%"}
           style={{ objectFit: "contain" }}
@@ -122,7 +119,7 @@ const TiktokCard = ({ video }: { video: any }) => {
         </HStack>
       </Box>
 
-      <HStack px={5} justify={"space-between"} h={"50px"}>
+      <HStack pb={5} justify={"space-between"} h={"50px"}>
         <Text>8 months ago</Text>
         <Menu direction="rtl">
           <MenuButton>

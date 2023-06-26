@@ -24,8 +24,8 @@ function HomePageTopNavBar({
 }) {
   const User = useContext(UserContext) as User;
   return (
-    <HStack m="0" bg="white" px="2" justifyContent={"space-between"}>
-      <Text color={"black"} fontWeight={"bold"} fontSize={"18px"}>
+    <HStack bg="white" px="5" justifyContent={"space-between"}>
+      <Text color={"black"} fontWeight={"semibold"} fontSize={"1.1rem"}>
         Content
       </Text>
       <HStack py="5">

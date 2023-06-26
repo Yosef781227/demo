@@ -31,7 +31,7 @@ function InstagramCard({ data }: { data: any }) {
       mt={"20px"}
       display={"inline-block"}
       sx={{ breakInside: "avoid", breakAfter: "auto", breakBefore: "auto" }}
-      border={"1px solid #EDEDED"}
+      border={"1px  #EDEDED"}
       backgroundColor={"white"}
       my={4}
       rounded={"xl"}
@@ -51,7 +51,7 @@ function InstagramCard({ data }: { data: any }) {
         <img width={"20"} src={instagram} alt="social media icon" />
       </HStack>
 
-      <Box position="relative" height="443px" width="350px">
+      <Box position="relative" maxH="443px" minWidth="300px" maxWidth="350px">
         {getAccess(data)}
 
         <Checkbox
@@ -120,7 +120,7 @@ function InstagramCard({ data }: { data: any }) {
         </HStack>
       </Box>
 
-      <HStack px={5} justify={"space-between"} h={"50px"}>
+      <HStack pb={5} px={5} justify={"space-between"} h={"50px"}>
         <Text>8 months ago</Text>
         <Menu direction="rtl">
           <MenuButton>
