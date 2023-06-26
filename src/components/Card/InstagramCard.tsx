@@ -1,14 +1,6 @@
 import instagram from "@/assets/icons/social/instagram.svg";
-
-import {
-  VStack,
-  HStack,
-  Avatar,
-  IconButton,
-  Text,
-  Image,
-} from "@chakra-ui/react";
-import { handleDownload } from "../../utils";
+import LazyLoad from "react-lazyload";
+import { VStack, HStack, Avatar, Text, Image } from "@chakra-ui/react";
 import {
   Checkbox,
   Box,
@@ -29,15 +21,14 @@ function InstagramCard({ data }: { data: any }) {
   return (
     <VStack
       mt={"20px"}
+      overflow={"hidden"}
       display={"inline-block"}
-      sx={{ breakInside: "avoid", breakAfter: "auto", breakBefore: "auto" }}
-      border={"1px  #EDEDED"}
+      border={"1px  solid #EDEDED"}
       backgroundColor={"white"}
-      my={4}
       rounded={"xl"}
       boxShadow={"0px 8px 8px -4px rgba(16, 24, 40, 0.03);"}
     >
-      <HStack px={4} mt={2} py={2} justify={"space-between"}>
+      <HStack px={4} mt={2} py={2} flex="1" justify={"space-between"}>
         <HStack>
           <Avatar
             name={data.owner_full_name}
@@ -51,9 +42,8 @@ function InstagramCard({ data }: { data: any }) {
         <img width={"20"} src={instagram} alt="social media icon" />
       </HStack>
 
-      <Box position="relative" maxH="443px" minWidth="300px" maxWidth="350px">
+      <Box position="relative" minW={"20vw"} maxW={"max-content"}>
         {getAccess(data)}
-
         <Checkbox
           position="absolute"
           top="5"
@@ -120,7 +110,7 @@ function InstagramCard({ data }: { data: any }) {
         </HStack>
       </Box>
 
-      <HStack pb={5} px={5} justify={"space-between"} h={"50px"}>
+      <HStack pb={5} px={5} justify={"space-between"}>
         <Text>8 months ago</Text>
         <Menu direction="rtl">
           <MenuButton>
@@ -140,7 +130,7 @@ function InstagramCard({ data }: { data: any }) {
 }
 function getAccess(data: any) {
   return (
-    <>
+    <LazyLoad>
       {data?.ig_content?.is_video ? (
         <video
           width={"100%"}
@@ -160,7 +150,7 @@ function getAccess(data: any) {
           alt="Loading..."
         />
       )}
-    </>
+    </LazyLoad>
   );
 }
 function dataAccess(data: any) {

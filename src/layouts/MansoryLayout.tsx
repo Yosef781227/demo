@@ -1,3 +1,4 @@
+import { Box } from "@chakra-ui/react";
 import { useRef, useState, useEffect } from "react";
 
 const MasonryLayout = ({
@@ -39,17 +40,17 @@ const MasonryLayout = ({
   };
 
   return (
-    <div ref={containerRef} style={{ display: "flex", flexWrap: "wrap" }}>
+    <Box ref={containerRef} style={{ display: "flex", flexWrap: "wrap" }}>
       {generateColumns().map((column, index) => (
-        <div key={index} style={{ flex: 1, margin: `0 ${gap / 2}px` }}>
+        <Box key={index} style={{ flex: 1, margin: `0 ${gap / 2}px` }}>
           {column.map((item: any, itemIndex: any) => (
-            <div key={itemIndex} style={{ marginBottom: gap }}>
+            <Box key={itemIndex} style={{ marginBottom: gap }}>
               {item}
-            </div>
+            </Box>
           ))}
-        </div>
+        </Box>
       ))}
-    </div>
+    </Box>
   );
 };
 

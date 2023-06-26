@@ -103,7 +103,7 @@ function HomePage() {
           tiktokId={tiktokId}
           instagramId={instagramId}
         />
-        <Box bg="#FAFAFA" px={5} pb={20}>
+        <Box bg="#FAFAFA" px={5} minH={"100vh"} width={"100%"}>
           <MasonryLayout
             items={[
               ...instagramContents.map((instadata, i) => {
