@@ -21,8 +21,6 @@ function NewModal({
       <ModalContent
         containerProps={{
           justifyContent: "flex-end",
-          paddingRight: "0.9rem",
-          paddingTop: "0.9rem",
         }}
         sx={{
           "&:first-child": {
