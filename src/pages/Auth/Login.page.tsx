@@ -281,7 +281,11 @@ function LoginPage() {
   );
 }
 function RowContainer({ children }: { children: React.ReactNode }) {
-  return <VStack w="full">{children}</VStack>;
+  return (
+    <VStack w="full" m={"10"}>
+      {children}
+    </VStack>
+  );
 }
 
 export default LoginPage;

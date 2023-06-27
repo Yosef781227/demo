@@ -20,8 +20,11 @@ import {
 function InstagramCard({ data }: { data: any }) {
   return (
     <VStack
+      role="group"
       mt={"20px"}
       overflow={"hidden"}
+      minW={"25vw"}
+      maxW={"max-content"}
       display={"inline-block"}
       border={"1px  solid #EDEDED"}
       backgroundColor={"white"}
@@ -42,11 +45,14 @@ function InstagramCard({ data }: { data: any }) {
         <img width={"20"} src={instagram} alt="social media icon" />
       </HStack>
 
-      <Box position="relative" minW={"20vw"} maxW={"max-content"}>
+      <Box position="relative">
         {getAccess(data)}
         <Checkbox
           position="absolute"
           top="5"
+          display="none"
+          _checked={{ display: "block" }}
+          _groupHover={{ display: "block" }}
           left="5"
           size="lg"
           colorScheme={"purple"}
@@ -112,7 +118,7 @@ function InstagramCard({ data }: { data: any }) {
 
       <HStack pb={5} px={5} justify={"space-between"}>
         <Text>8 months ago</Text>
-        <Menu direction="rtl">
+        <Menu placement="bottom-end">
           <MenuButton>
             <DotsThreeOutline size={24} color="black" weight="fill" />
           </MenuButton>

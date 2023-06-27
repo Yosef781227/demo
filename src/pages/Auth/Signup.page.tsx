@@ -6,17 +6,17 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { chakra } from "@chakra-ui/react";
 import FormRow from "@/components/Form/FormRow";
 import AuthContainer from "@/components/Auth/Containers/AuthContainer";
-import { useRef, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { BASE_URL } from "@/constants";
 const ChakraNavLink = chakra(NavLink);
 
 function SignupPage() {
-  const [name, setName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [name, setName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const Authenticate = async (token: string) => {
@@ -58,8 +58,7 @@ function SignupPage() {
       if (response.data.data.varifyEmail.success) {
         navigate("/login");
       }
-    } catch (error) {
-    }
+    } catch (error) {}
   };
   useEffect(() => {
     const token = window.location.href.split("token=")[1];
@@ -71,37 +70,34 @@ function SignupPage() {
     }
   }, []);
 
-
   const signup = async () => {
     try {
       setLoading(true);
       //validate email
-      if (name === '') {
-        setError('Name is required');
+      if (name === "") {
+        setError("Name is required");
         return;
       }
-      if (lastName === '') {
-        setError('Last Name is required');
+      if (lastName === "") {
+        setError("Last Name is required");
         return;
       }
-      if (email === '') {
-        setError('Email is required');
+      if (email === "") {
+        setError("Email is required");
         return;
       }
-      if (!email.includes('@') && !email.includes('.')) {
-        setError('Email is not valid');
+      if (!email.includes("@") && !email.includes(".")) {
+        setError("Email is not valid");
         return;
       }
-      if (password === '') {
-        setError('Password is required');
+      if (password === "") {
+        setError("Password is required");
         return;
       }
       try {
         //send request to server
-        const response: any = await axios.post(
-          BASE_URL,
-          {
-            query: `
+        const response: any = await axios.post(BASE_URL, {
+          query: `
             mutation Mutation($jsonInput: String!) {
               signUpWithEmail(json_input: $jsonInput) {
                 success
@@ -112,16 +108,15 @@ function SignupPage() {
               }
             }
             `,
-            variables: {
-              jsonInput: JSON.stringify({
-                name: name,
-                lastname: lastName,
-                email: email,
-                password: password,
-              }),
-            },
-          }
-        );
+          variables: {
+            jsonInput: JSON.stringify({
+              name: name,
+              lastname: lastName,
+              email: email,
+              password: password,
+            }),
+          },
+        });
         console.log(response.data);
         if (response.data.data) {
           console.log("varify email");
@@ -129,16 +124,11 @@ function SignupPage() {
         } else {
           setError(response.data.errors[0].message);
         }
-
-      } catch (error) {
-
-      }
-
+      } catch (error) {}
     } catch (error: any) {
       //setError(true);
     }
   };
-
 
   return (
     <AuthContainer>
@@ -159,10 +149,30 @@ function SignupPage() {
         </Text>
       </RowContainer>
       <RowContainer>
-        <FormRow placeholder="Name" type="text" label="name" onChange={(e) => setName(e.target.value)} />
-        <FormRow placeholder="Last Name" type="text" label="Last Name" onChange={(e) => setLastName(e.target.value)} />
-        <FormRow placeholder="janedoe@gmail.com" type="email" label="Email" onChange={(e) => setEmail(e.target.value)} />
-        <FormRow placeholder="password" type="password" label="password" onChange={(e) => setPassword(e.target.value)} />
+        <FormRow
+          placeholder="Name"
+          type="text"
+          label="Name"
+          onChange={(e) => setName(e.target.value)}
+        />
+        <FormRow
+          placeholder="Last Name"
+          type="text"
+          label="Last Name"
+          onChange={(e) => setLastName(e.target.value)}
+        />
+        <FormRow
+          placeholder="janedoe@gmail.com"
+          type="email"
+          label="Email"
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <FormRow
+          placeholder="password"
+          type="password"
+          label="password"
+          onChange={(e) => setPassword(e.target.value)}
+        />
       </RowContainer>
       <RowContainer>
         <Button size="full" text="Continue" onClick={signup} />

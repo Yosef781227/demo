@@ -17,14 +17,22 @@ export default function useGetMe(): {
   const [tiktokIndex, settiktokIndex] = useState(0);
   const [hasTiktok, setHasTiktok] = useState(false);
   const {
+    loading: loadingQuery,
     error, //TODO: error handling
     data,
   } = useQuery(GetMeQuery);
 
+  console.log(
+    "loadingQuery : ",
+    loadingQuery,
+    " data : ",
+    data,
+    "Error : ",
+    error
+  );
   useEffect(() => {
     if (data) {
       if (data == null || data?.errors) {
-        console.log("User is not logged in");
         setIsAuth(false);
         setLoading(false);
       } else {
@@ -69,7 +77,10 @@ export default function useGetMe(): {
         }
       }
     }
-  }, [data]);
+    if (error) {
+      setLoading(false);
+    }
+  }, [data, error]);
   return {
     loading,
     userInfo: {
