@@ -79,15 +79,16 @@ function InstagramCard({ data }: { data: any }) {
             </MenuList>
           </Menu>
 
-          <Menu closeOnSelect={false}>
+          <Menu closeOnSelect={false} autoSelect={false}>
             <MenuButton>
               <BookmarkSimple size={30} color="white" weight="fill" />
             </MenuButton>
             <MenuList>
               <MenuItem>
                 <Input
+                  onClick={(e) => e.stopPropagation()}
                   placeholder="Search or Create collection"
-                  color={"neutral.50"}
+                  // color={"neutral.50"}
                 />
               </MenuItem>
               <MenuItem>
