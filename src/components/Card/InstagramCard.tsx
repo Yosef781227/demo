@@ -23,7 +23,7 @@ function InstagramCard({ data }: { data: any }) {
       role="group"
       mt={"20px"}
       overflow={"hidden"}
-      minW={"25vw"}
+      minW={"18vw"}
       maxW={"max-content"}
       display={"inline-block"}
       border={"1px  solid #EDEDED"}
