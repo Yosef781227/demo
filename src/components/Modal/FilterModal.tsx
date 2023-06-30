@@ -40,13 +40,12 @@ function FilterModal({
         <ModalContent
           containerProps={{
             justifyContent: "flex-end",
-            paddingTop: "0.9rem",
           }}
           sx={{
             "&:first-child": {
               margin: 0,
               height: "100vh",
-              overflowY: "scroll",
+              overflowY: "auto",
             },
           }}
         >
