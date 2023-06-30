@@ -20,7 +20,8 @@ import {
   Button,
   Text,
 } from "@chakra-ui/react";
-import DatePicker from "react-datepicker";
+import { RangeDatePicker } from 'react-google-flight-datepicker';
+import 'react-google-flight-datepicker/dist/main.css';
 
 function FilterModal({
   isOpen,
@@ -58,12 +59,19 @@ function FilterModal({
           <ModalBody mt={5} ml={2}>
             <Box>
               <Text textColor={"gray.500"}>Post Date</Text>
-
-              <DatePicker
-                selected={startDate}
-                onChange={(date: Date | null) =>
-                  setStartDate((prevDate) => date || prevDate)
-                }
+              <RangeDatePicker
+                startDate={new Date()}
+                endDate={new Date()}
+                onChange={(startDate, endDate) => onDateChange(startDate, endDate)}
+                minDate={new Date(1900, 0, 1)}
+                maxDate={new Date(2100, 0, 1)}
+                dateFormat="D-MM-YY"
+                monthFormat="MMM YYYY"
+                startDatePlaceholder="Start Date"
+                endDatePlaceholder="End Date"
+                disabled={false}
+                className="my-own-class-name"
+                startWeekDay="monday"
               />
             </Box>
             <Box mt={5}>
