@@ -17,10 +17,9 @@ import NewModal from "@/components/Modal/NewModal";
 import { GetInstagramQuery } from "@/query/instagram";
 import { GetTiktokQuery } from "@/query/tiktok";
 import MasonryLayout from "@/layouts/MansoryLayout";
-
+import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 function HomePage() {
   const User = useContext(UserContext) as User;
-
   const hasInstagram = User.hasInstagram;
   const hasTiktok = User.hasTiktok;
   const [instagramIndex, setInstagramIndex] = useState(User.instagramIndex);
@@ -104,7 +103,19 @@ function HomePage() {
           instagramId={instagramId}
         />
         <Box bg="#FAFAFA" px={5} minH={"100vh"} width={"100%"}>
-          <MasonryLayout
+          <ResponsiveMasonry columnsCountBreakPoints={{ 575: 1, 720: 2, 900: 3, 1300: 4 }} >
+            <Masonry gutter="10px">
+              {[
+                ...instagramContents.map((instadata, i) => {
+                  return <InstagramCard data={instadata} key={i} />;
+                }),
+                ...tiktokContents.map((video, index) => {
+                  return <TiktokCard video={video} key={index} />;
+                }),
+              ]}
+            </Masonry>
+          </ResponsiveMasonry>
+          {/* <MasonryLayout
             items={[
               ...instagramContents.map((instadata, i) => {
                 return <InstagramCard data={instadata} key={i} />;
@@ -115,7 +126,7 @@ function HomePage() {
             ]}
             columnWidth={0}
             gap={10}
-          />
+          /> */}
         </Box>
       </Container>
     </>

@@ -5,7 +5,6 @@ import { User } from "./interfaces/user.interface";
 import Router from "./utils/routes";
 import Loading from "./components/Loading";
 import useGetMe from "./hooks/user";
-
 export const UserContext = createContext<User | null>(null);
 function App() {
   const { loading, userInfo } = useGetMe();
@@ -13,11 +12,7 @@ function App() {
     return <Loading />;
   }
   return (
-    <UserContext.Provider
-      value={{
-        ...userInfo,
-      }}
-    >
+    <UserContext.Provider value={{ ...userInfo, }} >
       <Router isAuth={userInfo.isAuth} />
       <ToastContainer />
     </UserContext.Provider>
