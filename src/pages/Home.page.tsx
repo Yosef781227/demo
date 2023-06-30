@@ -115,18 +115,6 @@ function HomePage() {
               ]}
             </Masonry>
           </ResponsiveMasonry>
-          {/* <MasonryLayout
-            items={[
-              ...instagramContents.map((instadata, i) => {
-                return <InstagramCard data={instadata} key={i} />;
-              }),
-              ...tiktokContents.map((video, index) => {
-                return <TiktokCard video={video} key={index} />;
-              }),
-            ]}
-            columnWidth={0}
-            gap={10}
-          /> */}
         </Box>
       </Container>
     </>
