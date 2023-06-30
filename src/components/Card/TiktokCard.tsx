@@ -18,18 +18,19 @@ import {
 const TiktokCard = ({ video }: { video: any }) => {
   return (
     <VStack
+      role="group"
       mt={"20px"}
-      ml={"660px"}
+      height={"auto"}
+      overflow={"hidden"}
+      // minW={"18vw"}
+      // maxW={"max-content"}
       display={"inline-block"}
-      sx={{ breakInside: "avoid", breakAfter: "auto", breakBefore: "auto" }}
-      border={"1px solidmt #EDEDED"}
+      border={"1px solid #EDEDED"}
       backgroundColor={"white"}
-      align={"stretch"}
-      my={4}
       rounded={"xl"}
       boxShadow={"0px 8px 8px -4px rgba(16, 24, 40, 0.03);"}
     >
-      <HStack px={4} mt={2} py={2} justify={"space-between"}>
+      <HStack px={4} pt={4} justify={"space-between"}>
         <HStack>
           <Avatar
             name={video.owner.nickname}
@@ -43,7 +44,7 @@ const TiktokCard = ({ video }: { video: any }) => {
         <img width={"20"} src={tiktok} alt="social media icon" />
       </HStack>
 
-      <Box position="relative" maxH="443px" minWidth="350px">
+      <Box position="relative">
         <video
           width={"100%"}
           style={{ objectFit: "contain" }}
@@ -82,7 +83,7 @@ const TiktokCard = ({ video }: { video: any }) => {
             </MenuList>
           </Menu>
 
-          <Menu closeOnSelect={false}>
+          <Menu closeOnSelect={false} >
             <MenuButton>
               <BookmarkSimple size={30} color="white" weight="fill" />
             </MenuButton>
@@ -119,7 +120,7 @@ const TiktokCard = ({ video }: { video: any }) => {
         </HStack>
       </Box>
 
-      <HStack pb={5} justify={"space-between"} h={"50px"}>
+      <HStack px={4} justify={"space-between"} h={"50px"}>
         <Text>8 months ago</Text>
         <Menu direction="rtl">
           <MenuButton>
