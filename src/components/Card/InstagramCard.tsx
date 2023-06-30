@@ -23,7 +23,7 @@ function InstagramCard({ data }: { data: any }) {
       role="group"
       mt={"20px"}
       overflow={"hidden"}
-      minW={"18vw"}
+      minW={"17vw"}
       maxW={"max-content"}
       display={"inline-block"}
       border={"1px  solid #EDEDED"}
@@ -31,6 +31,7 @@ function InstagramCard({ data }: { data: any }) {
       rounded={"xl"}
       boxShadow={"0px 8px 8px -4px rgba(16, 24, 40, 0.03);"}
     >
+
       <HStack px={4} mt={2} py={2} flex="1" justify={"space-between"}>
         <HStack>
           <Avatar
@@ -65,7 +66,10 @@ function InstagramCard({ data }: { data: any }) {
             </MenuButton>
             <MenuList>
               <MenuItem>
-                <Input placeholder="Top Creator" />
+                <Input
+                  placeholder="Top Creator"
+                  onClick={(e) => e.stopPropagation() }
+                />
               </MenuItem>
               <MenuItem>
                 <HStack spacing={4} width="100%" justifyContent="space-between">
@@ -73,7 +77,15 @@ function InstagramCard({ data }: { data: any }) {
                     <Plus size={24} color="#121212" weight="fill" />
                     <Text>Top Create</Text>
                   </HStack>
-                  <Text>Create</Text>
+                  <Text
+                    bg="blue.500"
+                    color="white"
+                    px={4}
+                    py={1}
+                    borderRadius="md"
+                  >
+                    Create
+                  </Text>
                 </HStack>
               </MenuItem>
             </MenuList>
@@ -86,9 +98,8 @@ function InstagramCard({ data }: { data: any }) {
             <MenuList>
               <MenuItem>
                 <Input
-                  onClick={(e) => e.stopPropagation()}
+                  onClick={(e) => e.stopPropagation() }
                   placeholder="Search or Create collection"
-                  // color={"neutral.50"}
                 />
               </MenuItem>
               <MenuItem>

@@ -1,89 +1,19 @@
 import Buttons from "@/components/Buttons/Button";
 import Button from "@/components/Buttons/Button";
-import {
-  Heading,
-  VStack,
-  Text,
-  Select,
-  HStack,
-  Input,
-  Progress,
-  Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
-  Box,
-  Link,
-} from "@chakra-ui/react";
+import {Heading,VStack,Text,Select,HStack,Input,Progress,Accordion,AccordionButton,AccordionIcon,AccordionItem,AccordionPanel,Box,Link,} from "@chakra-ui/react";
 import Container from "@components/Container";
 
 function Setting() {
   return (
     <Container background={"neutral.50"}>
-      width: '0px',
-      <Box alignSelf={"center"} w={"70%"} gap={"32px"} >
-        <Heading size={"md"} mt={5}>
+      
+      <Box alignSelf={"center"} w={"70%"}  >
+        <Heading size={"lg"} mt={"10px"} pt={10}>
           Settings
         </Heading>
-        <RowContainer>
-          <RowItem>
-            <Heading size={"md"}>Hashtags</Heading>
-            <Text fontWeight={"light"} style={{ fontSize: "18px" }}>
-              This is where you’ll manage the hashtags you want to track.
-              Archive will automatically detect any content posted using the
-              hashtags on your list.
-            </Text>
-          </RowItem>
-          <RowItem>
-            <Heading
-              size="sm"
-              style={{ fontSize: "18px", fontWeight: "normal" }}
-              color="#1F1F1F"
-            >
-              Your Hashtags
-            </Heading>
-            <HStack>
-              <Select width={"770px"} height={"38px"} defaultValue={"option1"}>
-                <option value={"option1"} style={{ fontSize: "14px", fontWeight: "regular" }}>
-                  #Hashtags....
-                </option>
-                <option value={"option2"}>option2</option>
-                <option value={"option3"}>option3</option>
-                <option value={"option4"}>option4</option>
-              </Select>
 
-              <Buttons
-                text="Add"
-                fontsize="14px"
-                fontweight="medium"
-                textColor="525252"
-                color="gray"
-                width="80px"
-                height="38px"
-                variant="outline"
-              />
-            </HStack>
-          </RowItem>
-          <RowItem>
-            <Text style={{ fontSize: "18px" }}>
-              <Text as="span" fontWeight={"bold"} fontSize={"18px"}>
-                Deleting a hashtag
-              </Text>{" "}
-              will remove all content associated with that hashtag from your
-              library.
-            </Text>
-            <Text style={{ fontSize: "18px" }}>
-              <Text fontWeight={"bold"} as="span" style={{ fontSize: "18px" }}>
-                Tracking the hashtag again
-              </Text>{" "}
-              will restore previously saved content, but new content will only
-              be added while the hashtag is active on your list.
-            </Text>
-          </RowItem>
-        </RowContainer>
 
-        <RowContainer height={"215px"}>
+        <RowContainer height={"270px"}  width={"1000px"}>
           <RowItem>
             <Heading size={"md"}>Invited Users</Heading>
             <Text style={{ fontSize: "18px" }}>
@@ -103,7 +33,7 @@ function Setting() {
               <Input
                 placeholder="email.gmail.com"
                 width="770px"
-                height="38px"
+                height="40px"
               />
               <Button
                 text="Invite"
@@ -112,18 +42,19 @@ function Setting() {
                 textColor="525252"
                 color="gray"
                 width="80px"
-                height="38px"
+                height="40px"
                 variant="outline"
               />
             </HStack>
           </RowItem>
         </RowContainer>
-        <RowContainer height={"245px"}>
+
+        <RowContainer height={"270px"} width={"1000px"}>
           <RowItem>
             <Heading size={"md"}>Weekly UGC Digest</Heading>
             <Text style={{ fontSize: "18px" }}>
               Add the email addresses of anyone on your team who wants to
-              receive your brand's weekly UGC digest email.
+              receive your brand's <br/> weekly UGC digest email.
             </Text>
           </RowItem>
           <RowItem>
@@ -139,47 +70,10 @@ function Setting() {
                 placeholder="mail@email.com"
                 type="email"
                 width="770px"
-                height={"38px"}
-              />
-              <Button
-                text="Add"
-                fontsize="16px"
-                fontweight="medium"
-                textColor="525252"
-                color="gray"
-                width="80px"
-                height="38px"
-                variant="outline"
-              />
-            </HStack>
-          </RowItem>
-        </RowContainer>
-        <RowContainer>
-          <RowItem>
-            <Heading size={"md"}>Missing UGC from Instagram or TikTok</Heading>
-            <Text style={{ fontSize: "18px" }}>
-              Sometimes Social Profiles forget to @mention your brand, but it's
-              all good. Copy and paste a link to the UGC here; we'll add it to
-              your asset library with all the usual details.
-            </Text>
-          </RowItem>
-          <RowItem>
-            <Text
-              size="sm"
-              style={{ fontSize: "18px", fontWeight: "regular" }}
-              color="#1F1F1F"
-            >
-              Save UGC from link
-            </Text>
-            <HStack>
-              <Input
-                placeholder="paste link"
-                type="email"
-                width="770px"
                 height={"40px"}
               />
               <Button
-                text="Save"
+                text="Add"
                 fontsize="16px"
                 fontweight="medium"
                 textColor="525252"
@@ -191,34 +85,51 @@ function Setting() {
             </HStack>
           </RowItem>
         </RowContainer>
-        <RowContainer>
+
+    
+
+        <RowContainer width={"1000px"}>
           <RowItem>
             <Heading size={"md"}>Billing</Heading>
             <Text fontSize="18px">
               Review & Manage your plan. Upgrade or downgrade anytime with zero
-              fees. Looking for our full pricing page?{" "}
-              <Link color="#7C3AED" href="#">
-                It’s here.
+              fees. Looking<br/> for our full pricing page?{" "}
+              <Link color="#7C3AED" href="#" textDecoration="underline">
+                It’s here
               </Link>
+              .
             </Text>
           </RowItem>
           <RowItem>
-            <Heading size={"md"}>Your on the Free plan</Heading>
+            <HStack spacing={550}>
+            <Heading size={"md"} fontWeight={"bold"}>Your on the Free plan</Heading>
+            <Button
+                text="Mange Plan"
+                fontsize="16px"
+                fontweight="medium"
+                textColor="525252"
+                color="gray"
+                width="120px"
+                height="40px"
+                variant="outline"
+              />
+            </HStack>
+            
             <Text size={"14px"} fontWeight={"semibold"}>
               Social Profiles
             </Text>
             <HStack gap={5}>
               <Progress
-                value={80}
-                size={"sm"}
+                value={50}
+                size={"md"}
                 colorScheme="primary"
                 rounded={"2xl"}
-                width={"full"}
+                width={800}
               />
               <Text>80%</Text>
             </HStack>
           </RowItem>
-          <Link alignSelf={"flex-end"} color="#7C3AED" mt={"5px"}>
+          <Link alignSelf={"flex-end"} pr={"60px"} color="#7C3AED" mt={"5px"}>
             See Billing History
           </Link>
           <HStack
@@ -226,15 +137,16 @@ function Setting() {
             alignItems={"top"}
             gap={"7px"}
           >
-            <VStack alignItems={"flex-start"}>
+            <VStack alignItems={"flex-start"} >
               <Heading size={"md"}>Your payment method</Heading>
               <Text>Vis ,**1234</Text>
             </VStack>
-            <Link color="#7C3AED">Manage Payment Method</Link>
+            <Link color="#7C3AED" pr={"60px"}>Manage Payment Method</Link>
           </HStack>
 
           <FAQ />
         </RowContainer>
+
         <Box pt="8">
           <Buttons
             text="Save Changes"
@@ -243,13 +155,15 @@ function Setting() {
             color="primary"
           />
         </Box>
+
       </Box>
+
     </Container>
   );
 }
 function FAQ() {
   return (
-    <Accordion allowMultiple>
+    <Accordion allowMultiple w={870}>
       <AccordionItem>
         <h2>
           <AccordionButton>
@@ -307,25 +221,28 @@ function FAQ() {
 type RowContainerProps = {
   children: React.ReactNode;
   height?: string | number;
+  width?: string | number;
 };
 
-function RowContainer({ children, height = "auto" }: RowContainerProps) {
+function RowContainer({ children, height = "auto", width = "auto" }: RowContainerProps) {
   return (
     <VStack
       alignItems={"stretch"}
       shadow={"lg"}
       height={height}
       backgroundColor={"white"}
-      mt="32px"
+      mt="40px"
       px={10}
-      py={5}
+      py={10}
       gap={4}
       rounded={"lg"}
+      width={width}
     >
       {children}
     </VStack>
   );
 }
+
 
 function RowItem(props: { children: React.ReactNode }) {
   return (
@@ -334,4 +251,5 @@ function RowItem(props: { children: React.ReactNode }) {
     </VStack>
   );
 }
+
 export default Setting;

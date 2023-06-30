@@ -4,7 +4,8 @@ import IntegrationIcon from "@/assets/icons/Filled/IntegrationIcon";
 import CollectionIcon from "@/assets/icons/Filled/CollectionIcon";
 import SettingIcon from "@/assets/icons/Filled/SettingIcon";
 import Logo from "../Logo";
-import { NavLink, Navigate, useMatches } from "react-router-dom";
+import { NavLink, Navigate } from "react-router-dom";
+import {Menu , MenuButton , MenuList , MenuItem , IconButton} from "@chakra-ui/react"
 const ChakraNavLink = chakra(NavLink);
 
 const sideBarElements = [
@@ -73,7 +74,7 @@ function sideBarListBuilder(pathname: string) {
   );
 }
 function SideBar() {
-  const matches = [];
+  const matches : any = [];
   return (
     <VStack
       position={"fixed"}
@@ -89,8 +90,8 @@ function SideBar() {
         </Box>
         {sideBarListBuilder(matches[matches.length - 1]?.pathname)}
       </VStack>
-      <HStack>
-        <Avatar name="Jone Doe" />
+      <HStack pb={"15px"}>
+        <Avatar name="Jone Doe" bg={"primary.400"} />
         <VStack alignItems={"flex-start"}>
           <Text
             lineHeight={"text"}
@@ -107,7 +108,16 @@ function SideBar() {
             johndoe@gmail.com
           </Text>
         </VStack>
-        <SettingIcon />
+        <Menu>
+          <MenuButton>
+           <SettingIcon />
+          </MenuButton>
+          <MenuList>
+            <MenuItem>Setting</MenuItem>
+            <MenuItem>Log Out</MenuItem>
+            </MenuList>
+        </Menu>
+       
       </HStack>
     </VStack>
   );
