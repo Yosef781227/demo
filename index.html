@@ -13,11 +13,83 @@
 
   <title>Skim-Social</title>
   <style>
-    .react-datepicker__day {
-      color: #331466 !important;
-      width: 30px !important;
-      height: 30px !important;
-      border-radius: 15px !important;
+    .react-google-flight-datepicker .dialog-date-picker {
+      min-width: 200px !important;
+      left: -12px !important;
+      width: 420px !important;
+    }
+
+    .react-google-flight-datepicker .day::after {
+      width: 23px !important;
+      height: 23px !important;
+    }
+
+    .react-google-flight-datepicker .day {
+
+      height: 27px !important;
+      margin: 2px 0px !important;
+      text-align: center;
+      width: 27px !important;
+    }
+
+    .react-google-flight-datepicker .month-calendar {
+      width: fit-content !important;
+      ;
+      color: #3c4043;
+      margin-right: 10px !important;
+    }
+
+    .react-google-flight-datepicker .calendar-wrapper {
+      margin: 12px 15px 8px !important;
+      overflow: hidden;
+      min-height: 250px !important;
+    }
+
+    .react-google-flight-datepicker .dialog-header .date-picker-input {
+      height: 48px;
+      width: 70% !important;
+    }
+
+    .react-google-flight-datepicker .flipper-button {
+      height: 25px !important;
+      width: 25px !important;
+      margin: 0 -10px !important;
+    }
+
+    .react-google-flight-datepicker .day.hovered {
+      background-color: #EDE9FE !important;
+    }
+
+    .react-google-flight-datepicker .date:first-child::before {
+      background: #EDE9FE !important;
+    }
+
+    .react-google-flight-datepicker .icon-calendar {
+      fill: #8B5CF6 !important;
+    }
+
+    .react-google-flight-datepicker .day:hover::after,
+    .react-google-flight-datepicker .date:focus::after,
+    .react-google-flight-datepicker .date.is-focus::after {
+      border: 2px solid #8B5CF6 !important;
+    }
+
+    .react-google-flight-datepicker .tooltip-text,
+    .react-google-flight-datepicker .day.selected::after,
+    .react-google-flight-datepicker .day.selected::after,
+    .react-google-flight-datepicker .day.selected.hovered::after,
+    .react-google-flight-datepicker .dialog-footer .submit-button,
+    .react-google-flight-datepicker .day.selected:hover::after,
+    .react-google-flight-datepicker .day.hovered:hover::after {
+      background-color: #8B5CF6 !important;
+    }
+
+    .react-google-flight-datepicker .dialog-footer .submit-button {
+      background: #8B5CF6 !important;
+    }
+
+    .react-google-flight-datepicker .tooltip-text::before {
+      border-top-color: #8B5CF6 !important;
     }
 
     .css-r6z5ec {
