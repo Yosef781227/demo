@@ -1,8 +1,7 @@
 import { saveNewContent, logout } from "@/utils";
 import { HStack, Button, Select, Text } from "@chakra-ui/react";
 import { Funnel, Plus } from "@phosphor-icons/react";
-import React, { ChangeEvent, SyntheticEvent, useContext } from "react";
-
+import  { ChangeEvent, useContext } from "react";
 import Buttons from "@/components/Buttons/Button";
 import { UserContext } from "@/App";
 import { User } from "@/interfaces/user.interface";
