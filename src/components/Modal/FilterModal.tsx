@@ -28,12 +28,20 @@ function FilterModal({
   onClose,
   startDate,
   setStartDate,
+  endDate,
+  setEndDate,
 }: {
   isOpen: boolean;
   onClose: () => void;
   startDate: Date;
   setStartDate: (date: Date) => void;
+  endDate: Date;
+  setEndDate: (date: Date) => void;
 }) {
+  const onDateChange = (startDate: Date, endDate: Date) => {
+    setStartDate(startDate);
+    setEndDate(endDate);
+  };
   return (
     <>
       <Modal isOpen={isOpen} isCentered={false} size={"md"} onClose={onClose}>
