@@ -37,8 +37,6 @@ function HomePage() {
     onClose: onNeWClose,
   } = useDisclosure();
 
-  const [startDate, setStartDate] = useState(new Date());
-
   const changeTiktokAcount = (e: ChangeEvent<HTMLSelectElement>) => {
     const index = e.target.selectedIndex;
     localStorage.removeItem("selectedTiktokIndex");
@@ -87,8 +85,6 @@ function HomePage() {
     <>
       <NewModal isOpen={isNewOpen} onClose={onNeWClose} />
       <FilterModal
-        setStartDate={setStartDate}
-        startDate={startDate}
         isOpen={isFilterOpen}
         onClose={onFilterClose}
       />
@@ -107,10 +103,10 @@ function HomePage() {
             <Masonry gutter="10px">
               {[
                 ...instagramContents.map((instadata, i) => {
-                  return <InstagramCard data={instadata} key={i} />;
+                  return <InstagramCard data={instadata} key={`i${i}`} />;
                 }),
                 ...tiktokContents.map((video, index) => {
-                  return <TiktokCard video={video} key={index} />;
+                  return <TiktokCard video={video} key={`t${index}`} />;
                 }),
               ]}
             </Masonry>

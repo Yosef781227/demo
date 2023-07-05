@@ -5,7 +5,7 @@ import CollectionIcon from "@/assets/icons/Filled/CollectionIcon";
 import SettingIcon from "@/assets/icons/Filled/SettingIcon";
 import Logo from "../Logo";
 import { NavLink, Navigate } from "react-router-dom";
-import {Menu , MenuButton , MenuList , MenuItem , IconButton} from "@chakra-ui/react"
+import { Menu, MenuButton, MenuList, MenuItem, IconButton } from "@chakra-ui/react"
 const ChakraNavLink = chakra(NavLink);
 
 const sideBarElements = [
@@ -74,7 +74,7 @@ function sideBarListBuilder(pathname: string) {
   );
 }
 function SideBar() {
-  const matches : any = [];
+  const matches: any = [];
   return (
     <VStack
       position={"fixed"}
@@ -83,6 +83,7 @@ function SideBar() {
       w={"20vw"}
       alignItems={"stretch"}
       justifyContent={"space-between"}
+      className="sidebar"
     >
       <VStack>
         <Box width={"full"} alignSelf={"flex-start"}>
@@ -110,14 +111,14 @@ function SideBar() {
         </VStack>
         <Menu>
           <MenuButton>
-           <SettingIcon />
+            <SettingIcon />
           </MenuButton>
           <MenuList>
             <MenuItem>Setting</MenuItem>
             <MenuItem>Log Out</MenuItem>
-            </MenuList>
+          </MenuList>
         </Menu>
-       
+
       </HStack>
     </VStack>
   );

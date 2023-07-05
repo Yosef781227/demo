@@ -21,26 +21,28 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { RangeDatePicker } from 'react-google-flight-datepicker';
+import { useState } from "react";
 import 'react-google-flight-datepicker/dist/main.css';
+const currentDate = new Date(); // Current date
+const previousMonthDate = new Date(currentDate); // Create a new Date object based on the current date
+
+previousMonthDate.setMonth(previousMonthDate.getMonth() - 1); // Set the month one month earlier
 
 function FilterModal({
   isOpen,
   onClose,
-  startDate,
-  setStartDate,
-  endDate,
-  setEndDate,
 }: {
   isOpen: boolean;
   onClose: () => void;
-  startDate: Date;
-  setStartDate: (date: Date) => void;
-  endDate: Date;
-  setEndDate: (date: Date) => void;
 }) {
+  const [startDate, setStartDate] = useState<Date>(previousMonthDate);
+  const [endDate, setEndDate] = useState<Date>(previousMonthDate);
   const onDateChange = (startDate: Date, endDate: Date) => {
-    setStartDate(startDate);
-    setEndDate(endDate);
+    if (startDate && endDate) {
+      console.log(startDate, endDate);
+      setStartDate(startDate);
+      setEndDate(endDate);
+    }
   };
   return (
     <>
@@ -68,11 +70,11 @@ function FilterModal({
             <Box>
               <Text textColor={"gray.500"}>Post Date</Text>
               <RangeDatePicker
-                startDate={new Date()}
-                endDate={new Date()}
+                startDate={startDate}
+                endDate={endDate}
                 onChange={(startDate, endDate) => onDateChange(startDate, endDate)}
-                minDate={new Date(1900, 0, 1)}
-                maxDate={new Date(2100, 0, 1)}
+                minDate={new Date(2012, 0, 1)}
+                maxDate={new Date((new Date()).getFullYear(), (new Date()).getMonth(), (new Date()).getDate())}
                 dateFormat="D-MM-YY"
                 monthFormat="MMM YYYY"
                 startDatePlaceholder="Start Date"
@@ -151,17 +153,17 @@ function FilterModal({
             <Box mt={5}>
               <Text textColor={"gray.500"}>Followers</Text>
               <HStack mt={3} ml="10%" w="max-content">
-                <Select placeholder="Select">
-                  <option value="option1" selected>
+                <Select placeholder="Select" defaultValue={"option1"}>
+                  <option value="option1" >
                     1k
                   </option>
                   <option value="option2">2k</option>
                   <option value="option3">3k</option>
                 </Select>
-                <Select placeholder="Select">
+                <Select placeholder="Select" defaultValue={"option3"}>
                   <option value="option1">1k</option>
                   <option value="option2"> 2k</option>
-                  <option value="option3" selected>
+                  <option value="option3">
                     {" "}
                     3k
                   </option>
@@ -180,17 +182,17 @@ function FilterModal({
               <VStack alignItems={"flex-start"} mt={3}>
                 <Checkbox checked={true}>Views</Checkbox>
                 <HStack pl="10%">
-                  <Select placeholder="Select">
-                    <option value="option1" selected>
+                  <Select placeholder="Select" defaultValue={"option1"}>
+                    <option value="option1">
                       1k
                     </option>
                     <option value="option2">2k</option>
                     <option value="option3">3k</option>
                   </Select>
-                  <Select placeholder="Select">
+                  <Select placeholder="Select" defaultValue={"option3"}>
                     <option value="option1">1k</option>
                     <option value="option2"> 2k</option>
-                    <option value="option3" selected>
+                    <option value="option3">
                       {" "}
                       3k
                     </option>
@@ -200,17 +202,17 @@ function FilterModal({
               <VStack alignItems={"flex-start"}>
                 <Checkbox checked={true}> Plays</Checkbox>
                 <HStack pl="10%">
-                  <Select placeholder="Select">
-                    <option value="1k" selected>
+                  <Select placeholder="Select" defaultValue={"1k"}>
+                    <option value="1k" >
                       1k
                     </option>
                     <option value="2k">2k</option>
                     <option value="3k">3k</option>
                   </Select>
-                  <Select placeholder="Select">
+                  <Select placeholder="Select" defaultValue={"option3"}>
                     <option value="option1">1k</option>
                     <option value="option2"> 2k</option>
-                    <option value="option3" selected>
+                    <option value="option3">
                       {" "}
                       3k
                     </option>
