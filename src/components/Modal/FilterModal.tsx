@@ -21,29 +21,37 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { RangeDatePicker } from 'react-google-flight-datepicker';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import 'react-google-flight-datepicker/dist/main.css';
-const currentDate = new Date(); 
-const previousMonthDate = new Date(currentDate); 
+import { set } from "date-fns";
+const currentDate = new Date();
+const previousMonthDate = new Date(currentDate);
 
-previousMonthDate.setMonth(previousMonthDate.getMonth() - 1); 
+previousMonthDate.setMonth(previousMonthDate.getMonth() - 1);
 
 function FilterModal({
   isOpen,
   onClose,
+  user,
 }: {
   isOpen: boolean;
   onClose: () => void;
+  user: User;
 }) {
   const [startDate, setStartDate] = useState<Date>(previousMonthDate);
   const [endDate, setEndDate] = useState<Date>(previousMonthDate);
+  const [unique_ids, setUniqueIds] = useState<string[]>([]);
+  const [usernames, setUsernames] = useState<string[]>([]);
+  const [usage_right, setUsageRight] = useState<string[]>(["DEFAULT"]);
+  const [content_type, setContentType] = useState<number>(2);
+
   const onDateChange = (startDate: Date, endDate: Date) => {
     if (startDate && endDate) {
-      console.log(startDate, endDate);
       setStartDate(startDate);
       setEndDate(endDate);
     }
   };
+
   return (
     <>
       <Modal isOpen={isOpen} isCentered={false} size={"md"} onClose={onClose}>
@@ -108,18 +116,38 @@ function FilterModal({
             <Box mt={5}>
               <Text textColor={"gray.500"}>Source</Text>
               <Box mt={3}>
-                <Box>
-                  <Text textColor={"gray.500"} fontSize={"sm"} mt={2}>
-                    Instagram
-                  </Text>
-                  <Checkbox size={"sm"}>@beyond_lore</Checkbox>
-                </Box>
-                <Box mt={2}>
-                  <Text textColor={"gray.500"} fontSize={"sm"} mt={2}>
-                    Tiktok
-                  </Text>
-                  <Checkbox size={"sm"}>@beyond_lore</Checkbox>
-                </Box>
+                {
+                  user?.instagrams?.length > 0 && <Box>
+                    <Text textColor={"gray.500"} fontSize={"sm"} mt={2}>
+                      Instagram
+                    </Text>
+                    {
+                      user?.instagrams?.map((instagram, index) => (
+                        <Checkbox key={index} size={"sm"} mt={2} onChange={(e) => {
+                          setUsernames((prev) => {
+                            return e.target.checked ? [...prev, instagram.username] : [...prev].filter((username) => username !== instagram.username);
+                          });
+                        }} >{instagram.username}</Checkbox>
+                      ))
+                    }
+                  </Box>
+                }
+                {
+                  user?.tiktoks?.length > 0 && <Box mt={2}>
+                    <Text textColor={"gray.500"} fontSize={"sm"} mt={2}>
+                      Tiktok
+                    </Text>
+                    {
+                      user?.tiktoks?.map((tiktok, index) => (
+                        <Checkbox key={index} size={"sm"} mt={2} onChange={(e) => {
+                          setUniqueIds((prev) => {
+                            return e.target.checked ? [...prev, tiktok.uniqueId] : [...prev].filter((unique_id) => unique_id !== tiktok.uniqueId);
+                          });
+                        }}>{tiktok.uniqueId}</Checkbox>
+                      ))
+                    }
+                  </Box>
+                }
               </Box>
             </Box>
             <Box mt={5}>
@@ -145,9 +173,26 @@ function FilterModal({
             <Box mt={5}>
               <Text textColor={"gray.500"}>Usage Right</Text>
               <HStack mt={3}>
-                <Checkbox>Pending</Checkbox>
-                <Checkbox>Approved</Checkbox>
-                <Checkbox>Rejected</Checkbox>
+                <Checkbox onChange={(e) => {
+                  setUsageRight((prev) => {
+                    return e.target.checked ? [...prev, 'PENDING'] : [...prev].filter((usage) => usage !== 'PENDING');
+                  });
+                }}>Pending</Checkbox>
+                <Checkbox onChange={(e) => {
+                  setUsageRight((prev) => {
+                    return e.target.checked ? [...prev, 'APPROVED'] : [...prev].filter((usage) => usage !== 'APPROVED');
+                  });
+                }}>Approved</Checkbox>
+                <Checkbox onChange={(e) => {
+                  setUsageRight((prev) => {
+                    return e.target.checked ? [...prev, 'REJECTED'] : [...prev].filter((usage) => usage !== 'REJECTED');
+                  });
+                }}>Rejected</Checkbox>
+                <Checkbox defaultChecked={true} onChange={(e) => {
+                  setUsageRight((prev) => {
+                    return e.target.checked ? [...prev, 'DEFAULT'] : [...prev].filter((usage) => usage !== 'DEFAULT');
+                  });
+                }}>Default</Checkbox>
               </HStack>
             </Box>
             <Box mt={5}>
@@ -173,8 +218,16 @@ function FilterModal({
             <Box mt={5}>
               <Text textColor={"gray.500"}>Content Type</Text>
               <HStack mt={3}>
-                <Checkbox>Video</Checkbox>
-                <Checkbox>Audio</Checkbox>
+                <Checkbox isChecked={content_type === 2 || content_type == 1} onChange={(e) => {
+                  setContentType((prev) => {
+                    return e.target.checked ? 2 : 0;
+                  });
+                }}>Video</Checkbox>
+                <Checkbox isChecked={content_type === 2 || content_type == 0} onChange={(e) => {
+                  setContentType((prev) => {
+                    return e.target.checked ? 2 : 1;
+                  });
+                }}>Image</Checkbox>
               </HStack>
             </Box>
             <Box mt={5}>
