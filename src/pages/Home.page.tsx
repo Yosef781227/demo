@@ -16,8 +16,8 @@ import HomePageTopNavBar from "@/components/Navbar/HomePageTopNavBar";
 import NewModal from "@/components/Modal/NewModal";
 import { GetInstagramQuery } from "@/query/instagram";
 import { GetTiktokQuery } from "@/query/tiktok";
-import MasonryLayout from "@/layouts/MansoryLayout";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
+import BottomCheckBox from "@/components/Modal/BottomCheckBox";
 function HomePage() {
   const User = useContext(UserContext) as User;
   const hasInstagram = User.hasInstagram;
@@ -26,6 +26,9 @@ function HomePage() {
   const [instagramId, setInstagramId] = useState(User.instagramId);
   const [tiktokId, settiktokId] = useState(User.tiktokId);
   const [tiktokIndex, settiktokIndex] = useState(User.tiktokIndex);
+  const [cardCheckboxSelected, setCardCheckBoxSelected] = useState<string[]>(
+    []
+  );
   const {
     isOpen: isFilterOpen,
     onOpen: onFilterOpen,
@@ -84,11 +87,7 @@ function HomePage() {
   return (
     <>
       <NewModal isOpen={isNewOpen} onClose={onNeWClose} />
-      <FilterModal
-        isOpen={isFilterOpen}
-        onClose={onFilterClose}
-        user={User}
-      />
+      <FilterModal isOpen={isFilterOpen} onClose={onFilterClose} user={User} />
 
       <Container>
         <HomePageTopNavBar
@@ -100,20 +99,37 @@ function HomePage() {
           instagramId={instagramId}
         />
         <Box bg="#FAFAFA" px={5} minH={"100vh"} width={"100%"}>
-          <ResponsiveMasonry columnsCountBreakPoints={{ 575: 1, 720: 2, 900: 3, 1300: 4 }} >
+          <ResponsiveMasonry
+            columnsCountBreakPoints={{ 575: 1, 720: 2, 900: 3, 1300: 4 }}
+          >
             <Masonry gutter="10px">
               {[
                 ...instagramContents.map((instadata, i) => {
-                  return <InstagramCard data={instadata} key={`i${i}`} />;
+                  return (
+                    <InstagramCard
+                      cardCheckboxSelected={cardCheckboxSelected}
+                      setCardCheckBoxSelected={setCardCheckBoxSelected}
+                      data={instadata}
+                      key={`i${i}`}
+                    />
+                  );
                 }),
                 ...tiktokContents.map((video, index) => {
-                  return <TiktokCard video={video} key={`t${index}`} />;
+                  return (
+                    <TiktokCard
+                      cardCheckboxSelected={cardCheckboxSelected}
+                      setCardCheckBoxSelected={setCardCheckBoxSelected}
+                      video={video}
+                      key={`t${index}`}
+                    />
+                  );
                 }),
               ]}
             </Masonry>
           </ResponsiveMasonry>
         </Box>
       </Container>
+      <BottomCheckBox cardCheckboxSelected={cardCheckboxSelected} />
     </>
   );
 }

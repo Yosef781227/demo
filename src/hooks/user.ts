@@ -66,7 +66,7 @@ export default function useGetMe(): {
           const tiktoks = data.me.tiktoks;
           localStorage.setItem("selectedTiktokIndex", index.toString());
           localStorage.setItem("tiktoks", JSON.stringify(tiktoks));
-          settiktokId(tiktoks[index]?.id);
+          settiktokId(tiktoks[0]?.id);
           settiktoks(tiktoks);
           settiktokIndex(index);
           setHasTiktok(true);

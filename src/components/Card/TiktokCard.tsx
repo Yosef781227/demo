@@ -15,7 +15,16 @@ import {
   DotsThreeOutline,
   Plus,
 } from "@phosphor-icons/react";
-const TiktokCard = ({ video }: { video: any }) => {
+import { Dispatch, SetStateAction } from "react";
+const TiktokCard = ({
+  video,
+  cardCheckboxSelected,
+  setCardCheckBoxSelected,
+}: {
+  video: any;
+  cardCheckboxSelected: any[];
+  setCardCheckBoxSelected: Dispatch<SetStateAction<string[]>>;
+}) => {
   return (
     <VStack
       role="group"
@@ -60,6 +69,15 @@ const TiktokCard = ({ video }: { video: any }) => {
           left="5"
           size="lg"
           colorScheme={"purple"}
+          onChange={(e) => {
+            if (e.currentTarget.checked) {
+              setCardCheckBoxSelected([...cardCheckboxSelected, video.id]);
+            } else {
+              setCardCheckBoxSelected(
+                cardCheckboxSelected.filter((item) => item !== video.id)
+              );
+            }
+          }}
         />
 
         <HStack position="absolute" top="5" right="5">
@@ -83,7 +101,7 @@ const TiktokCard = ({ video }: { video: any }) => {
             </MenuList>
           </Menu>
 
-          <Menu closeOnSelect={false} >
+          <Menu closeOnSelect={false}>
             <MenuButton>
               <BookmarkSimple size={30} color="white" weight="fill" />
             </MenuButton>
