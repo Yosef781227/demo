@@ -87,6 +87,7 @@ function HomePage() {
       <FilterModal
         isOpen={isFilterOpen}
         onClose={onFilterClose}
+        user={User}
       />
 
       <Container>
