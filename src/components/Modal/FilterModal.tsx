@@ -23,10 +23,10 @@ import {
 import { RangeDatePicker } from 'react-google-flight-datepicker';
 import { useState } from "react";
 import 'react-google-flight-datepicker/dist/main.css';
-const currentDate = new Date(); // Current date
-const previousMonthDate = new Date(currentDate); // Create a new Date object based on the current date
+const currentDate = new Date(); 
+const previousMonthDate = new Date(currentDate); 
 
-previousMonthDate.setMonth(previousMonthDate.getMonth() - 1); // Set the month one month earlier
+previousMonthDate.setMonth(previousMonthDate.getMonth() - 1); 
 
 function FilterModal({
   isOpen,

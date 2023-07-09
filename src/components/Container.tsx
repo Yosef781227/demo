@@ -11,7 +11,7 @@ function Container(props: any) {
       overflow={"hidden"}
       alignSelf={"flex-start"}
       ml={"20%"}
-      minH={"110vh"}
+      minH={"120vh"}
       mt={3.5}
       alignItems={"stretch"}
       borderTopRadius={10}
