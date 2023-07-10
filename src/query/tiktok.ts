@@ -29,3 +29,13 @@ export const GetTiktokQuery = gql`
     }
   }
 `;
+
+export const AddVideoToCollection = gql`
+  mutation Mutation($jsonInput: String!) {
+    addVideoToCollection(json_input: $jsonInput) {
+      data
+      message
+      success
+    }
+  }
+`;

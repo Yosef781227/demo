@@ -24,7 +24,19 @@ import {
   Plus,
   PlayCircle,
 } from "@phosphor-icons/react";
-import { Dispatch, SetStateAction, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  Dispatch,
+  SetStateAction,
+  SyntheticEvent,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { CreateUserCollection, GetUserCollection } from "@/query/user";
+import { useMutation, useQuery } from "@apollo/client";
+import Loading from "../Loading";
+import { AddVideoToCollection } from "@/query/tiktok";
 const TiktokCard = ({
   video,
   cardCheckboxSelected,
@@ -36,6 +48,60 @@ const TiktokCard = ({
 }) => {
   const checkBoxRef = useRef<HTMLInputElement>(null);
   const [showVideo, setShowVideo] = useState(false);
+  const [collections, setCollections] = useState<any[]>([]);
+  const [textSearch, setTextSearch] = useState("");
+  const [selectedCheckboxes, setSelectedCheckboxes] = useState<any[]>([]);
+  const {
+    data: collectionData,
+    loading: loadingCollection,
+    error: errorCollection,
+    refetch,
+  } = useQuery(GetUserCollection);
+  const [
+    createCollection,
+    {
+      data: createCollectionData,
+      loading: createCollectionLoading,
+      error: createCollectionError,
+    },
+  ] = useMutation(CreateUserCollection);
+  const [
+    addVideoToCollection,
+    {
+      data: addVideoToCollectionData,
+      loading: addVideoToCollectionLoading,
+      error: addVideoToCollectionError,
+    },
+  ] = useMutation(AddVideoToCollection);
+  useEffect(() => {
+    if (collectionData) {
+      setCollections(collectionData.me.collections);
+    }
+  }, [collectionData]);
+  function handleChange(e: SyntheticEvent<HTMLInputElement>) {
+    setTextSearch(e.currentTarget.value);
+    setCollections(
+      collectionData.me.collections.filter((item: any) => {
+        return item.name.includes(e.currentTarget.value);
+      })
+    );
+  }
+  function handleAddTo() {
+    selectedCheckboxes.forEach((item) => {
+      addVideoToCollection({
+        variables: {
+          jsonInput: JSON.stringify({
+            collectionId: item.id,
+            videoId: video.id,
+          }),
+        },
+      });
+    });
+  }
+  if (loadingCollection || createCollectionLoading) {
+    return <Loading />;
+  }
+
   return (
     <VStack
       role="group"
@@ -99,7 +165,6 @@ const TiktokCard = ({
           left="5"
           size="lg"
           ref={checkBoxRef}
-          colorScheme={"purple"}
           onChange={(e) => {
             if (e.currentTarget.checked) {
               setCardCheckBoxSelected([
@@ -135,15 +200,21 @@ const TiktokCard = ({
             </MenuList>
           </Menu>
 
-          <Menu closeOnSelect={false}>
+          <Menu
+            onClose={() => {
+              setCollections(collectionData.me.collections);
+            }}
+            closeOnSelect={false}
+          >
             <MenuButton>
               <BookmarkSimple size={30} color="white" weight="fill" />
             </MenuButton>
             <MenuList>
               <MenuItem>
                 <Input
+                  value={textSearch}
+                  onChange={handleChange}
                   placeholder="Search or Create collection"
-                  color={"neutral.50"}
                   onClick={(e) => e.stopPropagation()}
                 />
               </MenuItem>
@@ -153,25 +224,66 @@ const TiktokCard = ({
                 }}
               >
                 <HStack spacing={4} width="100%" justifyContent="space-between">
-                  <HStack>
+                  <Button
+                    isDisabled={!Boolean(selectedCheckboxes.length)}
+                    display={"flex"}
+                    onClick={handleAddTo}
+                  >
                     <Plus size={24} color="#121212" weight="fill" />
                     <Text>Add to</Text>
-                  </HStack>
-                  <Button>Create</Button>
+                  </Button>
+                  <Button
+                    isDisabled={!!collections.length}
+                    onClick={() => {
+                      setTextSearch("");
+                      setCollections(collectionData.me.collections);
+                      createCollection({
+                        variables: {
+                          jsonInput: JSON.stringify({
+                            name: textSearch,
+                          }),
+                        },
+                      });
+                      refetch();
+                    }}
+                  >
+                    Create
+                  </Button>
                 </HStack>
               </MenuItem>
-              <MenuItem>
+              {/* <MenuItem>
                 <HStack>
                   <Checkbox />
                   <Text>Select all</Text>
                 </HStack>
-              </MenuItem>
-              <MenuItem>
-                <HStack>
-                  <Checkbox />
-                  <Text>Favourite</Text>
-                </HStack>
-              </MenuItem>
+              </MenuItem> */}
+              {collections.map((collection: any) => {
+                return (
+                  <MenuItem key={collection.id}>
+                    <HStack>
+                      <Checkbox
+                        onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                          if (e.currentTarget.checked) {
+                            setSelectedCheckboxes([
+                              ...selectedCheckboxes,
+                              collection,
+                            ]);
+                          } else {
+                            setSelectedCheckboxes(
+                              selectedCheckboxes.filter(
+                                (selectedCheckBox) =>
+                                  selectedCheckBox.id !== collection.id
+                              )
+                            );
+                          }
+                        }}
+                      />
+
+                      <Text>{collection.name}</Text>
+                    </HStack>
+                  </MenuItem>
+                );
+              })}
             </MenuList>
           </Menu>
         </HStack>

@@ -18,6 +18,7 @@ import { GetInstagramQuery } from "@/query/instagram";
 import { GetTiktokQuery } from "@/query/tiktok";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import BottomCheckBox from "@/components/Modal/BottomCheckBox";
+import { GetUserCollection } from "@/query/user";
 function HomePage() {
   const User = useContext(UserContext) as User;
   const hasInstagram = User.hasInstagram;
@@ -27,6 +28,7 @@ function HomePage() {
   const [tiktokId, settiktokId] = useState(User.tiktokId);
   const [tiktokIndex, settiktokIndex] = useState(User.tiktokIndex);
   const [cardCheckboxSelected, setCardCheckBoxSelected] = useState<any[]>([]);
+
   const {
     isOpen: isFilterOpen,
     onOpen: onFilterOpen,

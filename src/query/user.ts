@@ -20,3 +20,24 @@ export const GetMeQuery = gql`
     }
   }
 `;
+
+export const GetUserCollection = gql`
+  query GetUserCollections {
+    me {
+      collections {
+        id
+        name
+      }
+    }
+  }
+`;
+
+export const CreateUserCollection = gql`
+  mutation Mutation($jsonInput: String!) {
+    createCollection(json_input: $jsonInput) {
+      data
+      message
+      success
+    }
+  }
+`;

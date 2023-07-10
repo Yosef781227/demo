@@ -24,14 +24,14 @@ export default function useGetMe(): {
     data,
   } = useQuery(GetMeQuery);
 
-  console.log(
-    "loadingQuery : ",
-    loadingQuery,
-    " data : ",
-    data,
-    "Error : ",
-    error
-  );
+  // console.log(
+  //   "loadingQuery : ",
+  //   loadingQuery,
+  //   " data : ",
+  //   data,
+  //   "Error : ",
+  //   error
+  // );
   useEffect(() => {
     if (data) {
       if (data == null || data?.errors) {
