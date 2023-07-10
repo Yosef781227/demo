@@ -14,6 +14,10 @@ function BottomCheckBox({
     cardCheckboxSelected.forEach((item) => {
       handleDownload(item.data.url as string);
       item.checkBoxRef.current.checked = false;
+      item.checkBoxRef.current.style.display = "none";
+      setCardCheckBoxSelected(
+        cardCheckboxSelected.filter((i) => i.data.id != item.id)
+      );
     });
   };
   if (cardCheckboxSelected.length == 0) {
