@@ -24,7 +24,7 @@ import {
   Plus,
   PlayCircle,
 } from "@phosphor-icons/react";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useRef, useState } from "react";
 const TiktokCard = ({
   video,
   cardCheckboxSelected,
@@ -32,8 +32,9 @@ const TiktokCard = ({
 }: {
   video: any;
   cardCheckboxSelected: any[];
-  setCardCheckBoxSelected: Dispatch<SetStateAction<string[]>>;
+  setCardCheckBoxSelected: Dispatch<SetStateAction<any[]>>;
 }) => {
+  const checkBoxRef = useRef<HTMLInputElement>(null);
   const [showVideo, setShowVideo] = useState(false);
   return (
     <VStack
@@ -97,13 +98,17 @@ const TiktokCard = ({
           top="5"
           left="5"
           size="lg"
+          ref={checkBoxRef}
           colorScheme={"purple"}
           onChange={(e) => {
             if (e.currentTarget.checked) {
-              setCardCheckBoxSelected([...cardCheckboxSelected, video.id]);
+              setCardCheckBoxSelected([
+                ...cardCheckboxSelected,
+                { data: video, checkBoxRef },
+              ]);
             } else {
               setCardCheckBoxSelected(
-                cardCheckboxSelected.filter((item) => item !== video.id)
+                cardCheckboxSelected.filter((item) => item.data.id !== video.id)
               );
             }
           }}

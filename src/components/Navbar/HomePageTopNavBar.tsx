@@ -51,32 +51,36 @@ function HomePageTopNavBar({
         <Button colorScheme="primary" onClick={saveNewContent}>
           Save New Content
         </Button>
-        <Select
-          width={"auto"}
-          onChange={changeAccount}
-          defaultValue={instagramId}
-        >
-          {User.instagrams.map((instagram: any, index: number) => {
-            return (
-              <option key={index + 1} value={instagram.id}>
-                {instagram.username}
-              </option>
-            );
-          })}
-        </Select>
-        <Select
-          width={"auto"}
-          onChange={changeTiktokAcount}
-          defaultValue={tiktokId}
-        >
-          {User.tiktoks.map((tiktok: any, index: number) => {
-            return (
-              <option key={index + 1} value={tiktok.id}>
-                {tiktok.uniqueId}
-              </option>
-            );
-          })}
-        </Select>
+        {User.instagrams.length && (
+          <Select
+            width={"auto"}
+            onChange={changeAccount}
+            defaultValue={instagramId}
+          >
+            {User.instagrams.map((instagram: any, index: number) => {
+              return (
+                <option key={index + 1} value={instagram.id}>
+                  {instagram.username}
+                </option>
+              );
+            })}
+          </Select>
+        )}
+        {User.tiktoks.length && (
+          <Select
+            width={"auto"}
+            onChange={changeTiktokAcount}
+            defaultValue={tiktokId}
+          >
+            {User.tiktoks.map((tiktok: any, index: number) => {
+              return (
+                <option key={index + 1} value={tiktok.id}>
+                  {tiktok.uniqueId}
+                </option>
+              );
+            })}
+          </Select>
+        )}
       </HStack>
     </HStack>
   );

@@ -1,3 +1,4 @@
+import { handleDownload } from "@/utils";
 import { HStack, Button, Text, Box } from "@chakra-ui/react";
 import React, { Dispatch, SetStateAction } from "react";
 
@@ -5,9 +6,16 @@ function BottomCheckBox({
   cardCheckboxSelected,
   setCardCheckBoxSelected,
 }: {
-  cardCheckboxSelected: string[];
-  setCardCheckBoxSelected: Dispatch<SetStateAction<string[]>>;
+  cardCheckboxSelected: any[];
+  setCardCheckBoxSelected: Dispatch<SetStateAction<any[]>>;
 }) {
+  console.log(cardCheckboxSelected);
+  const handleMultipleDownload = () => {
+    cardCheckboxSelected.forEach((item) => {
+      handleDownload(item.data.url as string);
+      item.checkBoxRef.current.checked = false;
+    });
+  };
   if (cardCheckboxSelected.length == 0) {
     return null;
   } else {
@@ -27,7 +35,7 @@ function BottomCheckBox({
         <HStack width="full" justifyContent={"space-between"}>
           <Text>{cardCheckboxSelected.length} Selected</Text>
           <HStack>
-            <Button>Download</Button>
+            <Button onClick={handleMultipleDownload}>Download</Button>
             <Button>Delete</Button>
             <Button>Select all</Button>
           </HStack>

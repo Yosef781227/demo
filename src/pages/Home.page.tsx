@@ -26,9 +26,7 @@ function HomePage() {
   const [instagramId, setInstagramId] = useState(User.instagramId);
   const [tiktokId, settiktokId] = useState(User.tiktokId);
   const [tiktokIndex, settiktokIndex] = useState(User.tiktokIndex);
-  const [cardCheckboxSelected, setCardCheckBoxSelected] = useState<string[]>(
-    []
-  );
+  const [cardCheckboxSelected, setCardCheckBoxSelected] = useState<any[]>([]);
   const {
     isOpen: isFilterOpen,
     onOpen: onFilterOpen,

@@ -24,7 +24,7 @@ import {
   Plus,
   PlayCircle,
 } from "@phosphor-icons/react";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useRef, useState } from "react";
 
 function InstagramCard({
   data,
@@ -33,9 +33,10 @@ function InstagramCard({
 }: {
   data: any;
   cardCheckboxSelected: any[];
-  setCardCheckBoxSelected: Dispatch<SetStateAction<string[]>>;
+  setCardCheckBoxSelected: Dispatch<SetStateAction<any[]>>;
 }) {
   const [showVideo, setShowVideo] = useState(false);
+  const checkBoxRef = useRef<HTMLInputElement>(null);
   return (
     <VStack
       role="group"
