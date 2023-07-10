@@ -1,6 +1,13 @@
 import instagram from "@/assets/icons/social/instagram.svg";
 import LazyLoad from "react-lazyload";
-import { VStack, HStack, Avatar, Text, Image } from "@chakra-ui/react";
+import {
+  VStack,
+  HStack,
+  Avatar,
+  Text,
+  Image,
+  IconButton,
+} from "@chakra-ui/react";
 import {
   Checkbox,
   Box,
@@ -15,8 +22,9 @@ import {
   BookmarkSimple,
   DotsThreeOutline,
   Plus,
+  PlayCircle,
 } from "@phosphor-icons/react";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
 function InstagramCard({
   data,
@@ -27,6 +35,7 @@ function InstagramCard({
   cardCheckboxSelected: any[];
   setCardCheckBoxSelected: Dispatch<SetStateAction<string[]>>;
 }) {
+  const [showVideo, setShowVideo] = useState(false);
   return (
     <VStack
       role="group"
@@ -55,7 +64,27 @@ function InstagramCard({
       </HStack>
 
       <Box position="relative">
-        {getAccess(data)}
+        {data?.ig_content?.is_video ? (
+          showVideo ? (
+            getAccess(data)
+          ) : (
+            <>
+              <IconButton
+                position={"absolute"}
+                top={"50%"}
+                size={"lg"}
+                left={"50%"}
+                onClick={() => setShowVideo(true)}
+                aria-label="start video"
+                shadow={"2xl"}
+                icon={<PlayCircle size={50} />}
+              />
+              <Image src={data.display_url} />
+            </>
+          )
+        ) : (
+          getAccess(data)
+        )}
         <Checkbox
           position="absolute"
           top="5"

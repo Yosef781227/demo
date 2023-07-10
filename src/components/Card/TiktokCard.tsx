@@ -77,19 +77,20 @@ const TiktokCard = ({
             }
           />
         ) : (
-          <IconButton
-            position={"absolute"}
-            top={"50%"}
-            size={"lg"}
-            left={"50%"}
-            onClick={() => setShowVideo(true)}
-            aria-label="start video"
-            shadow={"2xl"}
-            icon={<PlayCircle size={50} />}
-          />
+          <>
+            <IconButton
+              position={"absolute"}
+              top={"50%"}
+              size={"lg"}
+              left={"50%"}
+              onClick={() => setShowVideo(true)}
+              aria-label="start video"
+              shadow={"2xl"}
+              icon={<PlayCircle size={50} />}
+            />
+            <Image src={video.display_url} />
+          </>
         )}
-
-        <Image src={video.display_url} />
 
         <Checkbox
           position="absolute"
