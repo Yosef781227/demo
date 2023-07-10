@@ -1,12 +1,13 @@
 import { HStack, Button, Text, Box } from "@chakra-ui/react";
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 
 function BottomCheckBox({
   cardCheckboxSelected,
+  setCardCheckBoxSelected,
 }: {
   cardCheckboxSelected: string[];
+  setCardCheckBoxSelected: Dispatch<SetStateAction<string[]>>;
 }) {
-  console.log(cardCheckboxSelected);
   if (cardCheckboxSelected.length == 0) {
     return null;
   } else {

@@ -1,4 +1,12 @@
-import { VStack, HStack, Avatar, Text } from "@chakra-ui/react";
+import {
+  VStack,
+  HStack,
+  Avatar,
+  Text,
+  Button,
+  Image,
+  IconButton,
+} from "@chakra-ui/react";
 import tiktok from "@/assets/icons/social/tiktok.svg";
 import {
   Checkbox,
@@ -14,8 +22,9 @@ import {
   BookmarkSimple,
   DotsThreeOutline,
   Plus,
+  PlayCircle,
 } from "@phosphor-icons/react";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 const TiktokCard = ({
   video,
   cardCheckboxSelected,
@@ -25,6 +34,7 @@ const TiktokCard = ({
   cardCheckboxSelected: any[];
   setCardCheckBoxSelected: Dispatch<SetStateAction<string[]>>;
 }) => {
+  const [showVideo, setShowVideo] = useState(false);
   return (
     <VStack
       role="group"
@@ -54,14 +64,32 @@ const TiktokCard = ({
       </HStack>
 
       <Box position="relative">
-        <video
-          width={"100%"}
-          style={{ objectFit: "contain" }}
-          controls={true}
-          src={
-            video.url.includes("https://") ? video.url : "https://" + video.url
-          }
-        />
+        {showVideo ? (
+          <video
+            width={"100%"}
+            style={{ objectFit: "contain" }}
+            controls={true}
+            autoPlay={true}
+            src={
+              video.url.includes("https://")
+                ? video.url
+                : "https://" + video.url
+            }
+          />
+        ) : (
+          <IconButton
+            position={"absolute"}
+            top={"50%"}
+            size={"lg"}
+            left={"50%"}
+            onClick={() => setShowVideo(true)}
+            aria-label="start video"
+            shadow={"2xl"}
+            icon={<PlayCircle size={50} />}
+          />
+        )}
+
+        <Image src={video.display_url} />
 
         <Checkbox
           position="absolute"
@@ -110,15 +138,20 @@ const TiktokCard = ({
                 <Input
                   placeholder="Search or Create collection"
                   color={"neutral.50"}
+                  onClick={(e) => e.stopPropagation()}
                 />
               </MenuItem>
-              <MenuItem>
+              <MenuItem
+                _hover={{
+                  backgroundColor: "white",
+                }}
+              >
                 <HStack spacing={4} width="100%" justifyContent="space-between">
                   <HStack>
                     <Plus size={24} color="#121212" weight="fill" />
                     <Text>Add to</Text>
                   </HStack>
-                  <Text>Create</Text>
+                  <Button>Create</Button>
                 </HStack>
               </MenuItem>
               <MenuItem>

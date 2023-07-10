@@ -8,6 +8,8 @@ export default function useGetMe(): {
 } {
   const [loading, setLoading] = useState(true);
   const [isAuth, setIsAuth] = useState(false);
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
   const [instagramId, setInstagramId] = useState("");
   const [instagrams, setInstagrams] = useState<any[]>([]);
   const [instagramIndex, setInstagramIndex] = useState(0);
@@ -38,6 +40,8 @@ export default function useGetMe(): {
       } else {
         setIsAuth(true);
         setLoading(false);
+        setEmail(data.me.email);
+        setName(data.me.name);
 
         if (data.me.has_instagram) {
           console.log("User has instagram");
@@ -84,6 +88,8 @@ export default function useGetMe(): {
   return {
     loading,
     userInfo: {
+      name,
+      email,
       isAuth,
       instagramId,
       instagrams,

@@ -129,7 +129,10 @@ function HomePage() {
           </ResponsiveMasonry>
         </Box>
       </Container>
-      <BottomCheckBox cardCheckboxSelected={cardCheckboxSelected} />
+      <BottomCheckBox
+        setCardCheckBoxSelected={setCardCheckBoxSelected}
+        cardCheckboxSelected={cardCheckboxSelected}
+      />
     </>
   );
 }

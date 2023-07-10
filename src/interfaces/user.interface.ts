@@ -6,6 +6,8 @@ export interface User {
   instagrams: any[];
   hasTiktok: boolean;
   tiktokId: string;
+  name: string;
+  email: string;
   tiktoks: any[];
   tiktokIndex: number;
   setHasInstagram: (value: boolean) => void;

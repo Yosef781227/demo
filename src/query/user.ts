@@ -4,6 +4,8 @@ export const GetMeQuery = gql`
     me {
       id
       has_tiktok
+      email
+      name
       has_instagram
       tiktoks {
         id

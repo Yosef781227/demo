@@ -5,7 +5,15 @@ import CollectionIcon from "@/assets/icons/Filled/CollectionIcon";
 import SettingIcon from "@/assets/icons/Filled/SettingIcon";
 import Logo from "../Logo";
 import { NavLink, Navigate } from "react-router-dom";
-import { Menu, MenuButton, MenuList, MenuItem, IconButton } from "@chakra-ui/react"
+import {
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  IconButton,
+} from "@chakra-ui/react";
+import { useContext } from "react";
+import { UserContext } from "@/App";
 const ChakraNavLink = chakra(NavLink);
 
 const sideBarElements = [
@@ -74,6 +82,7 @@ function sideBarListBuilder(pathname: string) {
   );
 }
 function SideBar() {
+  const user = useContext(UserContext);
   const matches: any = [];
   return (
     <VStack
@@ -99,14 +108,14 @@ function SideBar() {
             color="whiteAlpha.800
 "
           >
-            John Doe
+            {user?.name}
           </Text>
           <Text
             color="whiteAlpha.800
 "
             lineHeight={"text"}
           >
-            johndoe@gmail.com
+            {user?.email}
           </Text>
         </VStack>
         <Menu>
@@ -118,7 +127,6 @@ function SideBar() {
             <MenuItem>Log Out</MenuItem>
           </MenuList>
         </Menu>
-
       </HStack>
     </VStack>
   );
