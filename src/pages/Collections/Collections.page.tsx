@@ -6,68 +6,123 @@ import {
   Image,
   Button as ChakrauiButton,
   Box,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+  Button,
+  HStack,
 } from "@chakra-ui/react";
 import HorizontalThreeDot from "@/assets/icons/Outline/HorizontalThreeDot";
 import Container from "@components/Container";
 import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
 import CollectionPageTopNavBar from "@/components/Navbar/CollectionPageTopNavBar";
-import {
-  ApolloQueryResult,
-  OperationVariables,
-  useMutation,
-  useQuery,
-} from "@apollo/client";
-import { CreateUserCollection, GetUserCollection } from "@/query/user";
+import { useMutation, useQuery } from "@apollo/client";
+import { GetUserCollection } from "@/query/user";
 import Loading from "@/components/Loading";
-import { useEffect } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { DeleteCollection } from "@/query/collection";
 
 function Collections() {
-  const { data, loading, error, refetch } = useQuery(GetUserCollection);
+  const { data, loading, refetch } = useQuery(GetUserCollection);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [deleteCollection, setDeleteCollection] = useState<any>(null);
+  const [
+    deleteCollectionMutation,
+    { data: dataDeleteCollection, loading: loadingDeleteCollection },
+  ] = useMutation(DeleteCollection);
 
-  if (loading || !data) {
+  const Overlay = () => (
+    <ModalOverlay
+      bg="none"
+      backdropBrightness={10}
+      backdropFilter="auto"
+      backdropBlur="3px"
+    />
+  );
+  if (dataDeleteCollection) {
+    refetch();
+  }
+  if (loading || !data || loadingDeleteCollection) {
     return <Loading />;
   }
 
   return (
-    <Container background={"neutral.100"}>
-      <CollectionPageTopNavBar />
-      <Wrap pt={5}>
-        {data?.me?.collections.map((collection: any, i: number) => {
-          return (
-            <WrapItem key={collection.id}>
-              <Card refetch={refetch} collection={collection} />
-            </WrapItem>
-          );
-        })}
-      </Wrap>
-    </Container>
+    <>
+      <Modal isCentered isOpen={isOpen} onClose={onClose}>
+        <Overlay />
+        <ModalContent>
+          <ModalHeader>Do You Want to delete this collection ? </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Text>
+              This Action will{" "}
+              <Text as="span" fontWeight="bold">
+                permanently remove this collection .
+              </Text>{" "}
+              Are you sure you want to proceed?
+            </Text>
+          </ModalBody>
+          <ModalFooter>
+            <HStack width={"full"} justifyContent={"space-around"}>
+              <Button
+                onClick={() => {
+                  setDeleteCollection(null);
+                  onClose();
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                colorScheme="red"
+                onClick={() => {
+                  onClose();
+                  deleteCollectionMutation({
+                    variables: {
+                      jsonInput: JSON.stringify({ id: deleteCollection.id }),
+                    },
+                  });
+                }}
+              >
+                Delete
+              </Button>
+            </HStack>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+      <Container background={"neutral.100"}>
+        <CollectionPageTopNavBar />
+        <Wrap pt={5}>
+          {data?.me?.collections.map((collection: any) => {
+            return (
+              <WrapItem key={collection.id}>
+                <Card
+                  setDeleteCollection={setDeleteCollection}
+                  onOpen={onOpen}
+                  collection={collection}
+                />
+              </WrapItem>
+            );
+          })}
+        </Wrap>
+      </Container>
+    </>
   );
 }
 
 function Card({
   collection,
-  refetch,
+  onOpen,
+  setDeleteCollection,
 }: {
   collection: any;
-  refetch: (
-    variables?: Partial<OperationVariables> | undefined
-  ) => Promise<ApolloQueryResult<any>>;
+  onOpen: () => void;
+  setDeleteCollection: Dispatch<SetStateAction<any>>;
 }) {
-  const [
-    deleteCollection,
-    {
-      data: dataDeleteCollection,
-      loading: loadingDeleteCollection,
-      error: errorDeleteCollection,
-    },
-  ] = useMutation(DeleteCollection);
-  if (loadingDeleteCollection) {
-    return <Loading />;
-  }
-  if (dataDeleteCollection) {
-    refetch();
-  }
   return (
     <VStack
       position={"relative"}
@@ -99,15 +154,10 @@ function Card({
             <MenuItem>Rename</MenuItem>
             <MenuItem
               onClick={() => {
-                deleteCollection({
-                  variables: {
-                    jsonInput: JSON.stringify({
-                      id: collection.id,
-                    }),
-                  },
-                });
+                setDeleteCollection(collection);
+                onOpen();
               }}
-              color="red"
+              color="#ff0000"
             >
               Delete Collection
             </MenuItem>

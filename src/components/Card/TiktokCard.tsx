@@ -98,6 +98,9 @@ const TiktokCard = ({
       });
     });
   }
+  if (createCollectionData) {
+    refetch();
+  }
   if (loadingCollection || createCollectionLoading) {
     return <Loading />;
   }
@@ -244,7 +247,6 @@ const TiktokCard = ({
                           }),
                         },
                       });
-                      refetch();
                     }}
                   >
                     Create

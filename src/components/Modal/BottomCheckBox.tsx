@@ -9,18 +9,22 @@ function BottomCheckBox({
   cardCheckboxSelected: any[];
   setCardCheckBoxSelected: Dispatch<SetStateAction<any[]>>;
 }) {
-  console.log(cardCheckboxSelected);
   const handleMultipleDownload = () => {
-    cardCheckboxSelected.forEach((item) => {
-      handleDownload(item.data.url as string);
-      item.checkBoxRef.current.checked = false;
-      item.checkBoxRef.current.style.display = "none";
-      setCardCheckBoxSelected(
-        cardCheckboxSelected.filter((i) => i.data.id != item.id)
-      );
-    });
+    for (let i = 0; i < cardCheckboxSelected.length; i++) {
+      let item = cardCheckboxSelected[i];
+      item.checkBoxRef.current.checked = !item.checkBoxRef.current.checked;
+      item.checkBoxRef.current.click();
+      const anchor = document.createElement("a");
+      anchor.href = item.data.url;
+      anchor.download = item.data.url;
+      anchor.style.display = "none";
+      document.body.appendChild(anchor);
+      anchor.click();
+      document.body.removeChild(anchor);
+    }
+    setCardCheckBoxSelected([]);
   };
-  if (cardCheckboxSelected.length == 0) {
+  if (cardCheckboxSelected.length === 0) {
     return null;
   } else {
     return (

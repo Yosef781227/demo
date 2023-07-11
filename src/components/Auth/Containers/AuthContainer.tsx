@@ -1,4 +1,4 @@
-import { Center, VStack, Box } from "@chakra-ui/react";
+import { Center, VStack } from "@chakra-ui/react";
 import React from "react";
 
 function AuthContainer({ children }: { children: React.ReactNode }) {

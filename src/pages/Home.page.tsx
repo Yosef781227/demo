@@ -19,6 +19,7 @@ import { GetTiktokQuery } from "@/query/tiktok";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import BottomCheckBox from "@/components/Modal/BottomCheckBox";
 import { GetUserCollection } from "@/query/user";
+import { FilterContent } from "@/query";
 function HomePage() {
   const User = useContext(UserContext) as User;
   const hasInstagram = User.hasInstagram;
@@ -81,6 +82,37 @@ function HomePage() {
     instagramLoading
   );
   const tiktokContents = useGetTiktokData(tiktokData, tiktokLoading);
+  const filteredContent = useQuery(FilterContent, {
+    variables: {
+      filterContentsJsonInput2: JSON.stringify({
+        usernames: ["archive9109"],
+        unique_ids: ["bruk_x"],
+        type: ["post", "reel", "story", "video"],
+        start_time: 1685131281,
+        end_time: 1685133079,
+        hashtags: [
+          "#ethiopia",
+          "#ethiopian",
+          "#ethiopianfood",
+          "#ethiopiancoffee",
+          "#ethiopianc",
+        ],
+        content_type: 2, // 0 => Image, 1 => Video, 2 => All
+        usage_right: ["PENDING", "APPROVED", "REJECTED", "DEFAULT"],
+        followers: 5,
+        verified: 2, // 1 => Verified, 0 => Not Verified, 2 => All
+        collection_include: [],
+        collection_exclude: [],
+        likes: 10,
+        comments: 20,
+        shares: 50,
+        views: 50,
+        limit: 50,
+        offset: 50,
+      }),
+    },
+  });
+  console.log(filteredContent);
   if (tiktokLoading || tiktokLoading) {
     return <Loading />;
   }
