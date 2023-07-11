@@ -21,8 +21,9 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { RangeDatePicker } from "react-google-flight-datepicker";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useReducer, useState } from "react";
 import "react-google-flight-datepicker/dist/main.css";
+import { User } from "@/interfaces/user.interface";
 const currentDate = new Date();
 const previousMonthDate = new Date(currentDate);
 
@@ -32,10 +33,16 @@ function FilterModal({
   isOpen,
   onClose,
   user,
+  setApplyFilterState,
+  dispatch,
+  filterState,
 }: {
   isOpen: boolean;
   onClose: () => void;
+  setApplyFilterState: Dispatch<SetStateAction<any>>;
   user: User;
+  filterState: any;
+  dispatch: Dispatch<any>;
 }) {
   const [startDate, setStartDate] = useState<Date>(previousMonthDate);
   const [endDate, setEndDate] = useState<Date>(previousMonthDate);
@@ -45,8 +52,13 @@ function FilterModal({
   const [content_type, setContentType] = useState<number>(2);
 
   const onDateChange = (startDate: Date, endDate: Date) => {
-    setStartDate(startDate);
-    setEndDate(endDate);
+    dispatch({
+      type: "POST_TIME",
+      payload: {
+        startDate,
+        endDate,
+      },
+    });
   };
 
   return (
@@ -78,9 +90,9 @@ function FilterModal({
                 <RangeDatePicker
                   startDate={startDate}
                   endDate={endDate}
-                  onChange={(startDate, endDate) =>
-                    onDateChange(startDate, endDate)
-                  }
+                  onChange={(startDate, endDate) => {
+                    onDateChange(startDate, endDate);
+                  }}
                   minDate={new Date(2012, 0, 1)}
                   maxDate={
                     new Date(
@@ -106,16 +118,85 @@ function FilterModal({
                       Instagram
                     </Text>
                     <HStack mt={1.5}>
-                      <Checkbox>Reel</Checkbox>
-                      <Checkbox>Feed</Checkbox>
-                      <Checkbox>Story</Checkbox>
+                      <Checkbox
+                        onChange={(e) => {
+                          e.target.checked
+                            ? dispatch({
+                                type: "POST_TYPE",
+                                payload: [...filterState.postType, "reel"],
+                              })
+                            : dispatch({
+                                type: "POST_TYPE",
+                                payload: [...filterState.postType].filter(
+                                  (type) => type !== "reel"
+                                ),
+                              });
+                        }}
+                        isChecked={filterState.postType.includes("reel")}
+                      >
+                        Reel
+                      </Checkbox>
+                      <Checkbox
+                        onChange={(e) => {
+                          e.target.checked
+                            ? dispatch({
+                                type: "POST_TYPE",
+                                payload: [...filterState.postType, "post"],
+                              })
+                            : dispatch({
+                                type: "POST_TYPE",
+                                payload: [...filterState.postType].filter(
+                                  (type) => type !== "post"
+                                ),
+                              });
+                        }}
+                        isChecked={filterState.postType.includes("post")}
+                      >
+                        Feed
+                      </Checkbox>
+                      <Checkbox
+                        onChange={(e) => {
+                          e.target.checked
+                            ? dispatch({
+                                type: "POST_TYPE",
+                                payload: [...filterState.postType, "story"],
+                              })
+                            : dispatch({
+                                type: "POST_TYPE",
+                                payload: [...filterState.postType].filter(
+                                  (type) => type !== "story"
+                                ),
+                              });
+                        }}
+                        isChecked={filterState.postType.includes("story")}
+                      >
+                        Story
+                      </Checkbox>
                     </HStack>
                   </Box>
                   <Box mt={3}>
                     <Text textColor={"gray.500"} fontSize={"sm"}>
                       Tiktok
                     </Text>
-                    <Checkbox mt={3}>Video</Checkbox>
+                    <Checkbox
+                      onChange={(e) => {
+                        e.target.checked
+                          ? dispatch({
+                              type: "POST_TYPE",
+                              payload: [...filterState.postType, "video"],
+                            })
+                          : dispatch({
+                              type: "POST_TYPE",
+                              payload: [...filterState.postType].filter(
+                                (type) => type !== "video"
+                              ),
+                            });
+                      }}
+                      isChecked={filterState.postType.includes("video")}
+                      mt={3}
+                    >
+                      Video
+                    </Checkbox>
                   </Box>
                 </Box>
               </Box>
@@ -356,7 +437,14 @@ function FilterModal({
 
           <ModalFooter>
             <Button variant="ghost">Reset All</Button>
-            <Button colorScheme="primary" mr={3} onClick={onClose}>
+            <Button
+              colorScheme="primary"
+              mr={3}
+              onClick={() => {
+                setApplyFilterState(filterState);
+                onClose();
+              }}
+            >
               Apply All
             </Button>
           </ModalFooter>

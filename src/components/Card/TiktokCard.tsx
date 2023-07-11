@@ -102,7 +102,7 @@ const TiktokCard = ({
     refetch();
   }
   if (loadingCollection || createCollectionLoading) {
-    return <Loading />;
+    return null;
   }
 
   return (

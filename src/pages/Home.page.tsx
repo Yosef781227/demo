@@ -2,7 +2,7 @@ import { Box, useDisclosure } from "@chakra-ui/react";
 import "react-datepicker/dist/react-datepicker.css";
 import "react-toastify/dist/ReactToastify.css";
 import Container from "@components/Container";
-import { useState, useContext, ChangeEvent } from "react";
+import { useState, useContext, ChangeEvent, useReducer } from "react";
 import { UserContext } from "@/App";
 import FilterModal from "@/components/Modal/FilterModal";
 import TiktokCard from "@/components/Card/TiktokCard";
@@ -18,8 +18,8 @@ import { GetInstagramQuery } from "@/query/instagram";
 import { GetTiktokQuery } from "@/query/tiktok";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import BottomCheckBox from "@/components/Modal/BottomCheckBox";
-import { GetUserCollection } from "@/query/user";
 import { FilterContent } from "@/query";
+import { reducer } from "@/utils/reducers/filterReducer";
 function HomePage() {
   const User = useContext(UserContext) as User;
   const hasInstagram = User.hasInstagram;
@@ -29,7 +29,10 @@ function HomePage() {
   const [tiktokId, settiktokId] = useState(User.tiktokId);
   const [tiktokIndex, settiktokIndex] = useState(User.tiktokIndex);
   const [cardCheckboxSelected, setCardCheckBoxSelected] = useState<any[]>([]);
-
+  const [filterState, dispatch] = useReducer(reducer, {
+    postType: ["post", "reel", "story", "video"],
+  });
+  const [applyFilterState, setApplyFilterState] = useState<any>(null);
   const {
     isOpen: isFilterOpen,
     onOpen: onFilterOpen,
@@ -83,11 +86,12 @@ function HomePage() {
   );
   const tiktokContents = useGetTiktokData(tiktokData, tiktokLoading);
   const filteredContent = useQuery(FilterContent, {
+    skip: !applyFilterState,
     variables: {
       filterContentsJsonInput2: JSON.stringify({
         usernames: ["archive9109"],
         unique_ids: ["bruk_x"],
-        type: ["post", "reel", "story", "video"],
+        type: applyFilterState?.postType,
         start_time: 1685131281,
         end_time: 1685133079,
         hashtags: [
@@ -119,7 +123,14 @@ function HomePage() {
   return (
     <>
       <NewModal isOpen={isNewOpen} onClose={onNeWClose} />
-      <FilterModal isOpen={isFilterOpen} onClose={onFilterClose} user={User} />
+      <FilterModal
+        filterState={filterState}
+        dispatch={dispatch}
+        isOpen={isFilterOpen}
+        setApplyFilterState={setApplyFilterState}
+        onClose={onFilterClose}
+        user={User}
+      />
 
       <Container>
         <HomePageTopNavBar
