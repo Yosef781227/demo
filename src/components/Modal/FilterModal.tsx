@@ -60,7 +60,7 @@ function FilterModal({
       },
     });
   };
-
+  console.log(filterState.verified);
   return (
     <>
       <Modal isOpen={isOpen} isCentered={false} size={"md"} onClose={onClose}>
@@ -428,8 +428,46 @@ function FilterModal({
               <Box mt={5}>
                 <Text textColor={"gray.500"}>Verification</Text>
                 <HStack mt={3}>
-                  <Checkbox>Verified</Checkbox>
-                  <Checkbox>Not Verified</Checkbox>
+                  <Checkbox
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        dispatch({
+                          type: "VERIFIED",
+                          payload: filterState.verified == 0 ? 2 : 1,
+                        });
+                      } else {
+                        dispatch({
+                          type: "VERIFIED",
+                          payload: filterState.verified == 2 ? 0 : -1,
+                        });
+                      }
+                    }}
+                    isChecked={
+                      filterState.verified === 2 || filterState.verified == 1
+                    }
+                  >
+                    Verified
+                  </Checkbox>
+                  <Checkbox
+                    isChecked={
+                      filterState.verified === 2 || filterState.verified == 0
+                    }
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        dispatch({
+                          type: "VERIFIED",
+                          payload: filterState.verified == -1 ? 0 : 2,
+                        });
+                      } else {
+                        dispatch({
+                          type: "VERIFIED",
+                          payload: filterState.verified == 2 ? 1 : -1,
+                        });
+                      }
+                    }}
+                  >
+                    Not Verified
+                  </Checkbox>
                 </HStack>
               </Box>
             </>

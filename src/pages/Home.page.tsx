@@ -31,6 +31,8 @@ function HomePage() {
   const [cardCheckboxSelected, setCardCheckBoxSelected] = useState<any[]>([]);
   const [filterState, dispatch] = useReducer(reducer, {
     postType: ["post", "reel", "story", "video"],
+    verified: 2,
+    usageRight: ["PENDING", "APPROVED", "REJECTED", "DEFAULT"],
   });
   const [applyFilterState, setApplyFilterState] = useState<any>(null);
   const {
@@ -102,9 +104,9 @@ function HomePage() {
           "#ethiopianc",
         ],
         content_type: 2, // 0 => Image, 1 => Video, 2 => All
-        usage_right: ["PENDING", "APPROVED", "REJECTED", "DEFAULT"],
+        usage_right: applyFilterState?.usageRight,
         followers: 5,
-        verified: 2, // 1 => Verified, 0 => Not Verified, 2 => All
+        verified: applyFilterState.verified, // 1 => Verified, 0 => Not Verified, 2 => All
         collection_include: [],
         collection_exclude: [],
         likes: 10,
@@ -119,6 +121,7 @@ function HomePage() {
   if (tiktokLoading || tiktokLoading) {
     return <Loading />;
   }
+  console.log(filteredContent);
   return (
     <>
       <NewModal isOpen={isNewOpen} onClose={onNeWClose} />
