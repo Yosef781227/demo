@@ -24,7 +24,7 @@ function Buttons({
   icon,
   size = "md",
   color = "primary",
-  width = "full",
+  width = "max-content",
   height = "40px",
   variant = "solid",
   onClick = () => {},

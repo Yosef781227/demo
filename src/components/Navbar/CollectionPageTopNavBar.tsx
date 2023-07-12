@@ -2,7 +2,7 @@ import React from "react";
 import { HStack, Text } from "@chakra-ui/layout";
 import Buttons from "../Buttons/Button";
 import AddIcon from "@/assets/icons/AddIcon";
-import { Funnel } from "@phosphor-icons/react";
+import { Funnel, ShareFat } from "@phosphor-icons/react";
 
 function CollectionPageTopNavBar({
   collectionName,
@@ -23,6 +23,13 @@ function CollectionPageTopNavBar({
           textColor="#525252"
           onClick={onFilterOpen}
           height="40px"
+          variant="outline"
+        />
+        <Buttons
+          icon={<ShareFat size={16} color="gray" weight="fill" />}
+          text="Share Collection"
+          textColor="#525252"
+          width="max-content"
           variant="outline"
         />
       </HStack>
