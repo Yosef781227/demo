@@ -20,12 +20,13 @@ import {
 import HorizontalThreeDot from "@/assets/icons/Outline/HorizontalThreeDot";
 import Container from "@components/Container";
 import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
-import CollectionPageTopNavBar from "@/components/Navbar/CollectionPageTopNavBar";
 import { useMutation, useQuery } from "@apollo/client";
 import { GetUserCollection } from "@/query/user";
 import Loading from "@/components/Loading";
 import { Dispatch, SetStateAction, useState } from "react";
 import { DeleteCollection } from "@/query/collection";
+import { Link } from "react-router-dom";
+import CollectionsPageTopNavBar from "@/components/Navbar/CollectionsPageTopNavBar";
 
 function Collections() {
   const { data, loading, refetch } = useQuery(GetUserCollection);
@@ -95,7 +96,7 @@ function Collections() {
         </ModalContent>
       </Modal>
       <Container background={"neutral.100"}>
-        <CollectionPageTopNavBar />
+        <CollectionsPageTopNavBar />
         <Wrap pt={5}>
           {data?.me?.collections.map((collection: any) => {
             return (
@@ -124,50 +125,52 @@ function Card({
   setDeleteCollection: Dispatch<SetStateAction<any>>;
 }) {
   return (
-    <VStack
-      position={"relative"}
-      overflow={"hidden"}
-      shadow={"md"}
-      ml={5}
-      backgroundColor={"white"}
-      borderRadius={"12px"}
-    >
-      <Image
-        position="relative"
-        width="100%"
-        objectFit="cover"
-        roundedTop={"xl"}
-        src={`https://picsum.photos/seed/${Date.now()}/250/150`}
-      />
-      <Box position={"absolute"} right="0" top="3" zIndex="1">
-        <Menu>
-          <MenuButton
-            as={ChakrauiButton}
-            variant={"ghost"}
-            transform={"rotate(90deg)"}
-            _hover={{ bg: "none" }}
-          >
-            <HorizontalThreeDot />
-          </MenuButton>
-          <MenuList>
-            <MenuItem>Get Public Link</MenuItem>
-            <MenuItem>Rename</MenuItem>
-            <MenuItem
-              onClick={() => {
-                setDeleteCollection(collection);
-                onOpen();
-              }}
-              color="#ff0000"
+    <Link to={`/collection/${collection.id}`}>
+      <VStack
+        position={"relative"}
+        overflow={"hidden"}
+        shadow={"md"}
+        ml={5}
+        backgroundColor={"white"}
+        borderRadius={"12px"}
+      >
+        <Image
+          position="relative"
+          width="100%"
+          objectFit="cover"
+          roundedTop={"xl"}
+          src={`https://picsum.photos/seed/${Date.now()}/250/150`}
+        />
+        <Box position={"absolute"} right="0" top="3" zIndex="1">
+          <Menu>
+            <MenuButton
+              as={ChakrauiButton}
+              variant={"ghost"}
+              transform={"rotate(90deg)"}
+              _hover={{ bg: "none" }}
             >
-              Delete Collection
-            </MenuItem>
-          </MenuList>
-        </Menu>
-      </Box>
-      <Text fontWeight={"thin"} alignSelf={"flex-start"} px={5} py={3}>
-        {collection.name}
-      </Text>
-    </VStack>
+              <HorizontalThreeDot />
+            </MenuButton>
+            <MenuList>
+              <MenuItem>Get Public Link</MenuItem>
+              <MenuItem>Rename</MenuItem>
+              <MenuItem
+                onClick={() => {
+                  setDeleteCollection(collection);
+                  onOpen();
+                }}
+                color="#ff0000"
+              >
+                Delete Collection
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        </Box>
+        <Text fontWeight={"thin"} alignSelf={"flex-start"} px={5} py={3}>
+          {collection.name}
+        </Text>
+      </VStack>
+    </Link>
   );
 }
 

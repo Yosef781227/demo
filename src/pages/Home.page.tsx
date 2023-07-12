@@ -116,7 +116,6 @@ function HomePage() {
       }),
     },
   });
-  console.log(filteredContent);
   if (tiktokLoading || tiktokLoading) {
     return <Loading />;
   }
