@@ -4,7 +4,13 @@ export const GetMeQuery = gql`
     me {
       id
       has_tiktok
+      email
+      name
       has_instagram
+      collections {
+        id
+        name
+      }
       tiktoks {
         id
         uniqueId
@@ -15,6 +21,27 @@ export const GetMeQuery = gql`
         username
         connected
       }
+    }
+  }
+`;
+
+export const GetUserCollection = gql`
+  query GetUserCollections {
+    me {
+      collections {
+        id
+        name
+      }
+    }
+  }
+`;
+
+export const CreateUserCollection = gql`
+  mutation Mutation($jsonInput: String!) {
+    createCollection(json_input: $jsonInput) {
+      data
+      message
+      success
     }
   }
 `;

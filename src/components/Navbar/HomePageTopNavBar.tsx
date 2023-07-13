@@ -1,7 +1,7 @@
 import { saveNewContent, logout } from "@/utils";
 import { HStack, Button, Select, Text } from "@chakra-ui/react";
 import { Funnel, Plus } from "@phosphor-icons/react";
-import  { ChangeEvent, useContext } from "react";
+import { ChangeEvent, useContext } from "react";
 import Buttons from "@/components/Buttons/Button";
 import { UserContext } from "@/App";
 import { User } from "@/interfaces/user.interface";
@@ -51,35 +51,36 @@ function HomePageTopNavBar({
         <Button colorScheme="primary" onClick={saveNewContent}>
           Save New Content
         </Button>
-        <Select
-          width={"auto"}
-          onChange={changeAccount}
-          defaultValue={instagramId}
-        >
-          {User.instagrams.map((instagram: any, index: number) => {
-            return (
-              <option key={index + 1} value={instagram.id}>
-                {instagram.username}
-              </option>
-            );
-          })}
-        </Select>
-        <Select
-          width={"auto"}
-          onChange={changeTiktokAcount}
-          defaultValue={tiktokId}
-        >
-          {User.tiktoks.map((tiktok: any, index: number) => {
-            return (
-              <option key={index + 1} value={tiktok.id}>
-                {tiktok.uniqueId}
-              </option>
-            );
-          })}
-        </Select>
-        <Button colorScheme="primary" onClick={logout}>
-          Logout
-        </Button>
+        {User.instagrams.length && (
+          <Select
+            width={"auto"}
+            onChange={changeAccount}
+            defaultValue={instagramId}
+          >
+            {User.instagrams.map((instagram: any, index: number) => {
+              return (
+                <option key={index + 1} value={instagram.id}>
+                  {instagram.username}
+                </option>
+              );
+            })}
+          </Select>
+        )}
+        {User.tiktoks.length && (
+          <Select
+            width={"auto"}
+            onChange={changeTiktokAcount}
+            defaultValue={tiktokId}
+          >
+            {User.tiktoks.map((tiktok: any, index: number) => {
+              return (
+                <option key={index + 1} value={tiktok.id}>
+                  {tiktok.uniqueId}
+                </option>
+              );
+            })}
+          </Select>
+        )}
       </HStack>
     </HStack>
   );

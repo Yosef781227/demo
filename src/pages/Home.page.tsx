@@ -2,7 +2,7 @@ import { Box, useDisclosure } from "@chakra-ui/react";
 import "react-datepicker/dist/react-datepicker.css";
 import "react-toastify/dist/ReactToastify.css";
 import Container from "@components/Container";
-import { useState, useContext, ChangeEvent } from "react";
+import { useState, useContext, ChangeEvent, useReducer } from "react";
 import { UserContext } from "@/App";
 import FilterModal from "@/components/Modal/FilterModal";
 import TiktokCard from "@/components/Card/TiktokCard";
@@ -16,8 +16,11 @@ import HomePageTopNavBar from "@/components/Navbar/HomePageTopNavBar";
 import NewModal from "@/components/Modal/NewModal";
 import { GetInstagramQuery } from "@/query/instagram";
 import { GetTiktokQuery } from "@/query/tiktok";
-import MasonryLayout from "@/layouts/MansoryLayout";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
+import BottomCheckBox from "@/components/Modal/BottomCheckBox";
+import { FilterContent } from "@/query";
+import { reducer } from "@/utils/reducers/filterReducer";
+import { GetUserCollection } from "@/query/user";
 function HomePage() {
   const User = useContext(UserContext) as User;
   const hasInstagram = User.hasInstagram;
@@ -26,6 +29,36 @@ function HomePage() {
   const [instagramId, setInstagramId] = useState(User.instagramId);
   const [tiktokId, settiktokId] = useState(User.tiktokId);
   const [tiktokIndex, settiktokIndex] = useState(User.tiktokIndex);
+  const [cardCheckboxSelected, setCardCheckBoxSelected] = useState<any[]>([]);
+  const [filterState, dispatch] = useReducer(
+    reducer,
+    {
+      postType: ["post", "reel", "story", "video"],
+      verified: 2,
+      usageRight: ["PENDING", "APPROVED", "REJECTED", "DEFAULT"],
+      contentType: 2,
+      postDateRange: {
+        startDate: new Date(0).getTime(),
+        endDate: new Date().getTime(),
+      },
+      collectionInclude:
+        User?.collections?.map((collection) => collection.name) ?? [],
+      collectionExclude: [],
+      userNames:
+        User.instagrams?.map((instagram: any) => instagram.username) || [],
+      uniqueIds: User?.tiktoks?.map((tiktok: any) => tiktok.uniqueId) || [],
+    },
+    (state) => {
+      return {
+        ...state,
+        initialState: {
+          ...state,
+        },
+      };
+    }
+  );
+
+  const [applyFilterState, setApplyFilterState] = useState<any>(null);
   const {
     isOpen: isFilterOpen,
     onOpen: onFilterOpen,
@@ -78,14 +111,48 @@ function HomePage() {
     instagramLoading
   );
   const tiktokContents = useGetTiktokData(tiktokData, tiktokLoading);
-  if (tiktokLoading || tiktokLoading) {
+  const filteredContent = useQuery(FilterContent, {
+    skip: !applyFilterState,
+    variables: {
+      filterContentsJsonInput2: JSON.stringify({
+        usernames: applyFilterState?.userNames,
+        unique_ids: applyFilterState?.uniqueIds,
+        type: applyFilterState?.postType,
+        start_time: applyFilterState?.postDateRange?.startDate,
+        end_time: applyFilterState?.postDateRange?.endDate,
+        hashtags: [
+          "#ethiopia",
+          "#ethiopian",
+          "#ethiopianfood",
+          "#ethiopiancoffee",
+          "#ethiopianc",
+        ],
+        content_type: applyFilterState?.contentType, // 0 => Image, 1 => Video, 2 => All
+        usage_right: applyFilterState?.usageRight,
+        followers: 5,
+        verified: applyFilterState?.verified, // 1 => Verified, 0 => Not Verified, 2 => All
+        collection_include: applyFilterState?.collectionInclude,
+        collection_exclude: applyFilterState?.collectionExclude,
+        likes: 10,
+        comments: 20,
+        shares: 50,
+        views: 50,
+        limit: 50,
+        offset: 50,
+      }),
+    },
+  });
+  if (tiktokLoading || tiktokLoading || filteredContent?.loading) {
     return <Loading />;
   }
   return (
     <>
       <NewModal isOpen={isNewOpen} onClose={onNeWClose} />
       <FilterModal
+        filterState={filterState}
+        dispatch={dispatch}
         isOpen={isFilterOpen}
+        setApplyFilterState={setApplyFilterState}
         onClose={onFilterClose}
         user={User}
       />
@@ -100,20 +167,71 @@ function HomePage() {
           instagramId={instagramId}
         />
         <Box bg="#FAFAFA" px={5} minH={"100vh"} width={"100%"}>
-          <ResponsiveMasonry columnsCountBreakPoints={{ 575: 1, 720: 2, 900: 3, 1300: 4 }} >
-            <Masonry gutter="10px">
-              {[
-                ...instagramContents.map((instadata, i) => {
-                  return <InstagramCard data={instadata} key={`i${i}`} />;
-                }),
-                ...tiktokContents.map((video, index) => {
-                  return <TiktokCard video={video} key={`t${index}`} />;
-                }),
-              ]}
-            </Masonry>
+          <ResponsiveMasonry
+            columnsCountBreakPoints={{ 575: 1, 720: 2, 900: 3, 1300: 4 }}
+          >
+            {filteredContent?.data ? (
+              <Masonry gutter="10px">
+                {[
+                  ...filteredContent?.data?.filterContents?.instagrams?.map(
+                    (instadata: any, i: any) => {
+                      return (
+                        <InstagramCard
+                          cardCheckboxSelected={cardCheckboxSelected}
+                          setCardCheckBoxSelected={setCardCheckBoxSelected}
+                          data={instadata}
+                          key={`i${i}`}
+                        />
+                      );
+                    }
+                  ),
+                  ...filteredContent?.data?.filterContents?.tiktoks?.map(
+                    (video: any, index: any) => {
+                      return (
+                        <TiktokCard
+                          cardCheckboxSelected={cardCheckboxSelected}
+                          setCardCheckBoxSelected={setCardCheckBoxSelected}
+                          video={video}
+                          key={`t${index}`}
+                        />
+                      );
+                    }
+                  ),
+                ]}
+              </Masonry>
+            ) : (
+              <Masonry gutter="10px">
+                {[
+                  ...instagramContents.map((instadata, i) => {
+                    return (
+                      <InstagramCard
+                        cardCheckboxSelected={cardCheckboxSelected}
+                        setCardCheckBoxSelected={setCardCheckBoxSelected}
+                        data={instadata}
+                        key={`i${i}`}
+                      />
+                    );
+                  }),
+                  ...tiktokContents.map((video, index) => {
+                    return (
+                      <TiktokCard
+                        cardCheckboxSelected={cardCheckboxSelected}
+                        setCardCheckBoxSelected={setCardCheckBoxSelected}
+                        video={video}
+                        key={`t${index}`}
+                      />
+                    );
+                  }),
+                ]}
+              </Masonry>
+            )}
           </ResponsiveMasonry>
         </Box>
       </Container>
+      <BottomCheckBox
+        setCardCheckBoxSelected={setCardCheckBoxSelected}
+        cardCheckboxSelected={cardCheckboxSelected}
+      />
     </>
   );
 }

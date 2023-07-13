@@ -4,8 +4,17 @@ import IntegrationIcon from "@/assets/icons/Filled/IntegrationIcon";
 import CollectionIcon from "@/assets/icons/Filled/CollectionIcon";
 import SettingIcon from "@/assets/icons/Filled/SettingIcon";
 import Logo from "../Logo";
-import { NavLink, Navigate } from "react-router-dom";
-import { Menu, MenuButton, MenuList, MenuItem, IconButton } from "@chakra-ui/react"
+import { Link, NavLink, Navigate, useNavigate } from "react-router-dom";
+import {
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  IconButton,
+} from "@chakra-ui/react";
+import { useContext } from "react";
+import { UserContext } from "@/App";
+import { logout } from "@/utils";
 const ChakraNavLink = chakra(NavLink);
 
 const sideBarElements = [
@@ -74,7 +83,9 @@ function sideBarListBuilder(pathname: string) {
   );
 }
 function SideBar() {
+  const user = useContext(UserContext);
   const matches: any = [];
+  const navigate = useNavigate();
   return (
     <VStack
       position={"fixed"}
@@ -99,14 +110,14 @@ function SideBar() {
             color="whiteAlpha.800
 "
           >
-            John Doe
+            {user?.name}
           </Text>
           <Text
             color="whiteAlpha.800
 "
             lineHeight={"text"}
           >
-            johndoe@gmail.com
+            {user?.email}
           </Text>
         </VStack>
         <Menu>
@@ -114,11 +125,16 @@ function SideBar() {
             <SettingIcon />
           </MenuButton>
           <MenuList>
-            <MenuItem>Setting</MenuItem>
-            <MenuItem>Log Out</MenuItem>
+            <MenuItem
+              onClick={() => {
+                navigate("/settings");
+              }}
+            >
+              <Link to="settings">Setting</Link>
+            </MenuItem>
+            <MenuItem onClick={logout}>Log Out</MenuItem>
           </MenuList>
         </Menu>
-
       </HStack>
     </VStack>
   );

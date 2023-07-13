@@ -1,6 +1,13 @@
 import instagram from "@/assets/icons/social/instagram.svg";
 import LazyLoad from "react-lazyload";
-import { VStack, HStack, Avatar, Text, Image } from "@chakra-ui/react";
+import {
+  VStack,
+  HStack,
+  Avatar,
+  Text,
+  Image,
+  IconButton,
+} from "@chakra-ui/react";
 import {
   Checkbox,
   Box,
@@ -15,9 +22,21 @@ import {
   BookmarkSimple,
   DotsThreeOutline,
   Plus,
+  PlayCircle,
 } from "@phosphor-icons/react";
+import { Dispatch, SetStateAction, useRef, useState } from "react";
 
-function InstagramCard({ data }: { data: any }) {
+function InstagramCard({
+  data,
+  cardCheckboxSelected,
+  setCardCheckBoxSelected,
+}: {
+  data: any;
+  cardCheckboxSelected: any[];
+  setCardCheckBoxSelected: Dispatch<SetStateAction<any[]>>;
+}) {
+  const [showVideo, setShowVideo] = useState(false);
+  const checkBoxRef = useRef<HTMLInputElement>(null);
   return (
     <VStack
       role="group"
@@ -31,7 +50,6 @@ function InstagramCard({ data }: { data: any }) {
       rounded={"xl"}
       boxShadow={"0px 8px 8px -4px rgba(16, 24, 40, 0.03);"}
     >
-
       <HStack px={4} mt={2} py={2} flex="1" justify={"space-between"}>
         <HStack>
           <Avatar
@@ -47,11 +65,40 @@ function InstagramCard({ data }: { data: any }) {
       </HStack>
 
       <Box position="relative">
-        {getAccess(data)}
+        {data?.ig_content?.is_video ? (
+          showVideo ? (
+            getAccess(data)
+          ) : (
+            <>
+              <IconButton
+                position={"absolute"}
+                top={"50%"}
+                size={"lg"}
+                left={"50%"}
+                onClick={() => setShowVideo(true)}
+                aria-label="start video"
+                shadow={"2xl"}
+                icon={<PlayCircle size={50} />}
+              />
+              <Image src={data.display_url} />
+            </>
+          )
+        ) : (
+          getAccess(data)
+        )}
         <Checkbox
           position="absolute"
           top="5"
           display="none"
+          onChange={(e) => {
+            if (e.currentTarget.checked) {
+              setCardCheckBoxSelected([...cardCheckboxSelected, data]);
+            } else {
+              setCardCheckBoxSelected(
+                cardCheckboxSelected.filter((item) => item.id !== data.id)
+              );
+            }
+          }}
           _checked={{ display: "block" }}
           _groupHover={{ display: "block" }}
           left="5"
@@ -68,7 +115,7 @@ function InstagramCard({ data }: { data: any }) {
               <MenuItem>
                 <Input
                   placeholder="Top Creator"
-                  onClick={(e) => e.stopPropagation() }
+                  onClick={(e) => e.stopPropagation()}
                 />
               </MenuItem>
               <MenuItem>
@@ -98,7 +145,7 @@ function InstagramCard({ data }: { data: any }) {
             <MenuList>
               <MenuItem>
                 <Input
-                  onClick={(e) => e.stopPropagation() }
+                  onClick={(e) => e.stopPropagation()}
                   placeholder="Search or Create collection"
                 />
               </MenuItem>

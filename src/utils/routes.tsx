@@ -6,10 +6,9 @@ import Collections from "@pages/Collections/Collections.page";
 import Setting from "@pages/Setting.page";
 import SignupPage from "@pages/Auth/Signup.page";
 import ResetPassword from "@pages/Auth/ResetPassword";
-import NextPage from "@pages/NextPage";
 import TiktokPage from "@pages/integrations/Tiktok.page";
 import InstagramPage from "@pages/integrations/Instagram.page";
-import ChooseInstagram from "@pages/Auth/chooseInstagram";
+import Collection from "@/pages/Collections/Collection.page";
 
 function Router({ isAuth }: { isAuth: boolean }) {
   return (
@@ -21,9 +20,10 @@ function Router({ isAuth }: { isAuth: boolean }) {
             <Route path="collections" element={<Collections />} />
             <Route path="settings" element={<Setting />} />
             <Route path="collections" element={<Collections />} />
+            <Route path="collection/:collectionId" element={<Collection />} />
             <Route path="integration">
               <Route path="tiktok" element={<TiktokPage />} />
-              <Route path="instagram" element={<InstagramPage />} />
+              <Route path="instagram" element={<InstagramPage />} />R
             </Route>
           </Route>
         </Routes>
