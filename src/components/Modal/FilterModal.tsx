@@ -24,11 +24,11 @@ import { RangeDatePicker } from "react-google-flight-datepicker";
 import { Dispatch, SetStateAction, useReducer, useState } from "react";
 import "react-google-flight-datepicker/dist/main.css";
 import { User } from "@/interfaces/user.interface";
-import { useQuery } from "@apollo/client";
 import { GetUserCollection } from "@/query/user";
 import { set } from "date-fns";
 import client from "@/client";
 import { FilterContent } from "@/query";
+import { gql } from '@apollo/client';
 const currentDate = new Date();
 const previousMonthDate = new Date(currentDate);
 previousMonthDate.setMonth(previousMonthDate.getMonth() - 1);
@@ -70,7 +70,7 @@ function FilterModal({
       onClose();
       setFilterLoading(true);
       const { data } = await client.query({
-        query: FilterContent,
+        query: generateQuery(type),
         variables: {
           filterContentsJsonInput: JSON.stringify({
             usernames,
@@ -533,6 +533,132 @@ function FilterModal({
       </Modal>
     </>
   );
+}
+
+const generateQuery = (type: string[]) => {
+  let query = `query FilterContents($filterContentsJsonInput: String!) {
+    filterContents(json_input: $filterContentsJsonInput) {
+      success
+      message
+      id
+      tiktoks {
+        id
+        uniqueId
+        followerCount
+        followingCount
+        heartCount
+        videoCount
+        profilePic
+        nickname
+        bio
+        videos {
+          id
+          t_id
+          width
+          height
+          duration
+          caption
+          timestamp
+          usage_right
+          display_url
+          url
+          owner {
+            id
+            uniqueId
+            followerCount
+            followingCount
+            heartCount
+            videoCount
+            profileUrl
+            nickname
+            bio
+          }
+        }
+      }
+      instagrams {
+        id
+        full_name
+        username
+        profile_pic_url
+        followers
+        following
+        posts_count
+        reels_count
+        stories_count
+        ${type.includes("post") ?
+      `posts {
+          id
+          caption
+          mentions
+          owner_username
+          owner_full_name
+          owner_profile_pic_url
+          owner_followers
+          owner_verified
+          usage_right
+          ig_contents {
+            id
+            url
+            width
+            height
+            has_audio
+            duration
+            display_url
+            taken_at
+            is_video
+          }
+        }` : ""}
+        ${type.includes("reel") ?
+      `reels {
+          id
+          caption
+          mentions
+          usage_right
+          owner_username
+          owner_full_name
+          owner_profile_pic_url
+          owner_followers
+          owner_verified
+          ig_content {
+            id
+            url
+            width
+            height
+            has_audio
+            duration
+            display_url
+            taken_at
+            is_video
+          }
+        }` : ""
+    }
+        ${type.includes("story") ?
+      `stories {
+          id
+          mentions
+          usage_right
+          owner_username
+          owner_full_name
+          owner_profile_pic_url
+          owner_followers
+          owner_verified
+          ig_contents {
+            id
+            url
+            width
+            height
+            has_audio
+            duration
+            display_url
+            taken_at
+            is_video
+          }
+        }` : ""
+    }
+      }
+    }
+  }`
+  return gql(query);
 }
 
 export default FilterModal;

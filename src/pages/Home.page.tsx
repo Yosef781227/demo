@@ -216,7 +216,6 @@ function HomePage() {
 }
 
 const FilteredContents = ({ data, cardCheckboxSelected, setCardCheckBoxSelected }: { data: any, cardCheckboxSelected: any, setCardCheckBoxSelected: any }) => {
-  console.log(data)
   let instaContents = data?.instagrams?.map((instagram: any, i: any) => {
     const instaposts: [] = instagram.posts == 0 ? [] : instagram.posts;
 
@@ -290,7 +289,6 @@ const FilteredContents = ({ data, cardCheckboxSelected, setCardCheckBoxSelected 
     });
     return [...stories, ...posts, ...(instagram.reels == null ? [] : instagram.reels)];
   });
-  //const instagramContents = useGetInstagramData(data, instagramLoading);  
   return (
     <Box bg="#FAFAFA" px={5} minH={"100vh"} width={"100%"}>
       <ResponsiveMasonry
