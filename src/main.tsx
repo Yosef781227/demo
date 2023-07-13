@@ -1,23 +1,12 @@
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import { ChakraProvider } from "@chakra-ui/react";
-import {
-  ApolloClient,
-  InMemoryCache,
-  ApolloProvider,
-  createHttpLink,
-} from "@apollo/client";
+import { ApolloProvider } from "@apollo/client";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
 import { BASE_URL } from "./constants";
 import theme from "./constants/theme";
-const client = new ApolloClient({
-  link: createHttpLink({
-    uri: BASE_URL,
-    credentials: "include",
-  }),
-  cache: new InMemoryCache(),
-});
+import client from "./client";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <ChakraProvider theme={theme}>

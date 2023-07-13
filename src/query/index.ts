@@ -1,99 +1,118 @@
 import { gql } from "@apollo/client";
 export const FilterContent = gql`
-  query FilterContents($filterContentsJsonInput2: String!) {
-    filterContents(json_input: $filterContentsJsonInput2) {
-      #id
-      instagrams {
-        followers
-        following
-        full_name
-        id
-        posts {
-          caption
-          id
-          mentions
-          owner_followers
-          owner_full_name
-          owner_username
-          owner_profile_pic_url
-          owner_verified
-          usage_right
-          ig_contents {
-            display_url
-            duration
-            has_audio
-            height
-            id
-            is_video
-            url
-            taken_at
-            width
-          }
-        }
-        posts_count
-        reels_count
-        stories_count
-        username
-        profile_pic_url
-        reels {
-          caption
-          id
-          ig_content {
-            display_url
-            duration
-            has_audio
-            height
-            id
-            is_video
-            taken_at
-            url
-            width
-          }
-          owner_followers
-          mentions
-          owner_full_name
-          owner_profile_pic_url
-          owner_username
-          owner_verified
-          usage_right
-        }
-      }
+  query FilterContents($filterContentsJsonInput: String!) {
+    filterContents(json_input: $filterContentsJsonInput) {
       success
       message
+      id
       tiktoks {
-        bio
-        connected
+        id
+        uniqueId
         followerCount
         followingCount
         heartCount
-        id
-        nickname
-        profilePic
-        t_id
-        uniqueId
         videoCount
+        profilePic
+        nickname
+        bio
         videos {
-          caption
-          display_url
-          duration
-          height
           id
           t_id
-          owner {
-            bio
-            followerCount
-            heartCount
-            followingCount
-            id
-            nickname
-            profileUrl
-            uniqueId
-            videoCount
-          }
-          timestamp
-          url
           width
+          height
+          duration
+          caption
+          timestamp
           usage_right
+          display_url
+          url
+          owner {
+            id
+            uniqueId
+            followerCount
+            followingCount
+            heartCount
+            videoCount
+            profileUrl
+            nickname
+            bio
+          }
+        }
+      }
+      instagrams {
+        id
+        full_name
+        username
+        profile_pic_url
+        followers
+        following
+        posts_count
+        reels_count
+        stories_count
+        posts {
+          id
+          caption
+          mentions
+          owner_username
+          owner_full_name
+          owner_profile_pic_url
+          owner_followers
+          owner_verified
+          usage_right
+          ig_contents {
+            id
+            url
+            width
+            height
+            has_audio
+            duration
+            display_url
+            taken_at
+            is_video
+          }
+        }
+        reels {
+          id
+          caption
+          mentions
+          usage_right
+          owner_username
+          owner_full_name
+          owner_profile_pic_url
+          owner_followers
+          owner_verified
+          ig_content {
+            id
+            url
+            width
+            height
+            has_audio
+            duration
+            display_url
+            taken_at
+            is_video
+          }
+        }
+        stories {
+          id
+          mentions
+          usage_right
+          owner_username
+          owner_full_name
+          owner_profile_pic_url
+          owner_followers
+          owner_verified
+          ig_contents {
+            id
+            url
+            width
+            height
+            has_audio
+            duration
+            display_url
+            taken_at
+            is_video
+          }
         }
       }
     }

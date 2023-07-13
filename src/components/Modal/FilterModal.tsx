@@ -26,6 +26,9 @@ import "react-google-flight-datepicker/dist/main.css";
 import { User } from "@/interfaces/user.interface";
 import { useQuery } from "@apollo/client";
 import { GetUserCollection } from "@/query/user";
+import { set } from "date-fns";
+import client from "@/client";
+import { FilterContent } from "@/query";
 const currentDate = new Date();
 const previousMonthDate = new Date(currentDate);
 previousMonthDate.setMonth(previousMonthDate.getMonth() - 1);
@@ -35,32 +38,79 @@ function FilterModal({
   onClose,
   user,
   setApplyFilterState,
-  dispatch,
-  filterState,
+  changeFiltered,
+  setFilterLoading,
 }: {
   isOpen: boolean;
   onClose: () => void;
   setApplyFilterState: Dispatch<SetStateAction<any>>;
+  changeFiltered: (data: any) => void;
+  setFilterLoading: (data: boolean) => void;
   user: User;
-  filterState: any;
   dispatch: Dispatch<any>;
 }) {
+  const [startDate, setStartDate] = useState<number>(Math.floor(previousMonthDate.getTime() / 1000));
+  const [endDate, setEndDate] = useState<number>(Math.floor(currentDate.getTime() / 1000));
+  const [type, setPostType] = useState<string[]>(["post", "reel", "story", "video"]);
+  const [collection_include, setCollection_include] = useState<string[]>([]);
+  const [usernames, setUsernames] = useState<string[]>([]);
+  const [unique_ids, setUnique_ids] = useState<string[]>([]);
+  const [usage_right, setUsage_right] = useState<string[]>(["DEFAULT"]);
+  const [content_type, setContent_type] = useState<number>(2);
+  const [verified, setVerified] = useState<number>(2);
   const onDateChange = (startDate: Date, endDate: Date) => {
-    dispatch({
-      type: "POST_DATE_RANGE",
-      payload: {
-        startDate: new Date(startDate).getTime(),
-        endDate:
-          endDate == null ? new Date().getTime() : new Date(endDate).getTime(),
-      },
-    });
+    if (startDate !== null && endDate !== null) {
+      setStartDate(Math.floor(new Date(startDate).getTime() / 1000));
+      setEndDate(Math.floor(new Date(endDate).getTime() / 1000));
+    }
   };
-  const {
-    data: collectionData,
-    loading: loadingCollection,
-    error: errorCollection,
-    refetch,
-  } = useQuery(GetUserCollection);
+
+  const handleFiter = async () => {
+    try {
+      onClose();
+      setFilterLoading(true);
+      const { data } = await client.query({
+        query: FilterContent,
+        variables: {
+          filterContentsJsonInput: JSON.stringify({
+            usernames,
+            unique_ids,
+            type,
+            start_time: startDate,
+            end_time: endDate,
+            hashtags: [
+              "#ethiopia",
+              "#ethiopian",
+              "#ethiopianfood",
+              "#ethiopiancoffee",
+              "#ethiopianc",
+            ],
+            content_type, // 0 => Image, 1 => Video, 2 => All
+            usage_right,
+            followers: 5,
+            verified, // 1 => Verified, 0 => Not Verified, 2 => All
+            collection_include,
+            collection_exclude: [],
+            likes: 10,
+            comments: 20,
+            shares: 50,
+            views: 50,
+            limit: 50,
+            offset: 50,
+          }),
+        },
+      });
+      console.log(data);
+      changeFiltered(data.data.filterContents);
+      setApplyFilterState({
+        startDate,
+      });
+      setFilterLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
       <Modal
@@ -94,7 +144,7 @@ function FilterModal({
                 <Text textColor={"gray.500"}>Post Date</Text>
                 <RangeDatePicker
                   startDate={previousMonthDate}
-                  endDate={previousMonthDate}
+                  endDate={currentDate}
                   onChange={(startDate, endDate) => {
                     onDateChange(startDate, endDate);
                   }}
@@ -126,54 +176,30 @@ function FilterModal({
                       <Checkbox
                         onChange={(e) => {
                           e.target.checked
-                            ? dispatch({
-                                type: "POST_TYPE",
-                                payload: [...filterState?.postType, "reel"],
-                              })
-                            : dispatch({
-                                type: "POST_TYPE",
-                                payload: [...filterState?.postType].filter(
-                                  (type) => type !== "reel"
-                                ),
-                              });
+                            ? setPostType((prev) => !prev.includes("reel") ? [...prev, "reel"] : prev)
+                            : setPostType((prev) => prev.filter((type) => type !== "reel"));
                         }}
-                        isChecked={filterState?.postType?.includes("reel")}
+                        isChecked={type.includes("reel")}
                       >
                         Reel
                       </Checkbox>
                       <Checkbox
                         onChange={(e) => {
                           e.target.checked
-                            ? dispatch({
-                                type: "POST_TYPE",
-                                payload: [...filterState.postType, "post"],
-                              })
-                            : dispatch({
-                                type: "POST_TYPE",
-                                payload: [...filterState.postType].filter(
-                                  (type) => type !== "post"
-                                ),
-                              });
+                            ? setPostType((prev) => !prev.includes("post") ? [...prev, "post"] : prev)
+                            : setPostType((prev) => prev.filter((type) => type !== "post"));
                         }}
-                        isChecked={filterState.postType.includes("post")}
+                        isChecked={type.includes("post")}
                       >
                         Feed
                       </Checkbox>
                       <Checkbox
                         onChange={(e) => {
                           e.target.checked
-                            ? dispatch({
-                                type: "POST_TYPE",
-                                payload: [...filterState.postType, "story"],
-                              })
-                            : dispatch({
-                                type: "POST_TYPE",
-                                payload: [...filterState.postType].filter(
-                                  (type) => type !== "story"
-                                ),
-                              });
+                            ? setPostType((prev) => !prev.includes("story") ? [...prev, "story"] : prev)
+                            : setPostType((prev) => prev.filter((type) => type !== "story"));
                         }}
-                        isChecked={filterState.postType.includes("story")}
+                        isChecked={type.includes("story")}
                       >
                         Story
                       </Checkbox>
@@ -186,18 +212,10 @@ function FilterModal({
                     <Checkbox
                       onChange={(e) => {
                         e.target.checked
-                          ? dispatch({
-                              type: "POST_TYPE",
-                              payload: [...filterState.postType, "video"],
-                            })
-                          : dispatch({
-                              type: "POST_TYPE",
-                              payload: [...filterState.postType].filter(
-                                (type) => type !== "video"
-                              ),
-                            });
+                          ? setPostType((prev) => !prev.includes("video") ? [...prev, "video"] : prev)
+                          : setPostType((prev) => prev.filter((type) => type !== "video"));
                       }}
-                      isChecked={filterState.postType.includes("video")}
+                      isChecked={type.includes("video")}
                       mt={3}
                     >
                       Video
@@ -218,20 +236,12 @@ function FilterModal({
                           key={index}
                           size={"sm"}
                           mt={2}
-                          isChecked={filterState.userNames.includes(
-                            instagram.username
-                          )}
                           onChange={(e) => {
-                            dispatch({
-                              type: "USER_NAMES",
-                              payload: e.target.checked
-                                ? [...filterState.userNames, instagram.username]
-                                : [...filterState.userNames].filter(
-                                    (username) =>
-                                      username !== instagram.username
-                                  ),
-                            });
+                            e.target.checked
+                              ? setUsernames((prev) => [...prev, instagram.username])
+                              : setUsernames((prev) => prev.filter((username) => username !== instagram.username));
                           }}
+                          isChecked={usernames.includes(instagram.username)}
                         >
                           {instagram.username}
                         </Checkbox>
@@ -248,19 +258,11 @@ function FilterModal({
                           key={index}
                           size={"sm"}
                           mt={2}
-                          isChecked={filterState.uniqueIds.includes(
-                            tiktok.uniqueId
-                          )}
+
                           onChange={(e) => {
-                            dispatch({
-                              type: "UNIQUE_IDS",
-                              payload: e.target.checked
-                                ? [...filterState.uniqueIds, tiktok.uniqueId]
-                                : [...filterState.uniqueIds].filter(
-                                    (unique_id) => unique_id !== tiktok.uniqueId
-                                  ),
-                            });
+                            e.target.checked ? setUnique_ids((prev) => [...prev, tiktok.uniqueId]) : setUnique_ids((prev) => prev.filter((unique_id) => unique_id !== tiktok.uniqueId));
                           }}
+                          isChecked={unique_ids.includes(tiktok.uniqueId)}
                         >
                           {tiktok.uniqueId}
                         </Checkbox>
@@ -296,62 +298,34 @@ function FilterModal({
                 <Text textColor={"gray.500"}>Usage Right</Text>
                 <HStack mt={3}>
                   <Checkbox
-                    isChecked={filterState.usageRight.includes("PENDING")}
+                    isChecked={usage_right.includes("PENDING")}
                     onChange={(e) => {
-                      dispatch({
-                        type: "USAGE_RIGHT",
-                        payload: e.target.checked
-                          ? [...filterState.usageRight, "PENDING"]
-                          : [...filterState.usageRight].filter(
-                              (usage) => usage !== "PENDING"
-                            ),
-                      });
+                      e.target.checked ? setUsage_right((prev) => !prev.includes("PENDING") ? [...prev, "PENDING"] : prev) : setUsage_right((prev) => prev.filter((usage) => usage !== "PENDING"));
                     }}
                   >
                     Pending
                   </Checkbox>
                   <Checkbox
-                    isChecked={filterState.usageRight.includes("APPROVED")}
+                    isChecked={usage_right.includes("APPROVED")}
                     onChange={(e) => {
-                      dispatch({
-                        type: "USAGE_RIGHT",
-                        payload: e.target.checked
-                          ? [...filterState.usageRight, "APPROVED"]
-                          : [...filterState.usageRight].filter(
-                              (usage) => usage !== "APPROVED"
-                            ),
-                      });
+                      e.target.checked ? setUsage_right((prev) => !prev.includes("APPROVED") ? [...prev, "APPROVED"] : prev) : setUsage_right((prev) => prev.filter((usage) => usage !== "APPROVED"));
                     }}
                   >
                     Approved
                   </Checkbox>
                   <Checkbox
-                    isChecked={filterState.usageRight.includes("REJECTED")}
+                    isChecked={usage_right.includes("REJECTED")}
                     onChange={(e) => {
-                      dispatch({
-                        type: "USAGE_RIGHT",
-                        payload: e.target.checked
-                          ? [...filterState.usageRight, "REJECTED"]
-                          : [...filterState.usageRight].filter(
-                              (usage) => usage !== "REJECTED"
-                            ),
-                      });
+                      e.target.checked ? setUsage_right((prev) => !prev.includes("REJECTED") ? [...prev, "REJECTED"] : prev) : setUsage_right((prev) => prev.filter((usage) => usage !== "REJECTED"));
                     }}
                   >
                     Rejected
                   </Checkbox>
                   <Checkbox
-                    isChecked={filterState.usageRight.includes("DEFAULT")}
+                    isChecked={usage_right.includes("DEFAULT")}
                     defaultChecked={true}
                     onChange={(e) => {
-                      dispatch({
-                        type: "USAGE_RIGHT",
-                        payload: e.target.checked
-                          ? [...filterState.usageRight, "DEFAULT"]
-                          : [...filterState.usageRight].filter(
-                              (usage) => usage !== "DEFAULT"
-                            ),
-                      });
+                      e.target.checked ? setUsage_right((prev) => !prev.includes("DEFAULT") ? [...prev, "DEFAULT"] : prev) : setUsage_right((prev) => prev.filter((usage) => usage !== "DEFAULT"));
                     }}
                   >
                     Default
@@ -377,42 +351,24 @@ function FilterModal({
                 <Text textColor={"gray.500"}>Content Type</Text>
                 <HStack mt={3}>
                   <Checkbox
-                    isChecked={
-                      filterState.contentType === 2 ||
-                      filterState.contentType == 1
-                    }
+                    isChecked={content_type === 2 || content_type === 1}
                     onChange={(e) => {
                       if (e.target.checked) {
-                        dispatch({
-                          type: "CONTENT_TYPE",
-                          payload: filterState.contentType == 0 ? 2 : 1,
-                        });
+                        setContent_type(2);
                       } else {
-                        dispatch({
-                          type: "CONTENT_TYPE",
-                          payload: filterState.contentType == 2 ? 0 : -1,
-                        });
+                        setContent_type(0);
                       }
                     }}
                   >
                     Video
                   </Checkbox>
                   <Checkbox
-                    isChecked={
-                      filterState.contentType === 2 ||
-                      filterState.contentType == 0
-                    }
+                    isChecked={content_type === 2 || content_type === 0}
                     onChange={(e) => {
                       if (e.target.checked) {
-                        dispatch({
-                          type: "CONTENT_TYPE",
-                          payload: filterState.contentType == 1 ? 2 : 0,
-                        });
+                        setContent_type(2);
                       } else {
-                        dispatch({
-                          type: "CONTENT_TYPE",
-                          payload: filterState.contentType === 2 ? 1 : -1,
-                        });
+                        setContent_type(1);
                       }
                     }}
                   >
@@ -468,24 +424,12 @@ function FilterModal({
                   <TabPanels>
                     <TabPanel>
                       <HStack>
-                        <Checkbox
-                          isChecked={
-                            user?.collections?.length ===
-                            filterState?.collectionInclude?.length
-                          }
+                        <Checkbox isChecked={user?.collections?.length === collection_include.length}
                           onChange={(e) => {
                             if (e.target.checked) {
-                              dispatch({
-                                type: "COLLECTIONS_INCLUDE",
-                                payload: user.collections.map(
-                                  (collection) => collection.name
-                                ),
-                              });
+                              setCollection_include(user.collections?.map((collection) => collection.name));
                             } else {
-                              dispatch({
-                                type: "COLLECTIONS_INCLUDE",
-                                payload: [],
-                              });
+                              setCollection_include([]);
                             }
                           }}
                         >
@@ -494,26 +438,12 @@ function FilterModal({
                         {user.collections?.map((collection) => {
                           return (
                             <Checkbox
-                              isChecked={filterState.collectionInclude?.includes(
-                                collection.name
-                              )}
+                              isChecked={collection_include.includes(collection.name)}
                               onChange={(e) => {
                                 if (e.target.checked) {
-                                  dispatch({
-                                    type: "COLLECTIONS_INCLUDE",
-                                    payload: [
-                                      ...filterState?.collectionInclude,
-                                      collection.name,
-                                    ],
-                                  });
+                                  setCollection_include((prev) => [...prev, collection.name]);
                                 } else {
-                                  dispatch({
-                                    type: "COLLECTIONS_INCLUDE",
-                                    payload:
-                                      filterState?.collectionInclude?.filter(
-                                        (col) => col !== collection.name
-                                      ),
-                                  });
+                                  setCollection_include((prev) => prev.filter((collection_name) => collection_name !== collection.name));
                                 }
                               }}
                               key={collection.id}
@@ -526,23 +456,10 @@ function FilterModal({
                     </TabPanel>
                     <TabPanel>
                       <Checkbox
-                        isChecked={
-                          user?.collections?.length ===
-                          filterState?.collectionExclude?.length
-                        }
                         onChange={(e) => {
                           if (e.target.checked) {
-                            dispatch({
-                              type: "COLLECTIONS_EXCLUDE",
-                              payload: user.collections.map(
-                                (collection) => collection.name
-                              ),
-                            });
                           } else {
-                            dispatch({
-                              type: "COLLECTIONS_EXCLUDE",
-                              payload: [],
-                            });
+
                           }
                         }}
                       >
@@ -551,26 +468,11 @@ function FilterModal({
                       {user.collections?.map((collection) => {
                         return (
                           <Checkbox
-                            isChecked={filterState.collectionExclude?.includes(
-                              collection.name
-                            )}
                             onChange={(e) => {
                               if (e.target.checked) {
-                                dispatch({
-                                  type: "COLLECTIONS_EXCLUDE",
-                                  payload: [
-                                    ...filterState?.collectionExclude,
-                                    collection.name,
-                                  ],
-                                });
+
                               } else {
-                                dispatch({
-                                  type: "COLLECTIONS_EXCLUDE",
-                                  payload:
-                                    filterState?.collectionExclude?.filter(
-                                      (col) => col !== collection.name
-                                    ),
-                                });
+
                               }
                             }}
                             key={collection.id}
@@ -589,40 +491,20 @@ function FilterModal({
                   <Checkbox
                     onChange={(e) => {
                       if (e.target.checked) {
-                        dispatch({
-                          type: "VERIFIED",
-                          payload: filterState.verified == 0 ? 2 : 1,
-                        });
+                        setVerified(2);
                       } else {
-                        dispatch({
-                          type: "VERIFIED",
-                          payload: filterState.verified == 2 ? 0 : -1,
-                        });
+                        setVerified(0);
                       }
                     }}
-                    isChecked={
-                      filterState.verified === 2 || filterState.verified == 1
-                    }
+                    isChecked={verified === 2 || verified == 1}
                   >
                     Verified
                   </Checkbox>
                   <Checkbox
-                    isChecked={
-                      filterState.verified === 2 || filterState.verified == 0
-                    }
                     onChange={(e) => {
-                      if (e.target.checked) {
-                        dispatch({
-                          type: "VERIFIED",
-                          payload: filterState.verified == -1 ? 0 : 2,
-                        });
-                      } else {
-                        dispatch({
-                          type: "VERIFIED",
-                          payload: filterState.verified == 2 ? 1 : -1,
-                        });
-                      }
+                      e.target.checked ? setVerified(2) : setVerified(1);
                     }}
+                    isChecked={verified === 2 || verified == 0}
                   >
                     Not Verified
                   </Checkbox>
@@ -635,10 +517,15 @@ function FilterModal({
             <Button
               variant="ghost"
               onClick={() => {
-                dispatch({
-                  type: "CLEAR_ALL",
-                });
-                setApplyFilterState(null);
+                setStartDate(Math.floor(previousMonthDate.getTime() / 1000));
+                setEndDate(Math.floor(currentDate.getTime() / 1000));
+                setCollection_include([]);
+                setVerified(2);
+                setContent_type(2);
+                setPostType(["post", "reel", "story", "video"])
+                setUsernames([]);
+                setUnique_ids([]);
+                setUsage_rights(["DEFAULT"]);
               }}
             >
               Reset All
@@ -646,10 +533,7 @@ function FilterModal({
             <Button
               colorScheme="primary"
               mr={3}
-              onClick={() => {
-                setApplyFilterState(filterState);
-                onClose();
-              }}
+              onClick={handleFiter}
             >
               Apply All
             </Button>
