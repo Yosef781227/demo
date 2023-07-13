@@ -16,8 +16,10 @@ export default function useGetMe(): {
   const [hasInstagram, setHasInstagram] = useState(false);
   const [tiktokId, settiktokId] = useState("");
   const [tiktoks, settiktoks] = useState<any[]>([]);
+  const [collections, setCollections] = useState<any[]>([]);
   const [tiktokIndex, settiktokIndex] = useState(0);
   const [hasTiktok, setHasTiktok] = useState(false);
+
   const {
     loading: loadingQuery,
     error, //TODO: error handling
@@ -42,9 +44,9 @@ export default function useGetMe(): {
         setLoading(false);
         setEmail(data.me.email);
         setName(data.me.name);
-
+        setCollections(data.me.collections);
         if (data.me.has_instagram) {
-          console.log("User has instagram");
+          // console.log("User has instagram");
           const index: number =
             localStorage.getItem("selectedInstagramIndex") !== null
               ? parseInt(localStorage.getItem("selectedInstagramIndex") || "")
@@ -57,12 +59,12 @@ export default function useGetMe(): {
           setInstagrams(instagrams);
           setInstagramIndex(index);
         } else {
-          console.log("User has no instagram");
+          // console.log("User has no instagram");
           localStorage.removeItem("selectedInstagramIndex");
           localStorage.removeItem("instagrams");
         }
         if (data.me.has_tiktok) {
-          console.log("User has tiktok");
+          // console.log("User has tiktok");
           const index: number =
             localStorage.getItem("selectedTiktokIndex") !== null
               ? parseInt(localStorage.getItem("selectedTiktokIndex") || "")
@@ -75,7 +77,7 @@ export default function useGetMe(): {
           settiktokIndex(index);
           setHasTiktok(true);
         } else {
-          console.log("User has tiktok");
+          // console.log("User has tiktok");
           localStorage.removeItem("selectedTiktokIndex");
           localStorage.removeItem("tiktoks");
         }
@@ -98,6 +100,7 @@ export default function useGetMe(): {
       tiktokId,
       tiktoks,
       tiktokIndex,
+      collections,
       hasTiktok,
     },
   };

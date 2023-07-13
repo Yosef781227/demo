@@ -20,6 +20,7 @@ import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import BottomCheckBox from "@/components/Modal/BottomCheckBox";
 import { FilterContent } from "@/query";
 import { reducer } from "@/utils/reducers/filterReducer";
+import { GetUserCollection } from "@/query/user";
 function HomePage() {
   const User = useContext(UserContext) as User;
   const hasInstagram = User.hasInstagram;
@@ -33,6 +34,16 @@ function HomePage() {
     postType: ["post", "reel", "story", "video"],
     verified: 2,
     usageRight: ["PENDING", "APPROVED", "REJECTED", "DEFAULT"],
+    contentType: 2,
+    postDateRange: {
+      startDate: new Date(0).getTime(),
+      endDate: new Date().getTime(),
+    },
+    collectionInclude: User?.collections ?? [],
+    collectionExclude: [],
+    userNames:
+      User.instagrams?.map((instagram: any) => instagram.username) || [],
+    uniqueIds: User?.tiktoks?.map((tiktok: any) => tiktok.uniqueId) || [],
   });
   const [applyFilterState, setApplyFilterState] = useState<any>(null);
   const {
@@ -91,11 +102,11 @@ function HomePage() {
     skip: !applyFilterState,
     variables: {
       filterContentsJsonInput2: JSON.stringify({
-        usernames: ["archive9109"],
-        unique_ids: ["bruk_x"],
+        usernames: applyFilterState?.userNames,
+        unique_ids: applyFilterState?.uniqueIds,
         type: applyFilterState?.postType,
-        start_time: 1685131281,
-        end_time: 1685133079,
+        start_time: applyFilterState?.postDateRange?.startDate,
+        end_time: applyFilterState?.postDateRange?.endDate,
         hashtags: [
           "#ethiopia",
           "#ethiopian",
@@ -103,10 +114,10 @@ function HomePage() {
           "#ethiopiancoffee",
           "#ethiopianc",
         ],
-        content_type: 2, // 0 => Image, 1 => Video, 2 => All
+        content_type: applyFilterState?.contentType, // 0 => Image, 1 => Video, 2 => All
         usage_right: applyFilterState?.usageRight,
         followers: 5,
-        verified: applyFilterState.verified, // 1 => Verified, 0 => Not Verified, 2 => All
+        verified: applyFilterState?.verified, // 1 => Verified, 0 => Not Verified, 2 => All
         collection_include: [],
         collection_exclude: [],
         likes: 10,
@@ -121,7 +132,6 @@ function HomePage() {
   if (tiktokLoading || tiktokLoading) {
     return <Loading />;
   }
-  console.log(filteredContent);
   return (
     <>
       <NewModal isOpen={isNewOpen} onClose={onNeWClose} />

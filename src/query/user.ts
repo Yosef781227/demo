@@ -7,6 +7,10 @@ export const GetMeQuery = gql`
       email
       name
       has_instagram
+      collections {
+        id
+        name
+      }
       tiktoks {
         id
         uniqueId

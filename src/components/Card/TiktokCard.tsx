@@ -35,7 +35,6 @@ import {
 } from "react";
 import { CreateUserCollection, GetUserCollection } from "@/query/user";
 import { useMutation, useQuery } from "@apollo/client";
-import Loading from "../Loading";
 import { AddVideoToCollection } from "@/query/tiktok";
 const TiktokCard = ({
   video,
