@@ -100,7 +100,7 @@ const TiktokCard = ({
   if (createCollectionData) {
     refetch();
   }
-  if (loadingCollection || createCollectionLoading) {
+  if (loadingCollection) {
     return null;
   }
 
@@ -227,7 +227,9 @@ const TiktokCard = ({
               >
                 <HStack spacing={4} width="100%" justifyContent="space-between">
                   <Button
-                    isDisabled={!Boolean(selectedCheckboxes.length)}
+                    isDisabled={
+                      !Boolean(selectedCheckboxes.length) || !collections.length
+                    }
                     display={"flex"}
                     onClick={handleAddTo}
                   >

@@ -61,10 +61,14 @@ function FilterModal({
     error: errorCollection,
     refetch,
   } = useQuery(GetUserCollection);
-  console.log(filterState);
   return (
     <>
-      <Modal isOpen={isOpen} isCentered={false} size={"md"} onClose={onClose}>
+      <Modal
+        isOpen={isOpen}
+        isCentered={false}
+        size={["md", "lg"]}
+        onClose={onClose}
+      >
         <ModalOverlay />
         <ModalContent
           containerProps={{
@@ -124,16 +128,16 @@ function FilterModal({
                           e.target.checked
                             ? dispatch({
                                 type: "POST_TYPE",
-                                payload: [...filterState.postType, "reel"],
+                                payload: [...filterState?.postType, "reel"],
                               })
                             : dispatch({
                                 type: "POST_TYPE",
-                                payload: [...filterState.postType].filter(
+                                payload: [...filterState?.postType].filter(
                                   (type) => type !== "reel"
                                 ),
                               });
                         }}
-                        isChecked={filterState.postType.includes("reel")}
+                        isChecked={filterState?.postType?.includes("reel")}
                       >
                         Reel
                       </Checkbox>
@@ -473,7 +477,14 @@ function FilterModal({
                             if (e.target.checked) {
                               dispatch({
                                 type: "COLLECTIONS_INCLUDE",
-                                payload: user.collections,
+                                payload: user.collections.map(
+                                  (collection) => collection.name
+                                ),
+                              });
+                            } else {
+                              dispatch({
+                                type: "COLLECTIONS_INCLUDE",
+                                payload: [],
                               });
                             }
                           }}
@@ -484,7 +495,7 @@ function FilterModal({
                           return (
                             <Checkbox
                               isChecked={filterState.collectionInclude?.includes(
-                                collection
+                                collection.name
                               )}
                               onChange={(e) => {
                                 if (e.target.checked) {
@@ -492,7 +503,7 @@ function FilterModal({
                                     type: "COLLECTIONS_INCLUDE",
                                     payload: [
                                       ...filterState?.collectionInclude,
-                                      collection,
+                                      collection.name,
                                     ],
                                   });
                                 } else {
@@ -500,7 +511,7 @@ function FilterModal({
                                     type: "COLLECTIONS_INCLUDE",
                                     payload:
                                       filterState?.collectionInclude?.filter(
-                                        (col) => col.id !== collection.id
+                                        (col) => col !== collection.name
                                       ),
                                   });
                                 }
@@ -523,7 +534,14 @@ function FilterModal({
                           if (e.target.checked) {
                             dispatch({
                               type: "COLLECTIONS_EXCLUDE",
-                              payload: user.collections,
+                              payload: user.collections.map(
+                                (collection) => collection.name
+                              ),
+                            });
+                          } else {
+                            dispatch({
+                              type: "COLLECTIONS_EXCLUDE",
+                              payload: [],
                             });
                           }
                         }}
@@ -534,31 +552,23 @@ function FilterModal({
                         return (
                           <Checkbox
                             isChecked={filterState.collectionExclude?.includes(
-                              collection
+                              collection.name
                             )}
                             onChange={(e) => {
                               if (e.target.checked) {
                                 dispatch({
                                   type: "COLLECTIONS_EXCLUDE",
-                                  payload: user.collections,
-                                });
-                              }
-                            }}
-                            onChange={(e) => {
-                              if (e.target.checked) {
-                                dispatch({
-                                  type: "COLLECTIONS_EXCLUDE",
                                   payload: [
-                                    ...filterState?.collectionInclude,
-                                    collection,
+                                    ...filterState?.collectionExclude,
+                                    collection.name,
                                   ],
                                 });
                               } else {
                                 dispatch({
                                   type: "COLLECTIONS_EXCLUDE",
                                   payload:
-                                    filterState?.collectionInclude?.filter(
-                                      (col) => col.id !== collection.id
+                                    filterState?.collectionExclude?.filter(
+                                      (col) => col !== collection.name
                                     ),
                                 });
                               }
@@ -622,7 +632,17 @@ function FilterModal({
           </ModalBody>
 
           <ModalFooter>
-            <Button variant="ghost">Reset All</Button>
+            <Button
+              variant="ghost"
+              onClick={() => {
+                dispatch({
+                  type: "CLEAR_ALL",
+                });
+                setApplyFilterState(null);
+              }}
+            >
+              Reset All
+            </Button>
             <Button
               colorScheme="primary"
               mr={3}

@@ -34,37 +34,40 @@ export function reducer(state: any, action: any) {
         ...state,
         uniqueIds: action.payload,
       };
-    case "COLLECTIONS_INCLUDE":
-      let collectionExclude = state.collectionInclude.filter((i: any) => {
-        for (let j = 0; j < action.payload.length; j++) {
-          if (action.payload[j].id === i.id) {
-            return false;
-          }
-        }
-        return true;
+    case "COLLECTIONS_INCLUDE": {
+      let collections = [
+        ...state.collectionInclude,
+        ...state.collectionExclude,
+      ];
+      let collectionExclude = collections.filter((i: string) => {
+        return !action.payload.includes(i);
       });
       return {
         ...state,
         collectionExclude,
         collectionInclude: action.payload,
       };
-    case "COLLECTIONS_EXCLUDE":
-      let collectionInclude = state.collectionExclude.filter((i: any) => {
-        for (let j = 0; j < action.payload.length; j++) {
-          if (action.payload[j].id === i.id) {
-            return false;
-          }
-        }
-        return true;
+    }
+    case "COLLECTIONS_EXCLUDE": {
+      let collections = [
+        ...state.collectionInclude,
+        ...state.collectionExclude,
+      ];
+      let collectionInclude = collections.filter((i: string) => {
+        return !action.payload.includes(i);
       });
       return {
         ...state,
         collectionInclude,
         collectionExclude: action.payload,
       };
+    }
     case "CLEAR_ALL": //TODO - clear all filters
       return {
-        postType: ["post", "reel", "story", "video"],
+        ...state.initialState,
+        initialState: {
+          ...state.initialState,
+        },
       };
     default:
       return state;
