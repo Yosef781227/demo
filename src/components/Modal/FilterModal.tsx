@@ -78,16 +78,10 @@ function FilterModal({
             type,
             start_time: startDate,
             end_time: endDate,
-            hashtags: [
-              "#ethiopia",
-              "#ethiopian",
-              "#ethiopianfood",
-              "#ethiopiancoffee",
-              "#ethiopianc",
-            ],
+            hashtags: [],
             content_type, // 0 => Image, 1 => Video, 2 => All
             usage_right,
-            followers: 5,
+            followers: 2,
             verified, // 1 => Verified, 0 => Not Verified, 2 => All
             collection_include,
             collection_exclude: [],
@@ -100,12 +94,9 @@ function FilterModal({
           }),
         },
       });
-      console.log(data);
-      changeFiltered(data.data.filterContents);
-      setApplyFilterState({
-        startDate,
-      });
       setFilterLoading(false);
+      //console.log(data.filterContents);
+      changeFiltered(data.filterContents);
     } catch (error) {
       console.log(error);
     }

@@ -115,10 +115,7 @@ function HomePage() {
       }),
     },
   });
-  const instagramContents = useGetInstagramData(
-    instagramData,
-    instagramLoading
-  );
+  const instagramContents = useGetInstagramData(instagramData, instagramLoading);
   const tiktokContents = useGetTiktokData(tiktokData, tiktokLoading);
   // const filteredContent = useQuery(FilterContent, {
   //   skip: !applyFilterState,
@@ -219,6 +216,81 @@ function HomePage() {
 }
 
 const FilteredContents = ({ data, cardCheckboxSelected, setCardCheckBoxSelected }: { data: any, cardCheckboxSelected: any, setCardCheckBoxSelected: any }) => {
+  console.log(data)
+  let instaContents = data?.instagrams?.map((instagram: any, i: any) => {
+    const instaposts: [] = instagram.posts == 0 ? [] : instagram.posts;
+
+    let posts: any[] = [];
+
+    instaposts.forEach((post) => {
+      const { ig_contents }: { ig_contents: [] } = post;
+      const {
+        owner_username,
+        owner_profile_pic_url,
+        owner_full_name,
+        owner_followers,
+        caption,
+        id,
+      }: {
+        owner_username: string;
+        owner_profile_pic_url: string;
+        owner_full_name: string;
+        owner_followers: number;
+        caption: string | null;
+        id: string;
+      } = post;
+      posts = [
+        ...posts,
+        ...ig_contents.map((content) => {
+          return {
+            owner_username,
+            owner_profile_pic_url,
+            owner_full_name,
+            owner_followers,
+            id,
+            caption,
+            ig_content: content,
+          };
+        }),
+      ];
+    });
+
+    const instastories: [] = instagram.stories == null ? [] : instagram.stories;
+    let stories: any[] = [];
+
+    instastories.forEach((story) => {
+      const { ig_contents }: { ig_contents: [] } = story;
+      const {
+        owner_username,
+        owner_profile_pic_url,
+        owner_full_name,
+        owner_followers,
+        id,
+      }: {
+        owner_username: string;
+        owner_profile_pic_url: string;
+        owner_full_name: string;
+        owner_followers: number;
+        id: string;
+      } = story;
+
+      stories = [
+        ...stories,
+        ...ig_contents.map((content) => {
+          return {
+            owner_username,
+            owner_profile_pic_url,
+            owner_full_name,
+            owner_followers,
+            id,
+            ig_content: content,
+          };
+        }),
+      ];
+    });
+    return [...stories, ...posts, ...(instagram.reels == null ? [] : instagram.reels)];
+  });
+  //const instagramContents = useGetInstagramData(data, instagramLoading);  
   return (
     <Box bg="#FAFAFA" px={5} minH={"100vh"} width={"100%"}>
       <ResponsiveMasonry
@@ -226,16 +298,18 @@ const FilteredContents = ({ data, cardCheckboxSelected, setCardCheckBoxSelected 
       >
         <Masonry gutter="10px">
           {[
-            ...data?.instagrams?.map(
-              (instadata: any, i: any) => {
-                return (
-                  <InstagramCard
-                    cardCheckboxSelected={cardCheckboxSelected}
-                    setCardCheckBoxSelected={setCardCheckBoxSelected}
-                    data={instadata}
-                    key={`i${i}`}
-                  />
-                );
+            ...instaContents?.map(
+              (account: any[], i: any) => {
+                return account.map((instadata, index) => {
+                  return (
+                    <InstagramCard
+                      cardCheckboxSelected={cardCheckboxSelected}
+                      setCardCheckBoxSelected={setCardCheckBoxSelected}
+                      data={instadata}
+                      key={`a${i}c${index}`}
+                    />
+                  );
+                })
               }
             ),
             ...data?.tiktoks?.map((tiktok: any, index: any) => {

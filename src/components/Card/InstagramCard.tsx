@@ -37,6 +37,7 @@ function InstagramCard({
 }) {
   const [showVideo, setShowVideo] = useState(false);
   const checkBoxRef = useRef<HTMLInputElement>(null);
+  //console.log(data);
   return (
     <VStack
       role="group"
@@ -72,15 +73,15 @@ function InstagramCard({
             <>
               <IconButton
                 position={"absolute"}
-                top={"50%"}
+                top={"calc(50% - 25px)"}
                 size={"lg"}
-                left={"50%"}
+                left={"calc(50% - 25px)"}
                 onClick={() => setShowVideo(true)}
                 aria-label="start video"
                 shadow={"2xl"}
                 icon={<PlayCircle size={50} />}
               />
-              <Image src={data.display_url} />
+              <Image src={data?.ig_content?.display_url} />
             </>
           )
         ) : (

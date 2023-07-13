@@ -149,9 +149,9 @@ const TiktokCard = ({
           <>
             <IconButton
               position={"absolute"}
-              top={"50%"}
+              top={"calc(50% - 25px)"}
               size={"lg"}
-              left={"50%"}
+              left={"calc(50% - 25px)"}
               onClick={() => setShowVideo(true)}
               aria-label="start video"
               shadow={"2xl"}
@@ -254,12 +254,12 @@ const TiktokCard = ({
                   </Button>
                 </HStack>
               </MenuItem>
-              {/* <MenuItem>
+              <MenuItem>
                 <HStack>
                   <Checkbox />
                   <Text>Select all</Text>
                 </HStack>
-              </MenuItem> */}
+              </MenuItem>
               {collections.map((collection: any) => {
                 return (
                   <MenuItem key={collection.id}>
