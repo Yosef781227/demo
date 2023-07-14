@@ -38,13 +38,13 @@ function HomePage() {
   const [instagramId, setInstagramId] = useState(User.instagramId);
   const [tiktokId, settiktokId] = useState(User.tiktokId);
   const [tiktokIndex, settiktokIndex] = useState(User.tiktokIndex);
-  const [cardCheckboxSelected, setCardCheckBoxSelected] = useState<any[]>([]);
+  const [deleteCount, setDeleteCount] = useState<number>(0);
+  const [cardCheckboxSelected, setCardCheckBoxSelected] = useState<{ posts: string[], reels: string[], stories: string[], videos: string[] }>({ posts: [], reels: [], stories: [], videos: [] });
   const [filtered, setFiltered] = useState<any>(null);
   const [instagramContents, setInstagramContents] = useState<any[]>([]);
   const [tiktokContents, setTiktokContents] = useState<any[]>([]);
   const [filterLoading, setFilterLoading] = useState<boolean>(false);
   const toast = useToast();
-
   const [filterState, dispatch] = useReducer(
     reducer,
     {
@@ -87,7 +87,9 @@ function HomePage() {
   if (User.instagrams.length === 0 && User.tiktoks.length === 0) {
     navigate("/download");
   }
-
+  useEffect(() => {
+    setDeleteCount(cardCheckboxSelected.posts.length + cardCheckboxSelected.reels.length + cardCheckboxSelected.stories.length + cardCheckboxSelected.videos.length)
+  }, [cardCheckboxSelected]);
   const changeFiltered = (filtered: any) => {
     setFiltered(filtered);
   };
@@ -183,37 +185,7 @@ function HomePage() {
       });
     })
   };
-  // const filteredContent = useQuery(FilterContent, {
-  //   skip: !applyFilterState,
-  //   variables: {
-  //     filterContentsJsonInput: JSON.stringify({
-  //       usernames: applyFilterState?.userNames,
-  //       unique_ids: applyFilterState?.uniqueIds,
-  //       type: applyFilterState?.postType,
-  //       start_time: applyFilterState?.postDateRange?.startDate,
-  //       end_time: applyFilterState?.postDateRange?.endDate,
-  //       hashtags: [
-  //         "#ethiopia",
-  //         "#ethiopian",
-  //         "#ethiopianfood",
-  //         "#ethiopiancoffee",
-  //         "#ethiopianc",
-  //       ],
-  //       content_type: applyFilterState?.contentType, // 0 => Image, 1 => Video, 2 => All
-  //       usage_right: applyFilterState?.usageRight,
-  //       followers: 5,
-  //       verified: applyFilterState?.verified, // 1 => Verified, 0 => Not Verified, 2 => All
-  //       collection_include: applyFilterState?.collectionInclude,
-  //       collection_exclude: applyFilterState?.collectionExclude,
-  //       likes: 10,
-  //       comments: 20,
-  //       shares: 50,
-  //       views: 50,
-  //       limit: 50,
-  //       offset: 50,
-  //     }),
-  //   },
-  // });
+
   if (tiktokLoading || tiktokLoading || filterLoading) {
     return <Loading />;
   }
@@ -279,6 +251,7 @@ function HomePage() {
         )}
       </Container>
       <BottomCheckBox
+        deleteCount={deleteCount}
         setCardCheckBoxSelected={setCardCheckBoxSelected}
         cardCheckboxSelected={cardCheckboxSelected}
       />

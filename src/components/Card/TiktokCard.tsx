@@ -43,8 +43,8 @@ const TiktokCard = ({
   deleteInstagramContents
 }: {
   video: any;
-  cardCheckboxSelected: any[];
-  setCardCheckBoxSelected: Dispatch<SetStateAction<any[]>>;
+  cardCheckboxSelected: { posts: string[], reels: string[], stories: string[], videos: string[] };
+  setCardCheckBoxSelected: (data: any) => void;
   deleteInstagramContents: (data: { posts: string[], reels: string[], stories: string[], videos: string[] }) => void;
 }) => {
   const checkBoxRef = useRef<HTMLInputElement>(null);
@@ -169,17 +169,17 @@ const TiktokCard = ({
           left="5"
           size="lg"
           ref={checkBoxRef}
+          isChecked={cardCheckboxSelected.videos.includes(video.id)}
           onChange={(e) => {
             if (e.currentTarget.checked) {
+              setCardCheckBoxSelected((prev: { posts: string[]; reels: string[]; stories: string[]; videos: string[]; }) => {
+                return { posts: prev.posts, reels: prev.reels, stories: prev.stories, videos: [...prev.videos, video.id] }
+              });
 
-              setCardCheckBoxSelected([
-                ...cardCheckboxSelected,
-                { data: video, checkBoxRef },
-              ]);
             } else {
-              setCardCheckBoxSelected(
-                cardCheckboxSelected.filter((item) => item.data.id !== video.id)
-              );
+              setCardCheckBoxSelected((prev: { posts: string[]; reels: string[]; stories: string[]; videos: string[]; }) => {
+                return { posts: prev.posts, reels: prev.reels, stories: prev.stories, videos: [...prev.videos.filter((item) => item !== video.id)] }
+              });
             }
           }}
         />

@@ -3,28 +3,31 @@ import { HStack, Button, Text, Box } from "@chakra-ui/react";
 import React, { Dispatch, SetStateAction } from "react";
 
 function BottomCheckBox({
+  deleteCount,
   cardCheckboxSelected,
   setCardCheckBoxSelected,
 }: {
-  cardCheckboxSelected: any[];
-  setCardCheckBoxSelected: Dispatch<SetStateAction<any[]>>;
+  deleteCount: number;
+  cardCheckboxSelected: { posts: string[], reels: string[], stories: string[], videos: string[] };
+  setCardCheckBoxSelected: (data: any) => void;
 }) {
   const handleMultipleDownload = () => {
-    for (let i = 0; i < cardCheckboxSelected.length; i++) {
-      let item = cardCheckboxSelected[i];
-      item.checkBoxRef.current.checked = !item.checkBoxRef.current.checked;
-      item.checkBoxRef.current.click();
-      const anchor = document.createElement("a");
-      anchor.href = item.data.url;
-      anchor.download = item.data.url;
-      anchor.style.display = "none";
-      document.body.appendChild(anchor);
-      anchor.click();
-      document.body.removeChild(anchor);
-    }
-    setCardCheckBoxSelected([]);
+    // for (let i = 0; i < cardCheckboxSelected.length; i++) {
+    //   let item = cardCheckboxSelected[i];
+    //   item.checkBoxRef.current.checked = !item.checkBoxRef.current.checked;
+    //   item.checkBoxRef.current.click();
+    //   const anchor = document.createElement("a");
+    //   anchor.href = item.data.url;
+    //   anchor.download = item.data.url;
+    //   anchor.style.display = "none";
+    //   document.body.appendChild(anchor);
+    //   anchor.click();
+    //   document.body.removeChild(anchor);
+    // }
+    // setCardCheckBoxSelected([]);
   };
-  if (cardCheckboxSelected.length === 0) {
+  console.log(deleteCount);
+  if (deleteCount === 0) {
     return null;
   } else {
     return (
@@ -41,7 +44,7 @@ function BottomCheckBox({
         alignItems={"center"}
       >
         <HStack width="full" justifyContent={"space-between"}>
-          <Text>{cardCheckboxSelected.length} Selected</Text>
+          <Text>{deleteCount} Selected</Text>
           <HStack>
             <Button onClick={handleMultipleDownload}>Download</Button>
             <Button>Delete</Button>

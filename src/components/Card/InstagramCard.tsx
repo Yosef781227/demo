@@ -33,8 +33,8 @@ function InstagramCard({
   deleteInstagramContents,
 }: {
   data: any;
-  cardCheckboxSelected: any[];
-  setCardCheckBoxSelected: Dispatch<SetStateAction<any[]>>;
+  cardCheckboxSelected: { posts: string[], reels: string[], stories: string[], videos: string[] };
+  setCardCheckBoxSelected: (data: any) => void;
   deleteInstagramContents: (data: { posts: string[], reels: string[], stories: string[], videos: string[] }) => void;
 }) {
   const [showVideo, setShowVideo] = useState(false);
@@ -94,11 +94,21 @@ function InstagramCard({
           display="none"
           onChange={(e) => {
             if (e.currentTarget.checked) {
-              setCardCheckBoxSelected([...cardCheckboxSelected, data]);
+              setCardCheckBoxSelected((prev: { posts: string[], reels: string[], stories: string[], videos: string[] }) => {
+                let temp = { ...prev };
+                data.type === "post" && temp.posts.push(data.id);
+                data.type === "reel" && temp.reels.push(data.id);
+                data.type === "story" && temp.stories.push(data.id);
+                return temp;
+              });
             } else {
-              setCardCheckBoxSelected(
-                cardCheckboxSelected.filter((item) => item.id !== data.id)
-              );
+              setCardCheckBoxSelected((prev: { posts: string[], reels: string[], stories: string[], videos: string[] }) => {
+                let temp = { ...prev };
+                data.type === "post" && temp.posts.splice(temp.posts.indexOf(data.id), 1);
+                data.type === "reel" && temp.reels.splice(temp.reels.indexOf(data.id), 1);
+                data.type === "story" && temp.stories.splice(temp.stories.indexOf(data.id), 1);
+                return temp;
+              });
             }
           }}
           _checked={{ display: "block" }}
