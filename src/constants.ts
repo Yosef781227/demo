@@ -1,1 +1,1 @@
-export const BASE_URL = "https://wildsocial.onrender.com/graphql";
+export const BASE_URL = "http://localhost:4000/graphql";

@@ -44,6 +44,7 @@ function HomePage() {
   const [tiktokContents, setTiktokContents] = useState<any[]>([]);
   const [filterLoading, setFilterLoading] = useState<boolean>(false);
   const toast = useToast();
+
   const [filterState, dispatch] = useReducer(
     reducer,
     {
@@ -285,11 +286,7 @@ function HomePage() {
   );
 }
 
-const FilteredContents = ({
-  data,
-  cardCheckboxSelected,
-  setCardCheckBoxSelected,
-}: {
+const FilteredContents = ({ data, cardCheckboxSelected, setCardCheckBoxSelected, }: {
   data: any;
   cardCheckboxSelected: any;
   setCardCheckBoxSelected: any;
@@ -297,82 +294,9 @@ const FilteredContents = ({
   const [instagramContents, setInstagramContents] = useState<any[]>(ModifyFilterInstagramData(data?.instagrams));
 
   const [tiktokContents, setTiktokContents] = useState<any[]>(ModifyFilterTikTokData(data?.tiktoks));
-
-  instaposts.forEach((post) => {
-    const { ig_contents }: { ig_contents: [] } = post;
-    const {
-      owner_username,
-      owner_profile_pic_url,
-      owner_full_name,
-      owner_followers,
-      caption,
-      id,
-    }: {
-      owner_username: string;
-      owner_profile_pic_url: string;
-      owner_full_name: string;
-      owner_followers: number;
-      caption: string | null;
-      id: string;
-    } = post;
-    posts = [
-      ...posts,
-      ...ig_contents.map((content) => {
-        return {
-          owner_username,
-          owner_profile_pic_url,
-          owner_full_name,
-          owner_followers,
-          id,
-          caption,
-          ig_content: content,
-        };
-      }),
-    ];
-  });
-
-  const instastories: [] = instagram.stories == null ? [] : instagram.stories;
-  let stories: any[] = [];
-
-  instastories.forEach((story) => {
-    const { ig_contents }: { ig_contents: [] } = story;
-    const {
-      owner_username,
-      owner_profile_pic_url,
-      owner_full_name,
-      owner_followers,
-      id,
-    }: {
-      owner_username: string;
-      owner_profile_pic_url: string;
-      owner_full_name: string;
-      owner_followers: number;
-      id: string;
-    } = story;
-
-    stories = [
-      ...stories,
-      ...ig_contents.map((content) => {
-        return {
-          owner_username,
-          owner_profile_pic_url,
-          owner_full_name,
-          owner_followers,
-          id,
-          ig_content: content,
-        };
-      }),
-    ];
-  });
-  return [
-    ...stories,
-    ...posts,
-    ...(instagram.reels == null ? [] : instagram.reels),
-  ];
-});
-const deleteInstagramContents = (data: { posts: string[], reels: string[], stories: string[], videos: string[] }) => {
-  client.mutate({
-    mutation: gql`
+  const deleteInstagramContents = (data: { posts: string[], reels: string[], stories: string[], videos: string[] }) => {
+    client.mutate({
+      mutation: gql`
         mutation Mutation($jsonInput: String!) {
           deleteContents(json_input: $jsonInput) {
             success
@@ -381,82 +305,82 @@ const deleteInstagramContents = (data: { posts: string[], reels: string[], stori
           }
         }
       `,
-    variables: {
-      jsonInput: JSON.stringify(data),
-    },
-  }).then((res) => {
-    if (res.data.deleteContents.success) {
-      if (data.posts.length > 0 || data.reels.length > 0 || data.stories.length > 0) {
-        const newInstagramContents = instagramContents.filter(
-          (content) => data.posts.includes(content.id) || data.reels.includes(content.id) || data.stories.includes(content.id)
-        );
-        setInstagramContents(newInstagramContents);
+      variables: {
+        jsonInput: JSON.stringify(data),
+      },
+    }).then((res) => {
+      if (res.data.deleteContents.success) {
+        if (data.posts.length > 0 || data.reels.length > 0 || data.stories.length > 0) {
+          const newInstagramContents = instagramContents.filter(
+            (content) => data.posts.includes(content.id) || data.reels.includes(content.id) || data.stories.includes(content.id)
+          );
+          setInstagramContents(newInstagramContents);
+        }
+        if (data.videos.length > 0) {
+          const newTiktokContents = tiktokContents.filter(
+            (content) => data.videos.includes(content.id)
+          );
+          setTiktokContents(newTiktokContents);
+        }
       }
-      if (data.videos.length > 0) {
-        const newTiktokContents = tiktokContents.filter(
-          (content) => data.videos.includes(content.id)
-        );
-        setTiktokContents(newTiktokContents);
-      }
-    }
-    console.log(res)
-    toast({
-      title: res.data.deleteContents.success ? "Success" : "Error",
-      description: res.data.deleteContents.message,
-      status: res.data.deleteContents.success ? "success" : "error",
-      duration: 5000,
-      isClosable: true,
-    });
-  }).catch((err) => {
-    console.log(err)
-    toast({
-      title: "Error",
-      description: err.message,
-      status: "error",
-      duration: 5000,
-      isClosable: true,
-    });
-  })
-};
+      console.log(res)
+      toast({
+        title: res.data.deleteContents.success ? "Success" : "Error",
+        description: res.data.deleteContents.message,
+        status: res.data.deleteContents.success ? "success" : "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }).catch((err) => {
+      console.log(err)
+      toast({
+        title: "Error",
+        description: err.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    })
+  };
 
-const toast = useToast();
+  const toast = useToast();
 
-return (
-  <Box bg="#FAFAFA" px={5} minH={"100vh"} width={"100%"}>
-    <ResponsiveMasonry
-      columnsCountBreakPoints={{ 575: 1, 720: 2, 900: 3, 1300: 4 }}
-    >
-      <Masonry gutter="10px">
-        {[
-          ...instagramContents?.map(
-            (account: any[], i: any) => {
-              return account.map((instadata, index) => {
-                return (
-                  <InstagramCard
-                    cardCheckboxSelected={cardCheckboxSelected}
-                    setCardCheckBoxSelected={setCardCheckBoxSelected}
-                    data={instadata}
-                    deleteInstagramContents={deleteInstagramContents}
-                    key={`a${i}c${index}`}
-                  />
-                );
-              })
-            }
-          ),
-          ...tiktokContents.map((video, index) => {
-            return <TiktokCard
-              cardCheckboxSelected={cardCheckboxSelected}
-              setCardCheckBoxSelected={setCardCheckBoxSelected}
-              video={video}
-              deleteInstagramContents={deleteInstagramContents}
-              key={`${video.id}`}
-            />
-          }),
-        ]}
-      </Masonry>
-    </ResponsiveMasonry>
-  </Box>
-);
+  return (
+    <Box bg="#FAFAFA" px={5} minH={"100vh"} width={"100%"}>
+      <ResponsiveMasonry
+        columnsCountBreakPoints={{ 575: 1, 720: 2, 900: 3, 1300: 4 }}
+      >
+        <Masonry gutter="10px">
+          {[
+            ...instagramContents?.map(
+              (account: any[], i: any) => {
+                return account.map((instadata, index) => {
+                  return (
+                    <InstagramCard
+                      cardCheckboxSelected={cardCheckboxSelected}
+                      setCardCheckBoxSelected={setCardCheckBoxSelected}
+                      data={instadata}
+                      deleteInstagramContents={deleteInstagramContents}
+                      key={`a${i}c${index}`}
+                    />
+                  );
+                })
+              }
+            ),
+            ...tiktokContents.map((video, index) => {
+              return <TiktokCard
+                cardCheckboxSelected={cardCheckboxSelected}
+                setCardCheckBoxSelected={setCardCheckBoxSelected}
+                video={video}
+                deleteInstagramContents={deleteInstagramContents}
+                key={`${video.id}`}
+              />
+            }),
+          ]}
+        </Masonry>
+      </ResponsiveMasonry>
+    </Box>
+  );
 };
 
 export default HomePage;

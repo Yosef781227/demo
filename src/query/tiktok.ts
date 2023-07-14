@@ -6,6 +6,7 @@ export const GetTiktokQuery = gql`
       videos {
         id
         t_id
+        link
         timestamp
         width
         height

@@ -171,6 +171,7 @@ const TiktokCard = ({
           ref={checkBoxRef}
           onChange={(e) => {
             if (e.currentTarget.checked) {
+
               setCardCheckBoxSelected([
                 ...cardCheckboxSelected,
                 { data: video, checkBoxRef },
