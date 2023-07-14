@@ -15,10 +15,12 @@ const MultipleDownload = (cardCheckboxSelected: string[]) => {
     document.body.removeChild(anchor);
   }
 }
+
 type cardCheckboxSelectedType = {
   ids: { posts: string[], reels: string[], stories: string[], videos: string[] },
   urls: { posts: string[], reels: string[], stories: string[], videos: string[] },
 }
+
 function BottomCheckBox({
   deleteCount,
   cardCheckboxSelected,
