@@ -9,7 +9,7 @@ import ResetPassword from "@pages/Auth/ResetPassword";
 import TiktokPage from "@pages/integrations/Tiktok.page";
 import InstagramPage from "@pages/integrations/Instagram.page";
 import Collection from "@/pages/Collections/Collection.page";
-
+import Download from "@/pages/Auth/download";
 
 function Router({ isAuth }: { isAuth: boolean }) {
   return (
@@ -18,6 +18,7 @@ function Router({ isAuth }: { isAuth: boolean }) {
         <Routes>
           <Route path="/" element={<Root />}>
             <Route index element={<HomePage />} />
+            <Route path="download" element={<Download />} />
             <Route path="collections" element={<Collections />} />
             <Route path="settings" element={<Setting />} />
             <Route path="collections" element={<Collections />} />
@@ -25,7 +26,6 @@ function Router({ isAuth }: { isAuth: boolean }) {
             <Route path="integration">
               <Route path="tiktok" element={<TiktokPage />} />
               <Route path="instagram" element={<InstagramPage />} />
-              
             </Route>
           </Route>
         </Routes>

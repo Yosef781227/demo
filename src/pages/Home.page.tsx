@@ -21,12 +21,14 @@ import BottomCheckBox from "@/components/Modal/BottomCheckBox";
 import { FilterContent } from "@/query";
 import { reducer } from "@/utils/reducers/filterReducer";
 import { GetUserCollection } from "@/query/user";
+import { useNavigate } from "react-router-dom";
 const currentDate = new Date();
 const previousMonthDate = new Date(currentDate);
 previousMonthDate.setMonth(previousMonthDate.getMonth() - 1);
 
 function HomePage() {
   const User = useContext(UserContext) as User;
+  const navigate = useNavigate();
   const hasInstagram = User.hasInstagram;
   const hasTiktok = User.hasTiktok;
   const [instagramIndex, setInstagramIndex] = useState(User.instagramIndex);
@@ -75,6 +77,9 @@ function HomePage() {
     onOpen: onNewOpen,
     onClose: onNeWClose,
   } = useDisclosure();
+  if (User.instagrams.length === 0 && User.tiktoks.length === 0) {
+    navigate("/download");
+  }
   const changeFiltered = (filtered: any) => {
     console.log(filtered);
     setFiltered(filtered);
@@ -115,7 +120,10 @@ function HomePage() {
       }),
     },
   });
-  const instagramContents = useGetInstagramData(instagramData, instagramLoading);
+  const instagramContents = useGetInstagramData(
+    instagramData,
+    instagramLoading
+  );
   const tiktokContents = useGetTiktokData(tiktokData, tiktokLoading);
   // const filteredContent = useQuery(FilterContent, {
   //   skip: !applyFilterState,
@@ -173,39 +181,44 @@ function HomePage() {
           tiktokId={tiktokId}
           instagramId={instagramId}
         />
-        {
-          filtered !== null ? <FilteredContents data={filtered} cardCheckboxSelected={cardCheckboxSelected} setCardCheckBoxSelected={setCardCheckBoxSelected} /> :
-            <Box bg="#FAFAFA" px={5} minH={"100vh"} width={"100%"}>
-              <ResponsiveMasonry
-                columnsCountBreakPoints={{ 575: 1, 720: 2, 900: 3, 1300: 4 }}
-              >
-                <Masonry gutter="10px">
-                  {[
-                    ...instagramContents.map((instadata, i) => {
-                      return (
-                        <InstagramCard
-                          cardCheckboxSelected={cardCheckboxSelected}
-                          setCardCheckBoxSelected={setCardCheckBoxSelected}
-                          data={instadata}
-                          key={`i${i}`}
-                        />
-                      );
-                    }),
-                    ...tiktokContents.map((video, index) => {
-                      return (
-                        <TiktokCard
-                          cardCheckboxSelected={cardCheckboxSelected}
-                          setCardCheckBoxSelected={setCardCheckBoxSelected}
-                          video={video}
-                          key={`t${index}`}
-                        />
-                      );
-                    }),
-                  ]}
-                </Masonry>
-              </ResponsiveMasonry>
-            </Box>
-        }
+        {filtered !== null ? (
+          <FilteredContents
+            data={filtered}
+            cardCheckboxSelected={cardCheckboxSelected}
+            setCardCheckBoxSelected={setCardCheckBoxSelected}
+          />
+        ) : (
+          <Box bg="#FAFAFA" px={5} minH={"100vh"} width={"100%"}>
+            <ResponsiveMasonry
+              columnsCountBreakPoints={{ 575: 1, 720: 2, 900: 3, 1300: 4 }}
+            >
+              <Masonry gutter="10px">
+                {[
+                  ...instagramContents.map((instadata, i) => {
+                    return (
+                      <InstagramCard
+                        cardCheckboxSelected={cardCheckboxSelected}
+                        setCardCheckBoxSelected={setCardCheckBoxSelected}
+                        data={instadata}
+                        key={`i${i}`}
+                      />
+                    );
+                  }),
+                  ...tiktokContents.map((video, index) => {
+                    return (
+                      <TiktokCard
+                        cardCheckboxSelected={cardCheckboxSelected}
+                        setCardCheckBoxSelected={setCardCheckBoxSelected}
+                        video={video}
+                        key={`t${index}`}
+                      />
+                    );
+                  }),
+                ]}
+              </Masonry>
+            </ResponsiveMasonry>
+          </Box>
+        )}
       </Container>
       <BottomCheckBox
         setCardCheckBoxSelected={setCardCheckBoxSelected}
@@ -215,7 +228,15 @@ function HomePage() {
   );
 }
 
-const FilteredContents = ({ data, cardCheckboxSelected, setCardCheckBoxSelected }: { data: any, cardCheckboxSelected: any, setCardCheckBoxSelected: any }) => {
+const FilteredContents = ({
+  data,
+  cardCheckboxSelected,
+  setCardCheckBoxSelected,
+}: {
+  data: any;
+  cardCheckboxSelected: any;
+  setCardCheckBoxSelected: any;
+}) => {
   let instaContents = data?.instagrams?.map((instagram: any, i: any) => {
     const instaposts: [] = instagram.posts == 0 ? [] : instagram.posts;
 
@@ -287,7 +308,11 @@ const FilteredContents = ({ data, cardCheckboxSelected, setCardCheckBoxSelected 
         }),
       ];
     });
-    return [...stories, ...posts, ...(instagram.reels == null ? [] : instagram.reels)];
+    return [
+      ...stories,
+      ...posts,
+      ...(instagram.reels == null ? [] : instagram.reels),
+    ];
   });
   return (
     <Box bg="#FAFAFA" px={5} minH={"100vh"} width={"100%"}>
@@ -296,20 +321,18 @@ const FilteredContents = ({ data, cardCheckboxSelected, setCardCheckBoxSelected 
       >
         <Masonry gutter="10px">
           {[
-            ...instaContents?.map(
-              (account: any[], i: any) => {
-                return account.map((instadata, index) => {
-                  return (
-                    <InstagramCard
-                      cardCheckboxSelected={cardCheckboxSelected}
-                      setCardCheckBoxSelected={setCardCheckBoxSelected}
-                      data={instadata}
-                      key={`a${i}c${index}`}
-                    />
-                  );
-                })
-              }
-            ),
+            ...instaContents?.map((account: any[], i: any) => {
+              return account.map((instadata, index) => {
+                return (
+                  <InstagramCard
+                    cardCheckboxSelected={cardCheckboxSelected}
+                    setCardCheckBoxSelected={setCardCheckBoxSelected}
+                    data={instadata}
+                    key={`a${i}c${index}`}
+                  />
+                );
+              });
+            }),
             ...data?.tiktoks?.map((tiktok: any, index: any) => {
               return tiktok.videos.map((video: any, i: any) => {
                 return (
@@ -321,14 +344,12 @@ const FilteredContents = ({ data, cardCheckboxSelected, setCardCheckBoxSelected 
                   />
                 );
               });
-            })
+            }),
           ]}
         </Masonry>
       </ResponsiveMasonry>
     </Box>
-  )
-}
+  );
+};
 
 export default HomePage;
-
-
