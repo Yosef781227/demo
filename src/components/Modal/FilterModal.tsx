@@ -37,17 +37,14 @@ function FilterModal({
   isOpen,
   onClose,
   user,
-  setApplyFilterState,
   changeFiltered,
   setFilterLoading,
 }: {
   isOpen: boolean;
   onClose: () => void;
-  setApplyFilterState: Dispatch<SetStateAction<any>>;
   changeFiltered: (data: any) => void;
   setFilterLoading: (data: boolean) => void;
   user: User;
-  dispatch: Dispatch<any>;
 }) {
   const [startDate, setStartDate] = useState<number>(Math.floor(previousMonthDate.getTime() / 1000));
   const [endDate, setEndDate] = useState<number>(Math.floor(currentDate.getTime() / 1000));
@@ -58,6 +55,7 @@ function FilterModal({
   const [usage_right, setUsage_right] = useState<string[]>(["DEFAULT"]);
   const [content_type, setContent_type] = useState<number>(2);
   const [verified, setVerified] = useState<number>(2);
+
   const onDateChange = (startDate: Date, endDate: Date) => {
     if (startDate !== null && endDate !== null) {
       setStartDate(Math.floor(new Date(startDate).getTime() / 1000));

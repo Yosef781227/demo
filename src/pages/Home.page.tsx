@@ -1,15 +1,15 @@
-import { Box, useDisclosure } from "@chakra-ui/react";
+import { Box, useToast, useDisclosure } from "@chakra-ui/react";
 import "react-datepicker/dist/react-datepicker.css";
 import "react-toastify/dist/ReactToastify.css";
 import Container from "@components/Container";
-import { useState, useContext, ChangeEvent, useReducer } from "react";
+import { useState, useContext, ChangeEvent, useReducer, useEffect } from "react";
 import { UserContext } from "@/App";
 import FilterModal from "@/components/Modal/FilterModal";
 import TiktokCard from "@/components/Card/TiktokCard";
 import InstagramCard from "@/components/Card/InstagramCard";
 import Loading from "@/components/Loading";
 import { User } from "@/interfaces/user.interface";
-import { useQuery } from "@apollo/client";
+import { gql, useQuery } from "@apollo/client";
 import useGetInstagramData from "@/hooks/instagram";
 import useGetTiktokData from "@/hooks/tiktok";
 import HomePageTopNavBar from "@/components/Navbar/HomePageTopNavBar";
@@ -21,6 +21,9 @@ import BottomCheckBox from "@/components/Modal/BottomCheckBox";
 import { FilterContent } from "@/query";
 import { reducer } from "@/utils/reducers/filterReducer";
 import { GetUserCollection } from "@/query/user";
+import client from "@/client";
+import { vi } from "date-fns/locale";
+import { ModifyFilterInstagramData, ModifyFilterTikTokData, ModifyInstagramData, ModifyTikTokData } from "@/utils/data-modifier";
 const currentDate = new Date();
 const previousMonthDate = new Date(currentDate);
 previousMonthDate.setMonth(previousMonthDate.getMonth() - 1);
@@ -35,7 +38,10 @@ function HomePage() {
   const [tiktokIndex, settiktokIndex] = useState(User.tiktokIndex);
   const [cardCheckboxSelected, setCardCheckBoxSelected] = useState<any[]>([]);
   const [filtered, setFiltered] = useState<any>(null);
+  const [instagramContents, setInstagramContents] = useState<any[]>([]);
+  const [tiktokContents, setTiktokContents] = useState<any[]>([]);
   const [filterLoading, setFilterLoading] = useState<boolean>(false);
+  const toast = useToast();
   const [filterState, dispatch] = useReducer(
     reducer,
     {
@@ -75,10 +81,11 @@ function HomePage() {
     onOpen: onNewOpen,
     onClose: onNeWClose,
   } = useDisclosure();
+
   const changeFiltered = (filtered: any) => {
-    console.log(filtered);
     setFiltered(filtered);
   };
+
   const changeTiktokAcount = (e: ChangeEvent<HTMLSelectElement>) => {
     const index = e.target.selectedIndex;
     localStorage.removeItem("selectedTiktokIndex");
@@ -115,8 +122,61 @@ function HomePage() {
       }),
     },
   });
-  const instagramContents = useGetInstagramData(instagramData, instagramLoading);
-  const tiktokContents = useGetTiktokData(tiktokData, tiktokLoading);
+  useEffect(() => {
+    setInstagramContents(ModifyInstagramData(instagramData, instagramLoading))
+  }, [instagramData]);
+  useEffect(() => {
+    setTiktokContents(ModifyTikTokData(tiktokData, tiktokLoading))
+  }, [tiktokData]);
+
+  const deleteInstagramContents = (data: { posts: string[], reels: string[], stories: string[], videos: string[] }) => {
+    client.mutate({
+      mutation: gql`
+        mutation Mutation($jsonInput: String!) {
+          deleteContents(json_input: $jsonInput) {
+            success
+            message
+            data
+          }
+        }
+      `,
+      variables: {
+        jsonInput: JSON.stringify(data),
+      },
+    }).then((res) => {
+      if (res.data.deleteContents.success) {
+        if (data.posts.length > 0 || data.reels.length > 0 || data.stories.length > 0) {
+          const newInstagramContents = instagramContents.filter(
+            (content) => data.posts.includes(content.id) || data.reels.includes(content.id) || data.stories.includes(content.id)
+          );
+          setInstagramContents(newInstagramContents);
+        }
+        if (data.videos.length > 0) {
+          const newTiktokContents = tiktokContents.filter(
+            (content) => data.videos.includes(content.id)
+          );
+          setTiktokContents(newTiktokContents);
+        }
+      }
+      console.log(res)
+      toast({
+        title: res.data.deleteContents.success ? "Success" : "Error",
+        description: res.data.deleteContents.message,
+        status: res.data.deleteContents.success ? "success" : "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }).catch((err) => {
+      console.log(err)
+      toast({
+        title: "Error",
+        description: err.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    })
+  };
   // const filteredContent = useQuery(FilterContent, {
   //   skip: !applyFilterState,
   //   variables: {
@@ -155,9 +215,7 @@ function HomePage() {
     <>
       <NewModal isOpen={isNewOpen} onClose={onNeWClose} />
       <FilterModal
-        dispatch={dispatch}
         isOpen={isFilterOpen}
-        setApplyFilterState={setApplyFilterState}
         changeFiltered={changeFiltered}
         setFilterLoading={setFilterLoading}
         onClose={onFilterClose}
@@ -187,6 +245,7 @@ function HomePage() {
                           cardCheckboxSelected={cardCheckboxSelected}
                           setCardCheckBoxSelected={setCardCheckBoxSelected}
                           data={instadata}
+                          deleteInstagramContents={deleteInstagramContents}
                           key={`i${i}`}
                         />
                       );
@@ -196,6 +255,7 @@ function HomePage() {
                         <TiktokCard
                           cardCheckboxSelected={cardCheckboxSelected}
                           setCardCheckBoxSelected={setCardCheckBoxSelected}
+                          deleteInstagramContents={deleteInstagramContents}
                           video={video}
                           key={`t${index}`}
                         />
@@ -216,79 +276,61 @@ function HomePage() {
 }
 
 const FilteredContents = ({ data, cardCheckboxSelected, setCardCheckBoxSelected }: { data: any, cardCheckboxSelected: any, setCardCheckBoxSelected: any }) => {
-  let instaContents = data?.instagrams?.map((instagram: any, i: any) => {
-    const instaposts: [] = instagram.posts == 0 ? [] : instagram.posts;
+  const [instagramContents, setInstagramContents] = useState<any[]>(ModifyFilterInstagramData(data?.instagrams));
 
-    let posts: any[] = [];
+  const [tiktokContents, setTiktokContents] = useState<any[]>(ModifyFilterTikTokData(data?.tiktoks));
 
-    instaposts.forEach((post) => {
-      const { ig_contents }: { ig_contents: [] } = post;
-      const {
-        owner_username,
-        owner_profile_pic_url,
-        owner_full_name,
-        owner_followers,
-        caption,
-        id,
-      }: {
-        owner_username: string;
-        owner_profile_pic_url: string;
-        owner_full_name: string;
-        owner_followers: number;
-        caption: string | null;
-        id: string;
-      } = post;
-      posts = [
-        ...posts,
-        ...ig_contents.map((content) => {
-          return {
-            owner_username,
-            owner_profile_pic_url,
-            owner_full_name,
-            owner_followers,
-            id,
-            caption,
-            ig_content: content,
-          };
-        }),
-      ];
-    });
+  const deleteInstagramContents = (data: { posts: string[], reels: string[], stories: string[], videos: string[] }) => {
+    client.mutate({
+      mutation: gql`
+        mutation Mutation($jsonInput: String!) {
+          deleteContents(json_input: $jsonInput) {
+            success
+            message
+            data
+          }
+        }
+      `,
+      variables: {
+        jsonInput: JSON.stringify(data),
+      },
+    }).then((res) => {
+      if (res.data.deleteContents.success) {
+        if (data.posts.length > 0 || data.reels.length > 0 || data.stories.length > 0) {
+          const newInstagramContents = instagramContents.filter(
+            (content) => data.posts.includes(content.id) || data.reels.includes(content.id) || data.stories.includes(content.id)
+          );
+          setInstagramContents(newInstagramContents);
+        }
+        if (data.videos.length > 0) {
+          const newTiktokContents = tiktokContents.filter(
+            (content) => data.videos.includes(content.id)
+          );
+          setTiktokContents(newTiktokContents);
+        }
+      }
+      console.log(res)
+      toast({
+        title: res.data.deleteContents.success ? "Success" : "Error",
+        description: res.data.deleteContents.message,
+        status: res.data.deleteContents.success ? "success" : "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }).catch((err) => {
+      console.log(err)
+      toast({
+        title: "Error",
+        description: err.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    })
+  };
 
-    const instastories: [] = instagram.stories == null ? [] : instagram.stories;
-    let stories: any[] = [];
+  const toast = useToast();
 
-    instastories.forEach((story) => {
-      const { ig_contents }: { ig_contents: [] } = story;
-      const {
-        owner_username,
-        owner_profile_pic_url,
-        owner_full_name,
-        owner_followers,
-        id,
-      }: {
-        owner_username: string;
-        owner_profile_pic_url: string;
-        owner_full_name: string;
-        owner_followers: number;
-        id: string;
-      } = story;
-
-      stories = [
-        ...stories,
-        ...ig_contents.map((content) => {
-          return {
-            owner_username,
-            owner_profile_pic_url,
-            owner_full_name,
-            owner_followers,
-            id,
-            ig_content: content,
-          };
-        }),
-      ];
-    });
-    return [...stories, ...posts, ...(instagram.reels == null ? [] : instagram.reels)];
-  });
   return (
     <Box bg="#FAFAFA" px={5} minH={"100vh"} width={"100%"}>
       <ResponsiveMasonry
@@ -296,7 +338,7 @@ const FilteredContents = ({ data, cardCheckboxSelected, setCardCheckBoxSelected 
       >
         <Masonry gutter="10px">
           {[
-            ...instaContents?.map(
+            ...instagramContents?.map(
               (account: any[], i: any) => {
                 return account.map((instadata, index) => {
                   return (
@@ -304,24 +346,22 @@ const FilteredContents = ({ data, cardCheckboxSelected, setCardCheckBoxSelected 
                       cardCheckboxSelected={cardCheckboxSelected}
                       setCardCheckBoxSelected={setCardCheckBoxSelected}
                       data={instadata}
+                      deleteInstagramContents={deleteInstagramContents}
                       key={`a${i}c${index}`}
                     />
                   );
                 })
               }
             ),
-            ...data?.tiktoks?.map((tiktok: any, index: any) => {
-              return tiktok.videos.map((video: any, i: any) => {
-                return (
-                  <TiktokCard
-                    cardCheckboxSelected={cardCheckboxSelected}
-                    setCardCheckBoxSelected={setCardCheckBoxSelected}
-                    video={video}
-                    key={`${video.id}`}
-                  />
-                );
-              });
-            })
+            ...tiktokContents.map((video, index) => {
+              return <TiktokCard
+                cardCheckboxSelected={cardCheckboxSelected}
+                setCardCheckBoxSelected={setCardCheckBoxSelected}
+                video={video}
+                deleteInstagramContents={deleteInstagramContents}
+                key={`${video.id}`}
+              />
+            }),
           ]}
         </Masonry>
       </ResponsiveMasonry>

@@ -11,6 +11,7 @@ export const GetInstagramQuery = gql`
         owner_profile_pic_url
         owner_full_name
         owner_followers
+        link
         id
         caption
         ig_contents {
@@ -21,12 +22,13 @@ export const GetInstagramQuery = gql`
         }
       }
       reels {
-        caption
         id
+        link
+        caption
         owner_username
+        owner_full_name
         owner_profile_pic_url
         owner_followers
-        owner_full_name
         ig_content {
           display_url
           url

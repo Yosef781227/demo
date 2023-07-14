@@ -30,14 +30,15 @@ function InstagramCard({
   data,
   cardCheckboxSelected,
   setCardCheckBoxSelected,
+  deleteInstagramContents,
 }: {
   data: any;
   cardCheckboxSelected: any[];
   setCardCheckBoxSelected: Dispatch<SetStateAction<any[]>>;
+  deleteInstagramContents: (data: { posts: string[], reels: string[], stories: string[], videos: string[] }) => void;
 }) {
   const [showVideo, setShowVideo] = useState(false);
   const checkBoxRef = useRef<HTMLInputElement>(null);
-  //console.log(data);
   return (
     <VStack
       role="group"
@@ -183,17 +184,18 @@ function InstagramCard({
             <DotsThreeOutline size={24} color="black" weight="fill" />
           </MenuButton>
           <MenuList>
-            <MenuItem>Download</MenuItem>
-            <MenuItem>Open the original post</MenuItem>
-            <MenuItem>Get public link</MenuItem>
+            <MenuItem><a href={data.ig_content.url.includes("https://") ? data.ig_content.url : "https://" + data.ig_content.url} target="_blank" rel="noopener noreferrer">Download</a></MenuItem>
+            {data.link && <MenuItem><a href={data.link} target="_blank" rel="noopener noreferrer">Open the original post</a></MenuItem>}
+            {data.link && <MenuItem onClick={e => navigator.clipboard.writeText(data.link)}>Get public link</MenuItem>}
             <MenuItem>Mute Content from @somthing</MenuItem>
-            <MenuItem color={"red"}>Delete from Library</MenuItem>
+            <MenuItem color={"red"} onClick={e => deleteInstagramContents({ posts: data.type === 'post' ? [data.id] : [], reels: data.type === 'reel' ? [data.id] : [], stories: data.type === 'story' ? [data.id] : [], videos: [] })}>Delete from Library</MenuItem>
           </MenuList>
         </Menu>
       </HStack>
     </VStack>
   );
 }
+
 function getAccess(data: any) {
   return (
     <LazyLoad>
@@ -219,6 +221,7 @@ function getAccess(data: any) {
     </LazyLoad>
   );
 }
+
 function dataAccess(data: any) {
   return data?.ig_contents
     ? data?.ig_contents[0]?.display_url

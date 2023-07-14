@@ -40,10 +40,12 @@ const TiktokCard = ({
   video,
   cardCheckboxSelected,
   setCardCheckBoxSelected,
+  deleteInstagramContents
 }: {
   video: any;
   cardCheckboxSelected: any[];
   setCardCheckBoxSelected: Dispatch<SetStateAction<any[]>>;
+  deleteInstagramContents: (data: { posts: string[], reels: string[], stories: string[], videos: string[] }) => void;
 }) => {
   const checkBoxRef = useRef<HTMLInputElement>(null);
   const [showVideo, setShowVideo] = useState(false);
@@ -299,11 +301,11 @@ const TiktokCard = ({
             <DotsThreeOutline size={24} color="black" weight="fill" />
           </MenuButton>
           <MenuList>
-            <MenuItem>Download</MenuItem>
-            <MenuItem>Open the original post</MenuItem>
-            <MenuItem>Get public link</MenuItem>
+            <MenuItem><a href={video.url.includes("https://") ? video.url : "https://" + video.url} target="_blank" rel="noopener noreferrer">Download</a></MenuItem>
+            {video.link && <MenuItem><a href={video.link} target="_blank" rel="noopener noreferrer">Open the original post</a></MenuItem>}
+            {video.link && <MenuItem onClick={e => navigator.clipboard.writeText(video.link)}>Get public link</MenuItem>}
             <MenuItem>Mute Content from @somthing</MenuItem>
-            <MenuItem color={"red"}>Delete from Library</MenuItem>
+            <MenuItem color={"red"} onClick={e => deleteInstagramContents({ posts: [], reels: [], stories: [], videos: [video.id] })}>Delete from Library</MenuItem>
           </MenuList>
         </Menu>
       </HStack>

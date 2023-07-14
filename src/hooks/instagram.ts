@@ -19,6 +19,7 @@ export default function useGetInstagramData(
       owner_profile_pic_url,
       owner_full_name,
       owner_followers,
+      link,
       caption,
       id,
     }: {
@@ -26,6 +27,7 @@ export default function useGetInstagramData(
       owner_profile_pic_url: string;
       owner_full_name: string;
       owner_followers: number;
+      link: string;
       caption: string | null;
       id: string;
     } = post;
@@ -39,6 +41,7 @@ export default function useGetInstagramData(
           owner_followers,
           id,
           caption,
+          link,
           ig_content: content,
         };
       }),
