@@ -3,7 +3,7 @@ import Container from "@/components/Container";
 import Loading from "@/components/Loading";
 import { GetCollection } from "@/query/collection";
 import { gql, useQuery } from "@apollo/client";
-import React, { useContext, useEffect, useReducer, useState } from "react";
+import { useContext, useEffect, useReducer, useState } from "react";
 import { useParams } from "react-router-dom";
 import InstagramCard from "@/components/Card/InstagramCard";
 import TiktokCard from "@/components/Card/TiktokCard";
@@ -16,11 +16,24 @@ import { UserContext } from "@/App";
 import { User } from "@/interfaces/user.interface";
 import client from "@/client";
 import { set } from "date-fns";
-import { ModifyCollectionInstaContents, ModifyCollectionTikTokContents } from "@/utils/data-modifier";
+import {
+  ModifyCollectionInstaContents,
+  ModifyCollectionTikTokContents,
+} from "@/utils/data-modifier";
 type cardCheckboxSelectedType = {
-  ids: { posts: string[], reels: string[], stories: string[], videos: string[] },
-  urls: { posts: string[], reels: string[], stories: string[], videos: string[] },
-}
+  ids: {
+    posts: string[];
+    reels: string[];
+    stories: string[];
+    videos: string[];
+  };
+  urls: {
+    posts: string[];
+    reels: string[];
+    stories: string[];
+    videos: string[];
+  };
+};
 function Collection() {
   const { collectionId } = useParams();
   const [instagramContents, setInstagramContents] = useState<any[]>([]);
@@ -65,70 +78,98 @@ function Collection() {
     }
   );
   const [applyFilterState, setApplyFilterState] = useState<any>(null);
-  const [cardCheckboxSelected, setCardCheckBoxSelected] = useState<cardCheckboxSelectedType>({ ids: { posts: [], reels: [], stories: [], videos: [] }, urls: { posts: [], reels: [], stories: [], videos: [] } });
+  const [cardCheckboxSelected, setCardCheckBoxSelected] =
+    useState<cardCheckboxSelectedType>({
+      ids: { posts: [], reels: [], stories: [], videos: [] },
+      urls: { posts: [], reels: [], stories: [], videos: [] },
+    });
   const [filterLoading, setFilterLoading] = useState<boolean>(false);
   const [filtered, setFiltered] = useState<any>(null);
   const toast = useToast();
   useEffect(() => {
-    setInstagramContents(ModifyCollectionInstaContents(data?.getCollection, loading));
-    setTiktokContents(ModifyCollectionTikTokContents(data?.getCollection, loading));
+    setInstagramContents(
+      ModifyCollectionInstaContents(data?.getCollection, loading)
+    );
+    setTiktokContents(
+      ModifyCollectionTikTokContents(data?.getCollection, loading)
+    );
   }, [data]);
-  console.log(tiktokContents)
+  console.log(tiktokContents);
   useEffect(() => {
-    setDeleteCount(cardCheckboxSelected.ids.posts.length + cardCheckboxSelected.ids.reels.length + cardCheckboxSelected.ids.stories.length + cardCheckboxSelected.ids.videos.length);
+    setDeleteCount(
+      cardCheckboxSelected.ids.posts.length +
+        cardCheckboxSelected.ids.reels.length +
+        cardCheckboxSelected.ids.stories.length +
+        cardCheckboxSelected.ids.videos.length
+    );
   }, [cardCheckboxSelected]);
 
   const changeFiltered = (filtered: any) => {
     setFiltered(filtered);
   };
 
-  const deleteInstagramContents = (data: { posts: string[], reels: string[], stories: string[], videos: string[] }) => {
-    client.mutate({
-      mutation: gql`
-        mutation Mutation($jsonInput: String!) {
-          deleteContents(json_input: $jsonInput) {
-            success
-            message
-            data
+  const deleteInstagramContents = (data: {
+    posts: string[];
+    reels: string[];
+    stories: string[];
+    videos: string[];
+  }) => {
+    client
+      .mutate({
+        mutation: gql`
+          mutation Mutation($jsonInput: String!) {
+            deleteContents(json_input: $jsonInput) {
+              success
+              message
+              data
+            }
+          }
+        `,
+        variables: {
+          jsonInput: JSON.stringify(data),
+        },
+      })
+      .then((res) => {
+        if (res.data.deleteContents.success) {
+          if (
+            data.posts.length > 0 ||
+            data.reels.length > 0 ||
+            data.stories.length > 0
+          ) {
+            const newInstagramContents = instagramContents.filter(
+              (content) =>
+                data.posts.includes(content.id) ||
+                data.reels.includes(content.id) ||
+                data.stories.includes(content.id)
+            );
+            setInstagramContents(newInstagramContents);
+          }
+          if (data.videos.length > 0) {
+            const newTiktokContents = tiktokContents.filter((content) =>
+              data.videos.includes(content.id)
+            );
+            setTiktokContents(newTiktokContents);
           }
         }
-      `,
-      variables: {
-        jsonInput: JSON.stringify(data),
-      },
-    }).then((res) => {
-      if (res.data.deleteContents.success) {
-        if (data.posts.length > 0 || data.reels.length > 0 || data.stories.length > 0) {
-          const newInstagramContents = instagramContents.filter(
-            (content) => data.posts.includes(content.id) || data.reels.includes(content.id) || data.stories.includes(content.id)
-          );
-          setInstagramContents(newInstagramContents);
-        }
-        if (data.videos.length > 0) {
-          const newTiktokContents = tiktokContents.filter(
-            (content) => data.videos.includes(content.id)
-          );
-          setTiktokContents(newTiktokContents);
-        }
-      }
-      console.log(res)
-      toast({
-        title: res.data.deleteContents.success ? "Success" : "Error",
-        description: res.data.deleteContents.message,
-        status: res.data.deleteContents.success ? "success" : "error",
-        duration: 5000,
-        isClosable: true,
+        console.log(res);
+        toast({
+          title: res.data.deleteContents.success ? "Success" : "Error",
+          description: res.data.deleteContents.message,
+          status: res.data.deleteContents.success ? "success" : "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        toast({
+          title: "Error",
+          description: err.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
       });
-    }).catch((err) => {
-      console.log(err)
-      toast({
-        title: "Error",
-        description: err.message,
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
-    })
   };
 
   if (loading) {
@@ -181,12 +222,14 @@ function Collection() {
           </ResponsiveMasonry>
         </Box>
       </Container>
-      {filtered == null && <BottomCheckBox
-        deleteCount={deleteCount}
-        setCardCheckBoxSelected={setCardCheckBoxSelected}
-        cardCheckboxSelected={cardCheckboxSelected}
-        deleteInstagramContents={deleteInstagramContents}
-      />}
+      {filtered == null && (
+        <BottomCheckBox
+          deleteCount={deleteCount}
+          setCardCheckBoxSelected={setCardCheckBoxSelected}
+          cardCheckboxSelected={cardCheckboxSelected}
+          deleteInstagramContents={deleteInstagramContents}
+        />
+      )}
     </>
   );
 }
