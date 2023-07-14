@@ -18,7 +18,7 @@ function Router({ isAuth }: { isAuth: boolean }) {
         <Routes>
           <Route path="/" element={<Root />}>
             <Route index element={<HomePage />} />
-            <Route path="download" element={<Download />} />
+        
             <Route path="collections" element={<Collections />} />
             <Route path="settings" element={<Setting />} />
             <Route path="collections" element={<Collections />} />
@@ -32,6 +32,7 @@ function Router({ isAuth }: { isAuth: boolean }) {
       ) : (
         <Routes>
           <Route path="/">
+          <Route path="download" element={<Download/>} />
             <Route index element={<LoginPage />} />
             <Route path="signup" element={<SignupPage />} />
             <Route path="reset-password" element={<ResetPassword />} />

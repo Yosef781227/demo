@@ -1,7 +1,6 @@
-import { Text, Heading, VStack } from "@chakra-ui/react";
+import { Text, Heading, VStack, Button } from "@chakra-ui/react";
 import logo from "@assets/logo.svg";
 import google from "@assets/google.svg";
-import Button from "@/components/Buttons/Button";
 import { NavLink, useNavigate } from "react-router-dom";
 import { chakra } from "@chakra-ui/react";
 import FormRow from "@/components/Form/FormRow";
@@ -155,12 +154,7 @@ function SignupPage() {
           label="Name"
           onChange={(e) => setName(e.target.value)}
         />
-        <FormRow
-          placeholder="Last Name"
-          type="text"
-          label="Last Name"
-          onChange={(e) => setLastName(e.target.value)}
-        />
+
         <FormRow
           placeholder="janedoe@gmail.com"
           type="email"
@@ -168,22 +162,45 @@ function SignupPage() {
           onChange={(e) => setEmail(e.target.value)}
         />
         <FormRow
-          placeholder="password"
+          placeholder="**********"
           type="password"
           label="password"
           onChange={(e) => setPassword(e.target.value)}
         />
       </RowContainer>
+
       <RowContainer>
-        <Button size="full" text="Continue" onClick={signup} />
-        <Button
-          size="full"
-          text="Sign In with Google"
-          variant={"outline"}
-          icon={<img alt="logo" src={google} />}
-        ></Button>
+        <Text ml={"30px"} mt={5}>
+          By continuing, you agree to our Terms Of Service, Privacy Policy, and
+          give us permission to  <Text mt={"5px"} ml={"80px"}>engage  with your brand’s online  community on
+          your behalf.</Text>
+        </Text>
       </RowContainer>
-      <Text align={"center"} fontWeight={"thin"} color="#525252">
+
+      <RowContainer>
+        <Button
+          mt={6}
+          onClick={signup}
+          colorScheme="purple"
+          width={"740px"}
+          h={"45px"}
+        >
+          Agree to Sign Up
+        </Button>
+       </RowContainer>
+       <RowContainer>
+        <Button
+          mt={5}
+          width={"740px"}
+          h={"45px"}
+          isLoading={loading}
+          leftIcon={<img alt="logo" src={google} />}
+          variant={"outline"}
+        >
+          Sign In with Google
+        </Button>
+      </RowContainer>
+      <Text pt={5} align={"center"} fontWeight={"thin"} color="#525252">
         You also agree to receive product-related marketing emails from
         WildSocial, which you can unsubscribe from at any time.
       </Text>

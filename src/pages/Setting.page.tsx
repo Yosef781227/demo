@@ -1,6 +1,5 @@
-import Buttons from "@/components/Buttons/Button";
-import Button from "@/components/Buttons/Button";
-import {Heading,VStack,Text,Select,HStack,Input,Progress,Accordion,AccordionButton,AccordionIcon,AccordionItem,AccordionPanel,Box,Link,} from "@chakra-ui/react";
+
+import {Heading,VStack,Text,HStack,Input,Progress,Accordion,AccordionButton,AccordionIcon,AccordionItem,AccordionPanel,Box,Link,Button} from "@chakra-ui/react";
 import Container from "@components/Container";
 
 function Setting() {
@@ -36,15 +35,15 @@ function Setting() {
                 height="40px"
               />
               <Button
-                text="Invite"
-                fontsize="16px"
-                fontweight="medium"
+                //text="Invite"
+               // fontsize="16px"
+               // fontweight="medium"
                 textColor="525252"
                 color="gray"
                 width="80px"
                 height="40px"
                 variant="outline"
-              />
+              >Invite</Button>
             </HStack>
           </RowItem>
         </RowContainer>
@@ -73,15 +72,12 @@ function Setting() {
                 height={"40px"}
               />
               <Button
-                text="Add"
-                fontsize="16px"
-                fontweight="medium"
                 textColor="525252"
                 color="gray"
                 width="80px"
                 height="40px"
                 variant="outline"
-              />
+              >Add</Button>
             </HStack>
           </RowItem>
         </RowContainer>
@@ -104,15 +100,14 @@ function Setting() {
             <HStack spacing={550}>
             <Heading size={"md"} fontWeight={"bold"}>Your on the Free plan</Heading>
             <Button
-                text="Mange Plan"
-                fontsize="16px"
-                fontweight="medium"
+               
+                
                 textColor="525252"
                 color="gray"
                 width="120px"
                 height="40px"
                 variant="outline"
-              />
+              >Mange Plan</Button>
             </HStack>
             
             <Text size={"14px"} fontWeight={"semibold"}>
@@ -148,14 +143,13 @@ function Setting() {
         </RowContainer>
 
         <Box pt="8">
-          <Buttons
-            text="Save Changes"
+          <Button
             width="150px"
             height="45px"
-            color="primary"
-          />
+            colorScheme="primary"
+            mb="20px"
+          >Save Changes</Button>
         </Box>
-
       </Box>
 
     </Container>

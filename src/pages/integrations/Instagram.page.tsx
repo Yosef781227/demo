@@ -19,6 +19,8 @@ import {
 import Container from "@components/Container";
 import insta from "@assets/icons/social/instagram.svg";
 import { DotsThreeOutline } from "@phosphor-icons/react";
+import logo from "@assets/logo.svg";
+import screen from "@assets/images/screen.png"
 function InstagramPage() {
   const navigate = useNavigate();
   const [hashtag, setHashtag] = useState<string>("");
@@ -32,11 +34,49 @@ function InstagramPage() {
   };
 
   return (
+    
     <Container background={"neutral.50"}>
       <Box alignSelf={"center"} w={"70%"} gap={"40px"}>
-        <Heading size={"lg"} mt={20}>
-          Instagram
-        </Heading>
+
+      <RowContainer  width={"988px"} >
+        <VStack   >
+          <Image
+          w={"200px"}
+          h={"100px"}
+          // mt={"100px"}
+          ml={"10px"}
+          src={logo} alt="" 
+        />
+
+     <VStack  align={"start"} ml={"15px"}>
+        <Text  ml={"15px"} fontWeight={"extrabold"}  fontSize={"3xl"} fontFamily={"body"}> 
+            Download our Chrome extension <Text mt={"0px"} ml={"40px"}>to connect  your accounts</Text>
+        </Text>
+        <Text fontSize={"md"} ml={"30px"} mt={"10px"}>
+        We use a chrome extension to connect to your accounts so please <Text mt={"0px"} ml={"40px"}> download the chrome extension and follow the tutorial</Text>
+        </Text>
+        </VStack>
+        <VStack mt={"10px"} gap={"25px"}>
+        <Image
+          w={"600px"}
+          h={"400px"}
+          mt={"30px"} 
+          src={screen}
+          alt="Icon"
+        />
+        <Button 
+        mt={60}
+        width={"600px"}
+        height={"50px"}
+        bg={"primary.400"}
+        color={"white"}
+        >
+        Download Extension
+        </Button>
+        </VStack>
+      </VStack>
+      </RowContainer>
+     
 
         <RowContainer height={"214px"} width={"988px"}>
           <Heading fontSize={"2xl"} size={"md"}>
@@ -90,7 +130,7 @@ function InstagramPage() {
           </HStack>
         </RowContainer>
 
-        <RowContainer height={"500px"} width={"988px"}>
+        <RowContainer height={"500px"} width={"988px"} >
           <Heading fontSize={"2xl"} fontWeight={"bold"} mt={5}>
             Hashtags
           </Heading>
@@ -138,7 +178,7 @@ function InstagramPage() {
               </HStack>
             </VStack>
           </VStack>
-          <VStack align={"start"} pt={5}>
+          <VStack align={"start"} pt={5} >
             <Text fontSize={"lg"}>
               <strong>Deleting a hashtag</strong> from your list will remove any
               content with that hashtag from your <br /> library.
@@ -160,12 +200,17 @@ type RowContainerProps = {
   children: React.ReactNode;
   height?: string | number;
   width?: string | number;
+  mt?: string | number;
+  py?: string | number;
 };
 
 function RowContainer({
   children,
   height = "auto",
   width = "auto",
+  mt = "50px",
+  py = "10",
+ 
 }: RowContainerProps) {
   return (
     <VStack
@@ -174,9 +219,11 @@ function RowContainer({
       height={height}
       width={width}
       backgroundColor={"white"}
-      mt="40px"
+      mt={mt}
+      ml={"110px"}
+      mb={"40px"}
       px={10}
-      py={5}
+      py={py}
       gap={4}
       rounded={"lg"}
     >

@@ -4,15 +4,15 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@chakra-ui/react";
 import { BASE_URL } from "@/constants";
-import { Text, Heading, VStack, FormHelperText } from "@chakra-ui/react";
+import { Text, Heading, VStack, FormHelperText,Button } from "@chakra-ui/react";
 import logo from "@assets/logo.svg";
 import google from "@assets/google.svg";
 import { NavLink } from "react-router-dom";
 import { chakra } from "@chakra-ui/react";
 import FormRow from "@/components/Form/FormRow";
 import AuthContainer from "@/components/Auth/Containers/AuthContainer";
-import Buttons from "@/components/Buttons/Button";
-import { set } from "date-fns";
+
+//import { set } from "date-fns";
 import { UserContext } from "@/App";
 const ChakraNavLink = chakra(NavLink);
 
@@ -238,6 +238,7 @@ function LoginPage() {
           }}
         />
         <FormRow
+        
           placeholder="password"
           helperElement={
             <FormHelperText color={"primary.800"}>
@@ -245,6 +246,7 @@ function LoginPage() {
                 color={"primary.900"}
                 textDecoration={"underline"}
                 to="/reset-password"
+                mt={10}
               >
                 Forgot password?
               </ChakraNavLink>
@@ -257,16 +259,24 @@ function LoginPage() {
           }}
         />
       </RowContainer>
-      <RowContainer>
-        <Buttons size="full" text="Continue" onClick={LoginWithEmail} />
-        <Buttons
-          size="full"
+      <RowContainer >
+        <Button mt={6} onClick={LoginWithEmail} colorScheme="purple" width={"740px"} h={"45px"}>Continue</Button>
+        <Button 
+      
+          mt={10}
+         width={"740px"} h={"45px"}
           isLoading={loading}
-          text="Sign In with Google"
-          icon={<img alt="logo" src={google} />}
+          leftIcon={<img alt="logo" src={google} />}
           variant={"outline"}
-          onClick={login}
-        />
+          onClick={ (e) => {
+            login();
+          }} 
+          
+        >
+
+          Sign In with Google
+          
+          </Button>
       </RowContainer>
       <Text
         align={"center"}
