@@ -25,32 +25,22 @@ function BottomCheckBox({
   deleteCount,
   cardCheckboxSelected,
   setCardCheckBoxSelected,
+  deleteInstagramContents
 }: {
   deleteCount: number;
   cardCheckboxSelected: cardCheckboxSelectedType;
   setCardCheckBoxSelected: (data: any) => void;
+  deleteInstagramContents: (data: { posts: string[], reels: string[], stories: string[], videos: string[] }) => void;
 }) {
 
   const handleMultipleDownload = () => {
-    // for (let i = 0; i < cardCheckboxSelected.length; i++) {
-    //   let item = cardCheckboxSelected[i];
-    //   item.checkBoxRef.current.checked = !item.checkBoxRef.current.checked;
-    //   item.checkBoxRef.current.click();
-    //   const anchor = document.createElement("a");
-    //   anchor.href = item.data.url;
-    //   anchor.download = item.data.url;
-    //   anchor.style.display = "none";
-    //   document.body.appendChild(anchor);
-    //   anchor.click();
-    //   document.body.removeChild(anchor);
-    // }
     MultipleDownload(cardCheckboxSelected.urls.posts);
     MultipleDownload(cardCheckboxSelected.urls.reels);
     MultipleDownload(cardCheckboxSelected.urls.stories);
     MultipleDownload(cardCheckboxSelected.urls.videos);
     setCardCheckBoxSelected([]);
   };
-  console.log(deleteCount);
+
   if (deleteCount === 0) {
     return null;
   } else {
@@ -71,7 +61,7 @@ function BottomCheckBox({
           <Text>{deleteCount} Selected</Text>
           <HStack>
             <Button onClick={handleMultipleDownload}>Download</Button>
-            <Button>Delete</Button>
+            <Button onClick={e => deleteInstagramContents(cardCheckboxSelected.ids)}>Delete</Button>
             <Button>Select all</Button>
           </HStack>
         </HStack>

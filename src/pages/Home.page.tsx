@@ -105,6 +105,7 @@ function HomePage() {
     settiktokIndex(index);
     settiktokId(tiktokId);
   };
+
   const changeAcount = (e: ChangeEvent<HTMLSelectElement>) => {
     const index = e.target.selectedIndex;
     localStorage.removeItem("selectedInstagramIndex");
@@ -113,6 +114,7 @@ function HomePage() {
     setInstagramIndex(index);
     setInstagramId(instagramId);
   };
+
   const {
     loading: instagramLoading,
     error: instagramError, //TODO: error handling
@@ -121,6 +123,7 @@ function HomePage() {
     skip: !hasInstagram,
     variables: { jsonInput: JSON.stringify({ instagram_id: instagramId }) },
   });
+
   const {
     loading: tiktokLoading,
     error: tiktokError, //TODO: error handling
@@ -133,8 +136,9 @@ function HomePage() {
       }),
     },
   });
+
   useEffect(() => {
-    setInstagramContents(ModifyInstagramData(instagramData, instagramLoading))
+    setInstagramContents(ModifyInstagramData(instagramData?.getInstagramAccount, instagramLoading))
   }, [instagramData]);
   useEffect(() => {
     setTiktokContents(ModifyTikTokData(tiktokData, tiktokLoading))
@@ -253,11 +257,12 @@ function HomePage() {
           </Box>
         )}
       </Container>
-      <BottomCheckBox
+      {filtered == null && <BottomCheckBox
         deleteCount={deleteCount}
         setCardCheckBoxSelected={setCardCheckBoxSelected}
         cardCheckboxSelected={cardCheckboxSelected}
-      />
+        deleteInstagramContents={deleteInstagramContents}
+      />}
     </>
   );
 }

@@ -297,6 +297,7 @@ const TiktokCard = ({
                             );
                           }
                         }}
+
                       />
 
                       <Text>{collection.name}</Text>

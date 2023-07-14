@@ -36,6 +36,7 @@ export const GetCollection = gql`
       id
       posts {
         caption
+        link
         ig_contents {
           duration
           display_url
@@ -58,6 +59,7 @@ export const GetCollection = gql`
       }
       reels {
         caption
+        link
         id
         ig_content {
           height
@@ -80,6 +82,7 @@ export const GetCollection = gql`
       }
       videos {
         caption
+        link
         display_url
         height
         duration
