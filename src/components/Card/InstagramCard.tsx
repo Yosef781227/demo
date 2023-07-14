@@ -25,10 +25,21 @@ import {
   PlayCircle,
 } from "@phosphor-icons/react";
 import { Dispatch, SetStateAction, useRef, useState } from "react";
+import { handleDownload } from "@/utils";
 type cardCheckboxSelected = {
-  ids: { posts: string[], reels: string[], stories: string[], videos: string[] },
-  urls: { posts: string[], reels: string[], stories: string[], videos: string[] },
-}
+  ids: {
+    posts: string[];
+    reels: string[];
+    stories: string[];
+    videos: string[];
+  };
+  urls: {
+    posts: string[];
+    reels: string[];
+    stories: string[];
+    videos: string[];
+  };
+};
 function InstagramCard({
   data,
   cardCheckboxSelected,
@@ -38,7 +49,12 @@ function InstagramCard({
   data: any;
   cardCheckboxSelected: cardCheckboxSelected;
   setCardCheckBoxSelected: (data: any) => void;
-  deleteInstagramContents: (data: { posts: string[], reels: string[], stories: string[], videos: string[] }) => void;
+  deleteInstagramContents: (data: {
+    posts: string[];
+    reels: string[];
+    stories: string[];
+    videos: string[];
+  }) => void;
 }) {
   const [showVideo, setShowVideo] = useState(false);
   const checkBoxRef = useRef<HTMLInputElement>(null);
@@ -100,23 +116,38 @@ function InstagramCard({
               setCardCheckBoxSelected((prev: cardCheckboxSelected) => {
                 let ids = { ...prev.ids };
                 let urls = { ...prev.urls };
-                data.type === "post" && ids.posts.push(data.id) && urls.posts.push(data.ig_content.url);
-                data.type === "reel" && ids.reels.push(data.id) && urls.reels.push(data.ig_content.url);
-                data.type === "story" && ids.stories.push(data.id) && urls.stories.push(data.ig_content.url);
+                data.type === "post" &&
+                  ids.posts.push(data.id) &&
+                  urls.posts.push(data.ig_content.url);
+                data.type === "reel" &&
+                  ids.reels.push(data.id) &&
+                  urls.reels.push(data.ig_content.url);
+                data.type === "story" &&
+                  ids.stories.push(data.id) &&
+                  urls.stories.push(data.ig_content.url);
                 return {
                   ids,
-                  urls
+                  urls,
                 };
               });
             } else {
               setCardCheckBoxSelected((prev: cardCheckboxSelected) => {
                 let { ids, urls } = prev;
-                data.type === "post" && ids.posts.splice(ids.posts.indexOf(data.id), 1) && urls.posts.splice(urls.posts.indexOf(data.ig_content.url), 1);
-                data.type === "reel" && ids.reels.splice(ids.reels.indexOf(data.id), 1) && urls.reels.splice(urls.reels.indexOf(data.ig_content.url), 1);
-                data.type === "story" && ids.stories.splice(ids.stories.indexOf(data.id), 1) && urls.stories.splice(urls.stories.indexOf(data.ig_content.url), 1);
+                data.type === "post" &&
+                  ids.posts.splice(ids.posts.indexOf(data.id), 1) &&
+                  urls.posts.splice(urls.posts.indexOf(data.ig_content.url), 1);
+                data.type === "reel" &&
+                  ids.reels.splice(ids.reels.indexOf(data.id), 1) &&
+                  urls.reels.splice(urls.reels.indexOf(data.ig_content.url), 1);
+                data.type === "story" &&
+                  ids.stories.splice(ids.stories.indexOf(data.id), 1) &&
+                  urls.stories.splice(
+                    urls.stories.indexOf(data.ig_content.url),
+                    1
+                  );
                 return {
                   ids,
-                  urls
+                  urls,
                 };
               });
             }
@@ -129,36 +160,13 @@ function InstagramCard({
         />
 
         <HStack position="absolute" top="5" right="5">
-          <Menu closeOnSelect={false}>
-            <MenuButton>
-              <DownloadSimple size={30} color="white" weight="duotone" />
-            </MenuButton>
-            <MenuList>
-              <MenuItem>
-                <Input
-                  placeholder="Top Creator"
-                  onClick={(e) => e.stopPropagation()}
-                />
-              </MenuItem>
-              <MenuItem>
-                <HStack spacing={4} width="100%" justifyContent="space-between">
-                  <HStack>
-                    <Plus size={24} color="#121212" weight="fill" />
-                    <Text>Top Create</Text>
-                  </HStack>
-                  <Text
-                    bg="blue.500"
-                    color="white"
-                    px={4}
-                    py={1}
-                    borderRadius="md"
-                  >
-                    Create
-                  </Text>
-                </HStack>
-              </MenuItem>
-            </MenuList>
-          </Menu>
+          <IconButton
+            onClick={(e) => {
+              handleDownload(data.ig_content.url);
+            }}
+            aria-label="download"
+            icon={<DownloadSimple size={30} color="white" weight="duotone" />}
+          />
 
           <Menu closeOnSelect={false} autoSelect={false}>
             <MenuButton>
@@ -204,11 +212,47 @@ function InstagramCard({
             <DotsThreeOutline size={24} color="black" weight="fill" />
           </MenuButton>
           <MenuList>
-            <MenuItem><a href={data.ig_content.url.includes("https://") ? data.ig_content.url : "https://" + data.ig_content.url} target="_blank" rel="noopener noreferrer">Download</a></MenuItem>
-            {data.link && <MenuItem><a href={data.link} target="_blank" rel="noopener noreferrer">Open the original post</a></MenuItem>}
-            {data.link && <MenuItem onClick={e => navigator.clipboard.writeText(data.link)}>Get public link</MenuItem>}
+            <MenuItem>
+              <a
+                href={
+                  data.ig_content.url.includes("https://")
+                    ? data.ig_content.url
+                    : "https://" + data.ig_content.url
+                }
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Download
+              </a>
+            </MenuItem>
+            {data.link && (
+              <MenuItem>
+                <a href={data.link} target="_blank" rel="noopener noreferrer">
+                  Open the original post
+                </a>
+              </MenuItem>
+            )}
+            {data.link && (
+              <MenuItem
+                onClick={(e) => navigator.clipboard.writeText(data.link)}
+              >
+                Get public link
+              </MenuItem>
+            )}
             <MenuItem>Mute Content from @somthing</MenuItem>
-            <MenuItem color={"red"} onClick={e => deleteInstagramContents({ posts: data.type === 'post' ? [data.id] : [], reels: data.type === 'reel' ? [data.id] : [], stories: data.type === 'story' ? [data.id] : [], videos: [] })}>Delete from Library</MenuItem>
+            <MenuItem
+              color={"red"}
+              onClick={(e) =>
+                deleteInstagramContents({
+                  posts: data.type === "post" ? [data.id] : [],
+                  reels: data.type === "reel" ? [data.id] : [],
+                  stories: data.type === "story" ? [data.id] : [],
+                  videos: [],
+                })
+              }
+            >
+              Delete from Library
+            </MenuItem>
           </MenuList>
         </Menu>
       </HStack>

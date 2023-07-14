@@ -36,20 +36,36 @@ import {
 import { CreateUserCollection, GetUserCollection } from "@/query/user";
 import { useMutation, useQuery } from "@apollo/client";
 import { AddVideoToCollection } from "@/query/tiktok";
+import { handleDownload } from "@/utils";
 type cardCheckboxSelected = {
-  ids: { posts: string[], reels: string[], stories: string[], videos: string[] },
-  urls: { posts: string[], reels: string[], stories: string[], videos: string[] },
-}
+  ids: {
+    posts: string[];
+    reels: string[];
+    stories: string[];
+    videos: string[];
+  };
+  urls: {
+    posts: string[];
+    reels: string[];
+    stories: string[];
+    videos: string[];
+  };
+};
 const TiktokCard = ({
   video,
   cardCheckboxSelected,
   setCardCheckBoxSelected,
-  deleteInstagramContents
+  deleteInstagramContents,
 }: {
   video: any;
   cardCheckboxSelected: cardCheckboxSelected;
   setCardCheckBoxSelected: (data: any) => void;
-  deleteInstagramContents: (data: { posts: string[], reels: string[], stories: string[], videos: string[] }) => void;
+  deleteInstagramContents: (data: {
+    posts: string[];
+    reels: string[];
+    stories: string[];
+    videos: string[];
+  }) => void;
 }) => {
   const checkBoxRef = useRef<HTMLInputElement>(null);
   const [showVideo, setShowVideo] = useState(false);
@@ -180,44 +196,55 @@ const TiktokCard = ({
                 let ids = prev.ids;
                 let urls = prev.urls;
                 return {
-                  ids: { posts: ids.posts, reels: ids.reels, stories: ids.stories, videos: [...ids.videos, video.id] },
-                  urls: { posts: urls.posts, reels: urls.reels, stories: urls.stories, videos: [...urls.videos, video.url] }
-                }
+                  ids: {
+                    posts: ids.posts,
+                    reels: ids.reels,
+                    stories: ids.stories,
+                    videos: [...ids.videos, video.id],
+                  },
+                  urls: {
+                    posts: urls.posts,
+                    reels: urls.reels,
+                    stories: urls.stories,
+                    videos: [...urls.videos, video.url],
+                  },
+                };
               });
-
             } else {
               setCardCheckBoxSelected((prev: cardCheckboxSelected) => {
                 let ids = prev.ids;
                 let urls = prev.urls;
                 return {
-                  ids: { posts: ids.posts, reels: ids.reels, stories: ids.stories, videos: ids.videos.filter((item: string) => item !== video.id) },
-                  urls: { posts: urls.posts, reels: urls.reels, stories: urls.stories, videos: urls.videos.filter((item: string) => item !== video.url) }
-                }
+                  ids: {
+                    posts: ids.posts,
+                    reels: ids.reels,
+                    stories: ids.stories,
+                    videos: ids.videos.filter(
+                      (item: string) => item !== video.id
+                    ),
+                  },
+                  urls: {
+                    posts: urls.posts,
+                    reels: urls.reels,
+                    stories: urls.stories,
+                    videos: urls.videos.filter(
+                      (item: string) => item !== video.url
+                    ),
+                  },
+                };
               });
             }
           }}
         />
 
         <HStack position="absolute" top="5" right="5">
-          <Menu closeOnSelect={false}>
-            <MenuButton>
-              <DownloadSimple size={30} color="white" weight="duotone" />
-            </MenuButton>
-            <MenuList>
-              <MenuItem>
-                <Input placeholder="Top Creator" />
-              </MenuItem>
-              <MenuItem>
-                <HStack spacing={4} width="100%" justifyContent="space-between">
-                  <HStack>
-                    <Plus size={24} color="#121212" weight="fill" />
-                    <Text>Top Create</Text>
-                  </HStack>
-                  <Text>Create</Text>
-                </HStack>
-              </MenuItem>
-            </MenuList>
-          </Menu>
+          <IconButton
+            onClick={() => {
+              handleDownload(video.url);
+            }}
+            aria-label="download"
+            icon={<DownloadSimple size={30} color="white" weight="duotone" />}
+          />
 
           <Menu
             onClose={() => {
@@ -297,7 +324,6 @@ const TiktokCard = ({
                             );
                           }
                         }}
-
                       />
 
                       <Text>{collection.name}</Text>
@@ -317,11 +343,47 @@ const TiktokCard = ({
             <DotsThreeOutline size={24} color="black" weight="fill" />
           </MenuButton>
           <MenuList>
-            <MenuItem><a href={video.url.includes("https://") ? video.url : "https://" + video.url} target="_blank" rel="noopener noreferrer">Download</a></MenuItem>
-            {video.link && <MenuItem><a href={video.link} target="_blank" rel="noopener noreferrer">Open the original post</a></MenuItem>}
-            {video.link && <MenuItem onClick={e => navigator.clipboard.writeText(video.link)}>Get public link</MenuItem>}
+            <MenuItem>
+              <a
+                href={
+                  video.url.includes("https://")
+                    ? video.url
+                    : "https://" + video.url
+                }
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Download
+              </a>
+            </MenuItem>
+            {video.link && (
+              <MenuItem>
+                <a href={video.link} target="_blank" rel="noopener noreferrer">
+                  Open the original post
+                </a>
+              </MenuItem>
+            )}
+            {video.link && (
+              <MenuItem
+                onClick={(e) => navigator.clipboard.writeText(video.link)}
+              >
+                Get public link
+              </MenuItem>
+            )}
             <MenuItem>Mute Content from @somthing</MenuItem>
-            <MenuItem color={"red"} onClick={e => deleteInstagramContents({ posts: [], reels: [], stories: [], videos: [video.id] })}>Delete from Library</MenuItem>
+            <MenuItem
+              color={"red"}
+              onClick={(e) =>
+                deleteInstagramContents({
+                  posts: [],
+                  reels: [],
+                  stories: [],
+                  videos: [video.id],
+                })
+              }
+            >
+              Delete from Library
+            </MenuItem>
           </MenuList>
         </Menu>
       </HStack>
