@@ -28,7 +28,10 @@ import { ModifyFilterInstagramData, ModifyFilterTikTokData, ModifyInstagramData,
 const currentDate = new Date();
 const previousMonthDate = new Date(currentDate);
 previousMonthDate.setMonth(previousMonthDate.getMonth() - 1);
-
+type cardCheckboxSelected = {
+  ids: { posts: string[], reels: string[], stories: string[], videos: string[] },
+  urls: { posts: string[], reels: string[], stories: string[], videos: string[] },
+}
 function HomePage() {
   const User = useContext(UserContext) as User;
   const navigate = useNavigate();
@@ -39,7 +42,7 @@ function HomePage() {
   const [tiktokId, settiktokId] = useState(User.tiktokId);
   const [tiktokIndex, settiktokIndex] = useState(User.tiktokIndex);
   const [deleteCount, setDeleteCount] = useState<number>(0);
-  const [cardCheckboxSelected, setCardCheckBoxSelected] = useState<{ posts: string[], reels: string[], stories: string[], videos: string[] }>({ posts: [], reels: [], stories: [], videos: [] });
+  const [cardCheckboxSelected, setCardCheckBoxSelected] = useState<cardCheckboxSelected>({ ids: { posts: [], reels: [], stories: [], videos: [] }, urls: { posts: [], reels: [], stories: [], videos: [] } });
   const [filtered, setFiltered] = useState<any>(null);
   const [instagramContents, setInstagramContents] = useState<any[]>([]);
   const [tiktokContents, setTiktokContents] = useState<any[]>([]);
@@ -88,7 +91,7 @@ function HomePage() {
     navigate("/download");
   }
   useEffect(() => {
-    setDeleteCount(cardCheckboxSelected.posts.length + cardCheckboxSelected.reels.length + cardCheckboxSelected.stories.length + cardCheckboxSelected.videos.length)
+    setDeleteCount(cardCheckboxSelected.ids.posts.length + cardCheckboxSelected.ids.reels.length + cardCheckboxSelected.ids.stories.length + cardCheckboxSelected.ids.videos.length);
   }, [cardCheckboxSelected]);
   const changeFiltered = (filtered: any) => {
     setFiltered(filtered);

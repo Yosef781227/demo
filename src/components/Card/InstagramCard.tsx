@@ -25,7 +25,10 @@ import {
   PlayCircle,
 } from "@phosphor-icons/react";
 import { Dispatch, SetStateAction, useRef, useState } from "react";
-
+type cardCheckboxSelected = {
+  ids: { posts: string[], reels: string[], stories: string[], videos: string[] },
+  urls: { posts: string[], reels: string[], stories: string[], videos: string[] },
+}
 function InstagramCard({
   data,
   cardCheckboxSelected,
@@ -33,7 +36,7 @@ function InstagramCard({
   deleteInstagramContents,
 }: {
   data: any;
-  cardCheckboxSelected: { posts: string[], reels: string[], stories: string[], videos: string[] };
+  cardCheckboxSelected: cardCheckboxSelected;
   setCardCheckBoxSelected: (data: any) => void;
   deleteInstagramContents: (data: { posts: string[], reels: string[], stories: string[], videos: string[] }) => void;
 }) {
@@ -94,20 +97,27 @@ function InstagramCard({
           display="none"
           onChange={(e) => {
             if (e.currentTarget.checked) {
-              setCardCheckBoxSelected((prev: { posts: string[], reels: string[], stories: string[], videos: string[] }) => {
-                let temp = { ...prev };
-                data.type === "post" && temp.posts.push(data.id);
-                data.type === "reel" && temp.reels.push(data.id);
-                data.type === "story" && temp.stories.push(data.id);
-                return temp;
+              setCardCheckBoxSelected((prev: cardCheckboxSelected) => {
+                let ids = { ...prev.ids };
+                let urls = { ...prev.urls };
+                data.type === "post" && ids.posts.push(data.id) && urls.posts.push(data.ig_content.url);
+                data.type === "reel" && ids.reels.push(data.id) && urls.reels.push(data.ig_content.url);
+                data.type === "story" && ids.stories.push(data.id) && urls.stories.push(data.ig_content.url);
+                return {
+                  ids,
+                  urls
+                };
               });
             } else {
-              setCardCheckBoxSelected((prev: { posts: string[], reels: string[], stories: string[], videos: string[] }) => {
-                let temp = { ...prev };
-                data.type === "post" && temp.posts.splice(temp.posts.indexOf(data.id), 1);
-                data.type === "reel" && temp.reels.splice(temp.reels.indexOf(data.id), 1);
-                data.type === "story" && temp.stories.splice(temp.stories.indexOf(data.id), 1);
-                return temp;
+              setCardCheckBoxSelected((prev: cardCheckboxSelected) => {
+                let { ids, urls } = prev;
+                data.type === "post" && ids.posts.splice(ids.posts.indexOf(data.id), 1) && urls.posts.splice(urls.posts.indexOf(data.ig_content.url), 1);
+                data.type === "reel" && ids.reels.splice(ids.reels.indexOf(data.id), 1) && urls.reels.splice(urls.reels.indexOf(data.ig_content.url), 1);
+                data.type === "story" && ids.stories.splice(ids.stories.indexOf(data.id), 1) && urls.stories.splice(urls.stories.indexOf(data.ig_content.url), 1);
+                return {
+                  ids,
+                  urls
+                };
               });
             }
           }}

@@ -36,6 +36,10 @@ import {
 import { CreateUserCollection, GetUserCollection } from "@/query/user";
 import { useMutation, useQuery } from "@apollo/client";
 import { AddVideoToCollection } from "@/query/tiktok";
+type cardCheckboxSelected = {
+  ids: { posts: string[], reels: string[], stories: string[], videos: string[] },
+  urls: { posts: string[], reels: string[], stories: string[], videos: string[] },
+}
 const TiktokCard = ({
   video,
   cardCheckboxSelected,
@@ -43,7 +47,7 @@ const TiktokCard = ({
   deleteInstagramContents
 }: {
   video: any;
-  cardCheckboxSelected: { posts: string[], reels: string[], stories: string[], videos: string[] };
+  cardCheckboxSelected: cardCheckboxSelected;
   setCardCheckBoxSelected: (data: any) => void;
   deleteInstagramContents: (data: { posts: string[], reels: string[], stories: string[], videos: string[] }) => void;
 }) => {
@@ -169,16 +173,26 @@ const TiktokCard = ({
           left="5"
           size="lg"
           ref={checkBoxRef}
-          isChecked={cardCheckboxSelected.videos.includes(video.id)}
+          isChecked={cardCheckboxSelected.ids.videos.includes(video.id)}
           onChange={(e) => {
             if (e.currentTarget.checked) {
-              setCardCheckBoxSelected((prev: { posts: string[]; reels: string[]; stories: string[]; videos: string[]; }) => {
-                return { posts: prev.posts, reels: prev.reels, stories: prev.stories, videos: [...prev.videos, video.id] }
+              setCardCheckBoxSelected((prev: cardCheckboxSelected) => {
+                let ids = prev.ids;
+                let urls = prev.urls;
+                return {
+                  ids: { posts: ids.posts, reels: ids.reels, stories: ids.stories, videos: [...ids.videos, video.id] },
+                  urls: { posts: urls.posts, reels: urls.reels, stories: urls.stories, videos: [...urls.videos, video.url] }
+                }
               });
 
             } else {
-              setCardCheckBoxSelected((prev: { posts: string[]; reels: string[]; stories: string[]; videos: string[]; }) => {
-                return { posts: prev.posts, reels: prev.reels, stories: prev.stories, videos: [...prev.videos.filter((item) => item !== video.id)] }
+              setCardCheckBoxSelected((prev: cardCheckboxSelected) => {
+                let ids = prev.ids;
+                let urls = prev.urls;
+                return {
+                  ids: { posts: ids.posts, reels: ids.reels, stories: ids.stories, videos: ids.videos.filter((item: string) => item !== video.id) },
+                  urls: { posts: urls.posts, reels: urls.reels, stories: urls.stories, videos: urls.videos.filter((item: string) => item !== video.url) }
+                }
               });
             }
           }}
