@@ -10,6 +10,7 @@ import TiktokPage from "@pages/integrations/Tiktok.page";
 import InstagramPage from "@pages/integrations/Instagram.page";
 import Collection from "@/pages/Collections/Collection.page";
 
+
 function Router({ isAuth }: { isAuth: boolean }) {
   return (
     <BrowserRouter>
@@ -23,7 +24,8 @@ function Router({ isAuth }: { isAuth: boolean }) {
             <Route path="collection/:collectionId" element={<Collection />} />
             <Route path="integration">
               <Route path="tiktok" element={<TiktokPage />} />
-              <Route path="instagram" element={<InstagramPage />} />R
+              <Route path="instagram" element={<InstagramPage />} />
+              
             </Route>
           </Route>
         </Routes>

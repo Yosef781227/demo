@@ -19,6 +19,16 @@ export const DeleteCollection = gql`
     }
   }
 `;
+export const RenameCollection = gql`
+mutation Mutation($jsonInput: String!) {
+  renameCollection(json_input: $jsonInput) {
+    data
+    message
+    success
+  }
+}
+`;
+
 export const GetCollection = gql`
   query GetCollection($jsonInput: String!) {
     getCollection(json_input: $jsonInput) {

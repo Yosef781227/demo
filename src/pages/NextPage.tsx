@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../constants";
 import { toast } from "react-toastify";
-
 import "react-toastify/dist/ReactToastify.css";
 import {
   Box,

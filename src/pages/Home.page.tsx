@@ -164,7 +164,7 @@ function HomePage() {
         user={User}
       />
 
-      <Container>
+      <Container minH={"full"}>
         <HomePageTopNavBar
           changeTiktokAcount={changeTiktokAcount}
           changeAccount={changeAcount}
