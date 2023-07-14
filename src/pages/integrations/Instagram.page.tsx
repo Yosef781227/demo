@@ -144,7 +144,7 @@ function InstagramPage() {
               content with that hashtag from your <br /> library.
             </Text>
             <Text fontSize={"lg"}>
-              {" "}
+              {""}
               <strong>Tracking the hashtag again</strong> will restore
               previously saved content but new content
               <br /> will only be added while the hashtag is active on your

@@ -3,8 +3,6 @@ import App from "./App";
 import { ChakraProvider } from "@chakra-ui/react";
 import { ApolloProvider } from "@apollo/client";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-
-import { BASE_URL } from "./constants";
 import theme from "./constants/theme";
 import client from "./client";
 
