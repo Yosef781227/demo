@@ -104,7 +104,7 @@ export const ModifyTikTokData = (data: any, isLoading: boolean): any[] => {
 
 export const ModifyFilterInstagramData = (instagrams: any): any[] => {
     return instagrams?.map((instagram: any, i: any) => {
-        const instaposts: [] = instagram.posts == 0 ? [] : instagram.posts;
+        const instaposts: [] = instagram.posts == null ? [] : instagram.posts;
 
         let posts: any[] = [];
 

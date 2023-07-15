@@ -198,7 +198,7 @@ function HomePage() {
   }
   return (
     <>
-      <NewModal isOpen={isNewOpen} onClose={onNeWClose} />
+      <NewModal isOpen={isNewOpen} onClose={onNeWClose} user={User} />
       <FilterModal
         isOpen={isFilterOpen}
         changeFiltered={changeFiltered}
