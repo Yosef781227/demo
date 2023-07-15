@@ -310,3 +310,37 @@ export const ModifyCollectionTikTokContents = (collection: any, isLoading: boole
     return collection?.videos ?? [];
 }
 
+export const shortenNumber = (num: number): string => {
+    if (num >= 1000000000) {
+        return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + 'G';
+    }
+    if (num >= 1000000) {
+        return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+    }
+    if (num >= 1000) {
+        return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+    }
+    return num + '';
+}
+
+export const timeAgo = (date: Date): string => {
+
+    const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
+
+    const intervals: { name: string, value: number }[] = [
+        { name: 'year', value: 31536000 },
+        { name: 'month', value: 2592000 },
+        { name: 'day', value: 86400 },
+        { name: 'hour', value: 3600 },
+        { name: 'minute', value: 60 },
+        { name: 'second', value: 1 }
+    ];
+
+    for (const interval of intervals) {
+        const intervalValue = Math.floor(seconds / interval.value);
+        if (intervalValue > 0) {
+            return `${intervalValue} ${interval.name}${intervalValue > 1 ? 's' : ''} ago`;
+        }
+    }
+    return 'Just now';
+}

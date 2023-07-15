@@ -26,6 +26,7 @@ import {
 } from "@phosphor-icons/react";
 import { Dispatch, SetStateAction, useRef, useState } from "react";
 import { handleDownload } from "@/utils";
+import { shortenNumber, timeAgo } from "@/utils/data-modifier";
 type cardCheckboxSelected = {
   ids: {
     posts: string[];
@@ -79,7 +80,7 @@ function InstagramCard({
           ></Avatar>
           <VStack align={"start"}>
             <Text lineHeight={0.8}>{data.owner_full_name} </Text>
-            <Text lineHeight={0.8}>{data.owner_followers} followers</Text>
+            <Text lineHeight={0.8}>{shortenNumber(data.owner_followers)} followers</Text>
           </VStack>
         </HStack>
         <img width={"20"} src={instagram} alt="social media icon" />
@@ -206,7 +207,7 @@ function InstagramCard({
       </Box>
 
       <HStack pb={5} px={5} justify={"space-between"}>
-        <Text>8 months ago</Text>
+        <Text>{timeAgo(new Date(+data.ig_content.taken_at * 1000))}</Text>
         <Menu placement="bottom-end">
           <MenuButton>
             <DotsThreeOutline size={24} color="black" weight="fill" />

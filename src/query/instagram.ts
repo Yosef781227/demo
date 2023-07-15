@@ -19,6 +19,7 @@ export const GetInstagramQuery = gql`
           id
           is_video
           url
+          taken_at
         }
       }
       reels {
@@ -34,6 +35,7 @@ export const GetInstagramQuery = gql`
           url
           is_video
           id
+          taken_at
         }
       }
       stories {
@@ -47,6 +49,7 @@ export const GetInstagramQuery = gql`
           display_url
           id
           is_video
+          taken_at
         }
       }
     }

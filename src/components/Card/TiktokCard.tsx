@@ -37,6 +37,7 @@ import { CreateUserCollection, GetUserCollection } from "@/query/user";
 import { useMutation, useQuery } from "@apollo/client";
 import { AddVideoToCollection } from "@/query/tiktok";
 import { handleDownload } from "@/utils";
+import { shortenNumber, timeAgo } from "@/utils/data-modifier";
 type cardCheckboxSelected = {
   ids: {
     posts: string[];
@@ -148,7 +149,7 @@ const TiktokCard = ({
           ></Avatar>
           <VStack align={"start"}>
             <Text lineHeight={0.8}>{video.owner.nickname} </Text>
-            <Text lineHeight={0.8}>{video.owner.followerCount} followers</Text>
+            <Text lineHeight={0.8}>{shortenNumber(video.owner.followerCount)} followers</Text>
           </VStack>
         </HStack>
         <img width={"20"} src={tiktok} alt="social media icon" />
@@ -337,7 +338,7 @@ const TiktokCard = ({
       </Box>
 
       <HStack px={4} justify={"space-between"} h={"50px"}>
-        <Text>8 months ago</Text>
+        <Text>{timeAgo(new Date(+video.timestamp * 1000))}</Text>
         <Menu direction="rtl">
           <MenuButton>
             <DotsThreeOutline size={24} color="black" weight="fill" />
