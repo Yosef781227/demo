@@ -15,68 +15,88 @@ import {
   Input,
   Button,
   Tag,
+  TagCloseButton,
+  Flex,
 } from "@chakra-ui/react";
 import Container from "@components/Container";
 import insta from "@assets/icons/social/instagram.svg";
 import { DotsThreeOutline } from "@phosphor-icons/react";
 import logo from "@assets/logo.svg";
-import screen from "@assets/images/screen.png"
+import screen from "@assets/images/screen.png";
 function InstagramPage() {
   const navigate = useNavigate();
   const [hashtag, setHashtag] = useState<string>("");
-  const [hashtags, setHashtags] = useState<string[]>([]);
+  const [hashtags, setHashtags] = useState<{ id: string; text: string }[]>(
+    () => {
+      const savedHashtags = localStorage.getItem("hashtags");
+      return savedHashtags ? JSON.parse(savedHashtags) : [];
+    }
+  );
 
   const handleAdd = () => {
     if (hashtag.trim()) {
-      setHashtags([...hashtags, hashtag]);
+      const newHashtags = [
+        ...hashtags,
+        { id: Date.now().toString() + Math.random(), text: hashtag },
+      ];
+      setHashtags(newHashtags);
+      localStorage.setItem("hashtags", JSON.stringify(newHashtags));
       setHashtag("");
     }
   };
 
+  const handleRemove = (idToRemove: string) => {
+    const newHashtags = hashtags.filter((tag) => tag.id !== idToRemove);
+    setHashtags(newHashtags);
+    localStorage.setItem("hashtags", JSON.stringify(newHashtags));
+  };
   return (
-    
     <Container background={"neutral.50"}>
       <Box alignSelf={"center"} w={"70%"} gap={"40px"}>
+        <RowContainer width={"988px"}>
+          <VStack>
+            <Image w={"200px"} h={"100px"} ml={"10px"} src={logo} alt="" />
 
-      <RowContainer  width={"988px"} >
-        <VStack   >
-          <Image
-          w={"200px"}
-          h={"100px"}
-          // mt={"100px"}
-          ml={"10px"}
-          src={logo} alt="" 
-        />
-
-     <VStack  align={"start"} ml={"15px"}>
-        <Text  ml={"15px"} fontWeight={"extrabold"}  fontSize={"3xl"} fontFamily={"body"}> 
-            Download our Chrome extension <Text mt={"0px"} ml={"40px"}>to connect  your accounts</Text>
-        </Text>
-        <Text fontSize={"md"} ml={"30px"} mt={"10px"}>
-        We use a chrome extension to connect to your accounts so please <Text mt={"0px"} ml={"40px"}> download the chrome extension and follow the tutorial</Text>
-        </Text>
-        </VStack>
-        <VStack mt={"10px"} gap={"25px"}>
-        <Image
-          w={"600px"}
-          h={"400px"}
-          mt={"30px"} 
-          src={screen}
-          alt="Icon"
-        />
-        <Button 
-        mt={60}
-        width={"600px"}
-        height={"50px"}
-        bg={"primary.400"}
-        color={"white"}
-        >
-        Download Extension
-        </Button>
-        </VStack>
-      </VStack>
-      </RowContainer>
-     
+            <VStack align={"start"} ml={"15px"}>
+              <Text
+                ml={"15px"}
+                fontWeight={"extrabold"}
+                fontSize={"3xl"}
+                fontFamily={"body"}
+              >
+                Download our Chrome extension{" "}
+                <Text mt={"0px"} ml={"40px"}>
+                  to connect your accounts
+                </Text>
+              </Text>
+              <Text fontSize={"md"} ml={"30px"} mt={"10px"}>
+                We use a chrome extension to connect to your accounts so please{" "}
+                <Text mt={"0px"} ml={"40px"}>
+                  {" "}
+                  download the chrome extension and follow the tutorial
+                </Text>
+              </Text>
+            </VStack>
+            <VStack mt={"10px"} gap={"25px"}>
+              <Image
+                w={"600px"}
+                h={"400px"}
+                mt={"30px"}
+                src={screen}
+                alt="Icon"
+              />
+              <Button
+                mt={60}
+                width={"600px"}
+                height={"50px"}
+                bg={"primary.400"}
+                color={"white"}
+              >
+                Download Extension
+              </Button>
+            </VStack>
+          </VStack>
+        </RowContainer>
 
         <RowContainer height={"214px"} width={"988px"}>
           <Heading fontSize={"2xl"} size={"md"}>
@@ -130,7 +150,7 @@ function InstagramPage() {
           </HStack>
         </RowContainer>
 
-        <RowContainer height={"500px"} width={"988px"} >
+        <RowContainer width={"988px"}>
           <Heading fontSize={"2xl"} fontWeight={"bold"} mt={5}>
             Hashtags
           </Heading>
@@ -143,8 +163,8 @@ function InstagramPage() {
             <Text pt={8} fontSize={"xl"} fontWeight={"light"}>
               Your Hashtags
             </Text>
-            <VStack>
-              <HStack align={"start"}>
+            <VStack align={"start"} justifyContent={"flex-start"}>
+              <HStack>
                 <Input
                   placeholder="#Hashtag..."
                   width={"650px"}
@@ -161,24 +181,25 @@ function InstagramPage() {
                   Add
                 </Button>
               </HStack>
-              <HStack wrap="wrap">
-                {hashtags.map((tag, index) => (
+              <Flex wrap="wrap" maxWidth={"80%"}>
+                {hashtags.map(({ id, text }) => (
                   <Tag
-                    key={index}
+                    key={id}
                     size="lg"
                     borderRadius="full"
                     colorScheme="gray"
-                    mr={2}
-                    mb={2}
+                    mr={3}
+                    mb={3}
+                    mt={3}
                   >
-                    {tag}
-                    
+                    {text}
+                    <TagCloseButton mt={0} onClick={() => handleRemove(id)} />
                   </Tag>
                 ))}
-              </HStack>
+              </Flex>
             </VStack>
           </VStack>
-          <VStack align={"start"} pt={5} >
+          <VStack align={"start"} pt={5}>
             <Text fontSize={"lg"}>
               <strong>Deleting a hashtag</strong> from your list will remove any
               content with that hashtag from your <br /> library.
@@ -210,7 +231,6 @@ function RowContainer({
   width = "auto",
   mt = "50px",
   py = "10",
- 
 }: RowContainerProps) {
   return (
     <VStack

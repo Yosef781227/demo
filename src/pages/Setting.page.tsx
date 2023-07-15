@@ -1,8 +1,36 @@
 
-import {Heading,VStack,Text,HStack,Input,Progress,Accordion,AccordionButton,AccordionIcon,AccordionItem,AccordionPanel,Box,Link,Button} from "@chakra-ui/react";
+import {Heading,VStack,Text,HStack,Input,Progress,Accordion,AccordionButton,AccordionIcon,AccordionItem,AccordionPanel,Box,Link,Button, Flex} from "@chakra-ui/react";
 import Container from "@components/Container";
+import { useState } from "react";
+import { Tag, TagCloseButton } from "@chakra-ui/react";
 
 function Setting() {
+  const [email, setEmail] = useState<string>("");
+  const [teamMates, setTeamMates] = useState<{ id: string; text: string }[]>(
+    () => {
+      const savedTeamMates = localStorage.getItem("teamMates");
+      return savedTeamMates ? JSON.parse(savedTeamMates) : [];
+    }
+  );
+
+  const handleAdd = () => {
+    if (email.trim()) {
+      const newTeamMates = [
+        ...teamMates,
+        { id: Date.now().toString() + Math.random(), text: email },
+      ];
+      setTeamMates(newTeamMates);
+      localStorage.setItem("teamMates", JSON.stringify(newTeamMates));
+      setEmail("");
+    }
+  };
+
+  const handleRemove = (idToRemove: string) => {
+    const newTeamMates = teamMates.filter((mate) => mate.id !== idToRemove);
+    setTeamMates(newTeamMates);
+    localStorage.setItem("teamMates", JSON.stringify(newTeamMates));
+  };   
+
   return (
     <Container background={"neutral.50"}>
       
@@ -10,8 +38,6 @@ function Setting() {
         <Heading size={"lg"} mt={"10px"} pt={10}>
           Settings
         </Heading>
-
-
         <RowContainer height={"270px"}  width={"1000px"}>
           <RowItem>
             <Heading size={"md"}>Invited Users</Heading>
@@ -48,7 +74,7 @@ function Setting() {
           </RowItem>
         </RowContainer>
 
-        <RowContainer height={"270px"} width={"1000px"}>
+        <RowContainer  width={"1000px"}>
           <RowItem>
             <Heading size={"md"}>Weekly UGC Digest</Heading>
             <Text style={{ fontSize: "18px" }}>
@@ -57,29 +83,50 @@ function Setting() {
             </Text>
           </RowItem>
           <RowItem>
-            <Text
-              size="sm"
-              style={{ fontSize: "18px", fontWeight: "regular" }}
-              color="#1F1F1F"
-            >
-              Add your teammates
-            </Text>
-            <HStack>
-              <Input
-                placeholder="mail@email.com"
-                type="email"
-                width="770px"
-                height={"40px"}
-              />
-              <Button
-                textColor="525252"
-                color="gray"
-                width="80px"
-                height="40px"
-                variant="outline"
-              >Add</Button>
-            </HStack>
-          </RowItem>
+      <Text
+        size="sm"
+        style={{ fontSize: "18px", fontWeight: "regular" }}
+        color="#1F1F1F"
+      >
+        Add your teammates
+      </Text>
+      <HStack>
+        <Input
+          placeholder="mail@email.com"
+          type="email"
+          width="770px"
+          height={"40px"}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <Button
+          textColor="525252"
+          color="gray"
+          width="80px"
+          height="40px"
+          variant="outline"
+          onClick={handleAdd}
+        >
+          Add
+        </Button>
+      </HStack>
+      <Flex wrap="wrap" maxWidth={"80%"}>
+        {teamMates.map(({ id, text }) => (
+          <Tag
+            key={id}
+            size="lg"
+            borderRadius="full"
+            colorScheme="gray"
+            mr={3}
+            mb={3}
+            mt={3}
+          >
+            {text}
+            <TagCloseButton mt={0} onClick={() => handleRemove(id)} />
+          </Tag>
+        ))}
+      </Flex>
+    </RowItem>
         </RowContainer>
 
     
@@ -121,7 +168,7 @@ function Setting() {
                 rounded={"2xl"}
                 width={800}
               />
-              <Text>80%</Text>
+              <Text>50%</Text>
             </HStack>
           </RowItem>
           <Link alignSelf={"flex-end"} pr={"60px"} color="#7C3AED" mt={"5px"}>
@@ -138,10 +185,8 @@ function Setting() {
             </VStack>
             <Link color="#7C3AED" pr={"60px"}>Manage Payment Method</Link>
           </HStack>
-
           <FAQ />
         </RowContainer>
-
         <Box pt="8">
           <Button
             width="150px"

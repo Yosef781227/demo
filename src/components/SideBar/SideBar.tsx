@@ -103,12 +103,11 @@ function SideBar() {
         {sideBarListBuilder(matches[matches.length - 1]?.pathname)}
       </VStack>
       <HStack pb={"15px"}>
-        <Avatar name="Jone Doe" bg={"primary.400"} />
+        <Avatar name= {user?.name} bg={"primary.400"} />
         <VStack alignItems={"flex-start"}>
           <Text
             lineHeight={"text"}
-            color="whiteAlpha.800
-"
+            color="whiteAlpha.800"
           >
             {user?.name}
           </Text>
