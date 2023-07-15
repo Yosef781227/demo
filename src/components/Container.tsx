@@ -1,9 +1,12 @@
-import {  Box } from "@chakra-ui/react";
-import theme from "@/constants/theme";
+import { Box } from "@chakra-ui/react";
 
-function Container(props: any) {
+type ContainerProps = {
+  children?: React.ReactNode;
+  height?: string | number;
+  background?: string;
+}
 
-
+function Container({ children, height = "150vh", background = "neutral.100" }: ContainerProps) {
   return (
     <Box
       display={"flex"}
@@ -11,15 +14,14 @@ function Container(props: any) {
       overflow={"hidden"}
       alignSelf={"flex-start"}
       ml={"20%"}
-      minH={"120vh"}
+      minH={height}
       mt={3.5}
-      
+      background={background}
       alignItems={"stretch"}
       borderTopRadius={10}
       gap="0"
-      {...props}
     >
-      {props.children}
+      {children}
     </Box>
   );
 }

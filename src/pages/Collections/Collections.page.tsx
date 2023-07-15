@@ -60,7 +60,7 @@ function Collections() {
         newCollectionModalDisclosure={newCollectionModalDisclosure}
       />
 
-      <Container background={"neutral.100"}>
+      <Container background={"neutral.100"}  >
         <CollectionsPageTopNavBar
           openNewCollectionModal={newCollectionModalDisclosure.onOpen}
         />

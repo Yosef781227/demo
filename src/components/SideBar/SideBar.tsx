@@ -97,7 +97,7 @@ function SideBar() {
       className="sidebar"
     >
       <VStack>
-        <Box width={"full"} alignSelf={"flex-start"}>
+        <Box width={"full"}  >
           <Logo />
         </Box>
         {sideBarListBuilder(matches[matches.length - 1]?.pathname)}

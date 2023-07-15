@@ -18,7 +18,6 @@ function Router({ isAuth }: { isAuth: boolean }) {
         <Routes>
           <Route path="/" element={<Root />}>
             <Route index element={<HomePage />} />
-        
             <Route path="collections" element={<Collections />} />
             <Route path="settings" element={<Setting />} />
             <Route path="collections" element={<Collections />} />
