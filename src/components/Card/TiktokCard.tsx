@@ -128,7 +128,6 @@ const TiktokCard = ({
       display={"inline-block"}
       border={"1px solid #EDEDED"}
       backgroundColor={"white"}
-
       rounded={"xl"}
       boxShadow={"0px 8px 8px -4px rgba(16, 24, 40, 0.03);"}
     >
@@ -369,7 +368,7 @@ const TiktokCard = ({
               onClick={(e) => {
                 if (page === "COLLECTION" && RemoveFromCollection) {
                   RemoveFromCollection({ type: "video", contentId: video.id, });
-                } else if (page === "CONTENT" && deleteInstagramContents) {
+                } else if ((page === "CONTENT" || page === "FILTER") && deleteInstagramContents) {
                   deleteInstagramContents({
                     posts: [],
                     reels: [],

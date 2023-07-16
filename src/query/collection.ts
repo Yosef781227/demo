@@ -34,6 +34,27 @@ export const GetCollection = gql`
     getCollection(json_input: $jsonInput) {
       name
       id
+      stories {
+        id
+        mentions
+        usage_right
+        owner_username
+        owner_full_name
+        owner_profile_pic_url
+        owner_followers
+        owner_verified
+        ig_contents {
+          id
+          url
+          width
+          height
+          has_audio
+          duration
+          display_url
+          taken_at
+          is_video
+        }
+      }
       posts {
         caption
         link

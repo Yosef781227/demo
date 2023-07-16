@@ -454,6 +454,7 @@ function getAccess(data: any) {
           width={"100%"}
           style={{ objectFit: "contain" }}
           controls={true}
+          autoPlay={true}
           src={
             data?.ig_content.url.includes("https://")
               ? data?.ig_content.url
