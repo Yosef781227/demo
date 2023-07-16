@@ -174,15 +174,15 @@ function Collection() {
       });
   };
 
-  const RemoveFromCollection = async ({ collectionId, contentIds, type }:
-    { collectionId: string; contentIds: string[]; type: "post" | "reel" | "story" | "video"; }) => {
+  const RemoveFromCollection = async ({ contentId, type }:
+    { contentId: string; type: "post" | "reel" | "story" | "video"; }) => {
     let variables: any = {
       collectionId: collectionId,
     };
-    type === "post" && (variables.postId = contentIds);
-    type === "reel" && (variables.reelId = contentIds);
-    type === "story" && (variables.storyId = contentIds);
-    type === "video" && (variables.videoId = contentIds);
+    type === "post" && (variables.postId = contentId);
+    type === "reel" && (variables.reelId = contentId);
+    type === "story" && (variables.storyId = contentId);
+    type === "video" && (variables.videoId = contentId);
 
     const response = await client.mutate({
       mutation: type === "post" ? InstagramCollectionMutation.removePostFromCollection : type === "reel" ? InstagramCollectionMutation.removeReelFromCollection : type === "story" ? InstagramCollectionMutation.removeStoryFromCollection : RemoveVideoFromCollection,
@@ -196,12 +196,12 @@ function Collection() {
     if (success) {
       if (type === "post" || type === "reel" || type === "story") {
         const newInstagramContents = instagramContents.filter(
-          (content) => !contentIds.includes(content.id)
+          (content) => !contentId.includes(content.id)
         );
         setInstagramContents(newInstagramContents);
       } else {
         const newTiktokContents = tiktokContents.filter(
-          (content) => !contentIds.includes(content.id)
+          (content) => !contentId.includes(content.id)
         );
         setTiktokContents(newTiktokContents);
       }
@@ -241,10 +241,12 @@ function Collection() {
                 ...instagramContents.map((instadata, i) => {
                   return (
                     <InstagramCard
+                      page="COLLECTION"
                       cardCheckboxSelected={cardCheckboxSelected}
                       setCardCheckBoxSelected={setCardCheckBoxSelected}
                       data={instadata}
-                      deleteInstagramContents={deleteInstagramContents}
+                      deleteInstagramContents={null}
+                      RemoveFromCollection={RemoveFromCollection}
                       key={`i${i}`}
                     />
                   );
@@ -255,8 +257,8 @@ function Collection() {
                       page="COLLECTION"
                       cardCheckboxSelected={cardCheckboxSelected}
                       setCardCheckBoxSelected={setCardCheckBoxSelected}
-                      deleteInstagramContents={deleteInstagramContents}
-
+                      deleteInstagramContents={null}
+                      RemoveFromCollection={RemoveFromCollection}
                       video={video}
                       key={`t${index}`}
                     />

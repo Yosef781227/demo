@@ -61,17 +61,19 @@ const TiktokCard = ({
   cardCheckboxSelected,
   setCardCheckBoxSelected,
   deleteInstagramContents,
+  RemoveFromCollection,
 }: {
   page: string;
   video: any;
   cardCheckboxSelected: cardCheckboxSelected;
   setCardCheckBoxSelected: (data: any) => void;
-  deleteInstagramContents: (data: {
+  deleteInstagramContents: ((data: {
     posts: string[];
     reels: string[];
     stories: string[];
     videos: string[];
-  }) => void;
+  }) => void) | null;
+  RemoveFromCollection: (({ contentId, type }: { contentId: string; type: "post" | "reel" | "story" | "video"; }) => Promise<void>) | null;
 }) => {
   const checkBoxRef = useRef<HTMLInputElement>(null);
   const [showVideo, setShowVideo] = useState(false);
@@ -364,13 +366,19 @@ const TiktokCard = ({
             <MenuItem>Mute Content from @somthing</MenuItem>
             <MenuItem
               color={"red"}
-              onClick={(e) =>
-                deleteInstagramContents({
-                  posts: [],
-                  reels: [],
-                  stories: [],
-                  videos: [video.id],
-                })
+              onClick={(e) => {
+                if (page === "COLLECTION" && RemoveFromCollection) {
+                  RemoveFromCollection({ type: "video", contentId: video.id, });
+                } else if (page === "CONTENT" && deleteInstagramContents) {
+                  deleteInstagramContents({
+                    posts: [],
+                    reels: [],
+                    stories: [],
+                    videos: [video.id],
+                  })
+                }
+              }
+
               }
             >
               {page === "COLLECTION" && "Remove from collection" ||

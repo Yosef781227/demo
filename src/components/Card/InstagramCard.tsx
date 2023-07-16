@@ -51,19 +51,23 @@ type cardCheckboxSelected = {
 };
 function InstagramCard({
   data,
+  page,
   cardCheckboxSelected,
   setCardCheckBoxSelected,
   deleteInstagramContents,
+  RemoveFromCollection,
 }: {
   data: any;
+  page: string;
   cardCheckboxSelected: cardCheckboxSelected;
   setCardCheckBoxSelected: (data: any) => void;
-  deleteInstagramContents: (data: {
+  deleteInstagramContents: ((data: {
     posts: string[];
     reels: string[];
     stories: string[];
     videos: string[];
-  }) => void;
+  }) => void) | null;
+  RemoveFromCollection: (({ contentId, type }: { contentId: string; type: "post" | "reel" | "story" | "video"; }) => Promise<void>) | null;
 }) {
   const User = useContext(UserContext) as User;
   const [showVideo, setShowVideo] = useState(false);
@@ -392,16 +396,26 @@ function InstagramCard({
             <MenuItem>Mute Content from @somthing</MenuItem>
             <MenuItem
               color={"red"}
-              onClick={(e) =>
-                deleteInstagramContents({
-                  posts: data.type === "post" ? [data.id] : [],
-                  reels: data.type === "reel" ? [data.id] : [],
-                  stories: data.type === "story" ? [data.id] : [],
-                  videos: [],
-                })
+              onClick={(e) => {
+                if (page === "COLLECTION" && RemoveFromCollection) {
+                  RemoveFromCollection({
+                    contentId: data.id,
+                    type: data.type,
+                  })
+                } else if ((page === "CONTENT" || page === "FILTER") && deleteInstagramContents) {
+                  deleteInstagramContents({
+                    posts: data.type === "post" ? [data.id] : [],
+                    reels: data.type === "reel" ? [data.id] : [],
+                    stories: data.type === "story" ? [data.id] : [],
+                    videos: [],
+                  })
+                }
+              }
               }
             >
-              Delete from Library
+              {page === "COLLECTION" && "Remove from collection" ||
+                page === "CONTENT" && "Delete from Library"
+              }
             </MenuItem>
           </MenuList>
         </Menu>

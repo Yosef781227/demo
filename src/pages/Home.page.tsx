@@ -204,10 +204,12 @@ function HomePage() {
                   ...instagramContents.map((instadata, i) => {
                     return (
                       <InstagramCard
+                        page="CONTENT"
                         cardCheckboxSelected={cardCheckboxSelected}
                         setCardCheckBoxSelected={setCardCheckBoxSelected}
                         data={instadata}
                         deleteInstagramContents={deleteInstagramContents}
+                        RemoveFromCollection={null}
                         key={`i${i}`}
                       />
                     );
@@ -221,6 +223,7 @@ function HomePage() {
                         key={`t${index}`}
                         setCardCheckBoxSelected={setCardCheckBoxSelected}
                         deleteInstagramContents={deleteInstagramContents}
+                        RemoveFromCollection={null}
                       />
                     );
                   }),
@@ -312,12 +315,13 @@ const FilteredContents = ({ data, allCollections, cardCheckboxSelected, setCardC
                 return account.map((instadata, index) => {
                   return (
                     <InstagramCard
+                      page="FILTER"
                       data={instadata}
                       cardCheckboxSelected={cardCheckboxSelected}
                       key={`a${i}c${index}`}
                       setCardCheckBoxSelected={setCardCheckBoxSelected}
                       deleteInstagramContents={deleteInstagramContents}
-
+                      RemoveFromCollection={null}
                     />
                   );
                 })
@@ -331,6 +335,7 @@ const FilteredContents = ({ data, allCollections, cardCheckboxSelected, setCardC
                 key={`${video.id}`}
                 setCardCheckBoxSelected={setCardCheckBoxSelected}
                 deleteInstagramContents={deleteInstagramContents}
+                RemoveFromCollection={null}
               />
             }),
           ]}
