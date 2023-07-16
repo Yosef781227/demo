@@ -160,7 +160,7 @@ const TiktokCard = ({
           />
         ) : (
           <>
-            <IconButton
+            {/* <IconButton
               position={"absolute"}
               top={"calc(50% - 25px)"}
               size={"lg"}
@@ -169,7 +169,21 @@ const TiktokCard = ({
               aria-label="start video"
               shadow={"2xl"}
               icon={<PlayCircle size={50} />}
-            />
+            /> */}
+            <Box
+              position={"absolute"}
+              top={"calc(50% - 25px)"}
+              left={"calc(50% - 25px)"}
+              onClick={() => setShowVideo(true)}
+              aria-label="start video"
+
+            >
+              <svg width="47" height="44" viewBox="0 0 47 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="47" height="44" rx="22" fill="#8B5CF6" />
+                <path d="M30.6812 21.1597C31.3227 21.5436 31.3316 22.4701 30.6974 22.8661L20.9225 28.9705C20.2601 29.3842 19.4003 28.9128 19.3929 28.1319L19.2781 16.1107C19.2707 15.3297 20.1213 14.842 20.7915 15.243L30.6812 21.1597Z" fill="white" />
+              </svg>
+
+            </Box>
             <Image src={video.display_url} />
           </>
         )}
@@ -230,11 +244,13 @@ const TiktokCard = ({
 
         <HStack position="absolute" top="5" right="5">
           <IconButton
+            bg={"transparent"}
+            _hover={{ bg: "transparent" }}
             onClick={() => {
               handleDownload(video.url);
             }}
             aria-label="download"
-            icon={<DownloadSimple size={30} color="white" weight="duotone" />}
+            icon={<DownloadSimple size={30} color="white" weight="bold" />}
           />
 
           <Menu
@@ -245,7 +261,7 @@ const TiktokCard = ({
             closeOnSelect={false}
           >
             <MenuButton>
-              <BookmarkSimple size={30} color="white" weight="fill" />
+              <BookmarkSimple size={30} color="white" weight="bold" />
             </MenuButton>
             <MenuList>
               <MenuItem>

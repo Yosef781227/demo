@@ -215,8 +215,6 @@ function SignupPage() {
     </AuthContainer>
   );
 }
-// function RowContainer({ children }: { children: React.ReactNode }) {
-//   return <VStack w="full">{children}</VStack>;
-// }
+
 
 export default SignupPage;
