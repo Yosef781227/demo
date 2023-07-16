@@ -22,20 +22,17 @@ import {
   BookmarkSimple,
   DotsThreeOutline,
   Plus,
-  PlayCircle,
+
 } from "@phosphor-icons/react";
 import {
   ChangeEvent,
-  Dispatch,
-  SetStateAction,
   SyntheticEvent,
-  useEffect,
   useRef,
   useState,
   useContext,
 } from "react";
-import { CreateUserCollection, GetUserCollection } from "@/query/user";
-import { useMutation, useQuery } from "@apollo/client";
+import { CreateUserCollection } from "@/query/user";
+import { useMutation } from "@apollo/client";
 import { AddVideoToCollection } from "@/query/tiktok";
 import { handleDownload } from "@/utils";
 import { shortenNumber, timeAgo } from "@/utils/data-modifier";
@@ -160,16 +157,7 @@ const TiktokCard = ({
           />
         ) : (
           <>
-            {/* <IconButton
-              position={"absolute"}
-              top={"calc(50% - 25px)"}
-              size={"lg"}
-              left={"calc(50% - 25px)"}
-              onClick={() => setShowVideo(true)}
-              aria-label="start video"
-              shadow={"2xl"}
-              icon={<PlayCircle size={50} />}
-            /> */}
+
             <Box
               position={"absolute"}
               top={"calc(50% - 25px)"}
@@ -291,6 +279,7 @@ const TiktokCard = ({
                   </Button>
                   <Button
                     isDisabled={!!collections.length}
+                    colorScheme={!!collections.length ? "gray" : "primary"}
                     onClick={() => {
                       setTextSearch("");
                       setCollections(User.collections);
@@ -334,7 +323,6 @@ const TiktokCard = ({
                           }
                         }}
                       />
-
                       <Text>{collection.name}</Text>
                     </HStack>
                   </MenuItem>

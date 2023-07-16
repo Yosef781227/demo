@@ -169,6 +169,7 @@ function FilterModal({
                             : setPostType((prev) => prev.filter((type) => type !== "reel"));
                         }}
                         isChecked={type.includes("reel")}
+                        colorScheme={"primary"}
                       >
                         Reel
                       </Checkbox>
@@ -179,6 +180,7 @@ function FilterModal({
                             : setPostType((prev) => prev.filter((type) => type !== "post"));
                         }}
                         isChecked={type.includes("post")}
+                        colorScheme={"primary"}
                       >
                         Feed
                       </Checkbox>
@@ -189,6 +191,7 @@ function FilterModal({
                             : setPostType((prev) => prev.filter((type) => type !== "story"));
                         }}
                         isChecked={type.includes("story")}
+                        colorScheme={"primary"}
                       >
                         Story
                       </Checkbox>
@@ -206,6 +209,7 @@ function FilterModal({
                       }}
                       isChecked={type.includes("video")}
                       mt={3}
+                      colorScheme={"primary"}
                     >
                       Video
                     </Checkbox>
@@ -231,6 +235,7 @@ function FilterModal({
                               : setUsernames((prev) => prev.filter((username) => username !== instagram.username));
                           }}
                           isChecked={usernames.includes(instagram.username)}
+                          colorScheme={"primary"}
                         >
                           {instagram.username}
                         </Checkbox>
@@ -247,6 +252,7 @@ function FilterModal({
                           key={index}
                           size={"sm"}
                           mt={2}
+                          colorScheme={"primary"}
 
                           onChange={(e) => {
                             e.target.checked ? setUnique_ids((prev) => [...prev, tiktok.uniqueId]) : setUnique_ids((prev) => prev.filter((unique_id) => unique_id !== tiktok.uniqueId));
@@ -271,7 +277,7 @@ function FilterModal({
                   <TabPanels>
                     <TabPanel>
                       <HStack>
-                        <Checkbox>No Tags</Checkbox>
+                        <Checkbox colorScheme={"primary"}>No Tags</Checkbox>
                       </HStack>
                     </TabPanel>
                     <TabPanel>
@@ -287,6 +293,7 @@ function FilterModal({
                 <Text textColor={"gray.500"}>Usage Right</Text>
                 <HStack mt={3}>
                   <Checkbox
+                    colorScheme={"primary"}
                     isChecked={usage_right.includes("PENDING")}
                     onChange={(e) => {
                       e.target.checked ? setUsage_right((prev) => !prev.includes("PENDING") ? [...prev, "PENDING"] : prev) : setUsage_right((prev) => prev.filter((usage) => usage !== "PENDING"));
@@ -295,6 +302,7 @@ function FilterModal({
                     Pending
                   </Checkbox>
                   <Checkbox
+                    colorScheme={"primary"}
                     isChecked={usage_right.includes("APPROVED")}
                     onChange={(e) => {
                       e.target.checked ? setUsage_right((prev) => !prev.includes("APPROVED") ? [...prev, "APPROVED"] : prev) : setUsage_right((prev) => prev.filter((usage) => usage !== "APPROVED"));
@@ -303,6 +311,7 @@ function FilterModal({
                     Approved
                   </Checkbox>
                   <Checkbox
+                    colorScheme={"primary"}
                     isChecked={usage_right.includes("REJECTED")}
                     onChange={(e) => {
                       e.target.checked ? setUsage_right((prev) => !prev.includes("REJECTED") ? [...prev, "REJECTED"] : prev) : setUsage_right((prev) => prev.filter((usage) => usage !== "REJECTED"));
@@ -311,6 +320,7 @@ function FilterModal({
                     Rejected
                   </Checkbox>
                   <Checkbox
+                    colorScheme={"primary"}
                     isChecked={usage_right.includes("DEFAULT")}
                     defaultChecked={true}
                     onChange={(e) => {
@@ -340,6 +350,7 @@ function FilterModal({
                 <Text textColor={"gray.500"}>Content Type</Text>
                 <HStack mt={3}>
                   <Checkbox
+                    colorScheme={"primary"}
                     isChecked={content_type === 2 || content_type === 1}
                     onChange={(e) => {
                       if (e.target.checked) {
@@ -352,6 +363,7 @@ function FilterModal({
                     Video
                   </Checkbox>
                   <Checkbox
+                    colorScheme={"primary"}
                     isChecked={content_type === 2 || content_type === 0}
                     onChange={(e) => {
                       if (e.target.checked) {
@@ -368,7 +380,7 @@ function FilterModal({
               <Box mt={5}>
                 <Text textColor={"gray.500"}>Engagement</Text>
                 <VStack alignItems={"flex-start"} mt={3}>
-                  <Checkbox checked={true}>Views</Checkbox>
+                  <Checkbox checked={true} colorScheme={"primary"}>Views</Checkbox>
                   <HStack pl="10%">
                     <Select placeholder="Select" defaultValue={"option1"}>
                       <option value="option1">1k</option>
@@ -383,7 +395,7 @@ function FilterModal({
                   </HStack>
                 </VStack>
                 <VStack alignItems={"flex-start"}>
-                  <Checkbox checked={true}> Plays</Checkbox>
+                  <Checkbox colorScheme={"primary"} checked={true}> Plays</Checkbox>
                   <HStack pl="10%">
                     <Select placeholder="Select" defaultValue={"1k"}>
                       <option value="1k">1k</option>
@@ -398,9 +410,9 @@ function FilterModal({
                   </HStack>
                 </VStack>
                 <VStack mt={3} alignItems={"flex-start"}>
-                  <Checkbox> Likes</Checkbox>
-                  <Checkbox> Comments</Checkbox>
-                  <Checkbox> Share</Checkbox>
+                  <Checkbox colorScheme={"primary"}> Likes</Checkbox>
+                  <Checkbox colorScheme={"primary"}> Comments</Checkbox>
+                  <Checkbox colorScheme={"primary"}> Share</Checkbox>
                 </VStack>
               </Box>
               <Box mt={5}>
@@ -413,7 +425,7 @@ function FilterModal({
                   <TabPanels>
                     <TabPanel>
                       <HStack>
-                        <Checkbox isChecked={user?.collections?.length === collection_include.length}
+                        <Checkbox colorScheme={"primary"} isChecked={user?.collections?.length === collection_include.length}
                           onChange={(e) => {
                             if (e.target.checked) {
                               setCollection_include(user.collections?.map((collection) => collection.name));
@@ -427,6 +439,7 @@ function FilterModal({
                         {user.collections?.map((collection) => {
                           return (
                             <Checkbox
+                              colorScheme={"primary"}
                               isChecked={collection_include.includes(collection.name)}
                               onChange={(e) => {
                                 if (e.target.checked) {
@@ -445,6 +458,7 @@ function FilterModal({
                     </TabPanel>
                     <TabPanel>
                       <Checkbox
+                        colorScheme={"primary"}
                         onChange={(e) => {
                           if (e.target.checked) {
                           } else {
@@ -457,6 +471,7 @@ function FilterModal({
                       {user.collections?.map((collection) => {
                         return (
                           <Checkbox
+                            colorScheme={"primary"}
                             onChange={(e) => {
                               if (e.target.checked) {
 
@@ -478,6 +493,7 @@ function FilterModal({
                 <Text textColor={"gray.500"}>Verification</Text>
                 <HStack mt={3}>
                   <Checkbox
+                    colorScheme={"primary"}
                     onChange={(e) => {
                       if (e.target.checked) {
                         setVerified(2);
@@ -490,6 +506,7 @@ function FilterModal({
                     Verified
                   </Checkbox>
                   <Checkbox
+                    colorScheme={"primary"}
                     onChange={(e) => {
                       e.target.checked ? setVerified(2) : setVerified(1);
                     }}

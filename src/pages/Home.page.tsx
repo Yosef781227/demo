@@ -195,7 +195,7 @@ function HomePage() {
             setCardCheckBoxSelected={setCardCheckBoxSelected}
           />
         ) : (
-          <Box bg="neutral.100" px={5} minH={"100vh"} width={"100%"} >
+          <Box bg="neutral.100" px={5} minH={"100vh"} width={"100%"} pb={6} >
             <ResponsiveMasonry
               columnsCountBreakPoints={{ 575: 1, 720: 2, 900: 3, 1300: 4 }}
             >
@@ -304,7 +304,7 @@ const FilteredContents = ({ data, allCollections, cardCheckboxSelected, setCardC
   const toast = useToast();
 
   return (
-    <Box bg="#FAFAFA" px={5} pb={8} minH={"100vh"} width={"100%"}>
+    <Box bg="#FAFAFA" px={5} pb={8} minH={"100vh"} width={"100%"}  >
       <ResponsiveMasonry
         columnsCountBreakPoints={{ 575: 1, 720: 2, 900: 3, 1300: 4 }}
       >

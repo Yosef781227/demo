@@ -77,7 +77,7 @@ function InstagramPage() {
                 </Text>
               </Text>
             </VStack>
-            <VStack mt={"10px"} gap={"25px"}>
+            <VStack mt={"5px"} gap={"25px"}>
               <Image
                 w={"600px"}
                 h={"400px"}
@@ -86,11 +86,12 @@ function InstagramPage() {
                 alt="Icon"
               />
               <Button
-                mt={60}
+                // mt={60}
                 width={"600px"}
                 height={"50px"}
                 bg={"primary.400"}
                 color={"white"}
+                borderRadius={"10px"}
               >
                 Download Extension
               </Button>

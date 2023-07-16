@@ -1,5 +1,5 @@
 import SideBar from "@/components/SideBar/SideBar";
-import { Box, CSSReset, Text } from "@chakra-ui/react";
+import { CSSReset } from "@chakra-ui/react";
 import { Outlet } from "react-router-dom";
 import { Global } from "@emotion/react";
 import Success from "@/components/messages/success";
@@ -30,7 +30,7 @@ function Root() {
       />
       <SideBar />
       <Outlet />
-      <Success />
+      {/* <Success /> */}
     </>
   );
 }
