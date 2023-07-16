@@ -176,6 +176,7 @@ const TiktokCard = ({
               left={"calc(50% - 25px)"}
               onClick={() => setShowVideo(true)}
               aria-label="start video"
+              cursor={"pointer"}
 
             >
               <svg width="47" height="44" viewBox="0 0 47 44" fill="none" xmlns="http://www.w3.org/2000/svg">
