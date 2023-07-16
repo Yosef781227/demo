@@ -55,3 +55,72 @@ export const GetInstagramQuery = gql`
     }
   }
 `;
+
+const AddPostToCollection = gql`
+  mutation Mutation($jsonInput: String!) {
+    addPostToCollection(json_input: $jsonInput) {
+      data
+      message
+      success
+    }
+  }
+`;
+
+const RemovePostFromCollection = gql`
+  mutation Mutation($jsonInput: String!) {
+    removePostFromCollection(json_input: $jsonInput) {
+      data
+      message
+      success
+    }
+  }
+`;
+
+const AddReelToCollection = gql`
+  mutation Mutation($jsonInput: String!) {
+    addReelToCollection(json_input: $jsonInput) {
+      success
+      message
+      data
+    }
+  }
+`;
+
+const RemoveReelFromCollection = gql`
+  mutation Mutation($jsonInput: String!) {
+    removeReelFromCollection(json_input: $jsonInput) {
+      success
+      message
+      data
+    }
+  }
+`
+
+export const AddStoryToCollection = gql`
+  mutation Mutation($jsonInput: String!) {
+    addStoryToCollection(json_input: $jsonInput) {
+      success
+      message
+      data
+    }
+  }
+`;
+
+export const RemoveStoryFromCollection = gql`
+  mutation Mutation($jsonInput: String!) {
+    removeStoryFromCollection(json_input: $jsonInput) {
+      success
+      message
+      data
+    }
+  }
+`
+
+export const InstagramCollectionMutation = {
+  addPostToCollection: AddPostToCollection,
+  removePostFromCollection: RemovePostFromCollection,
+  addReelToCollection: AddReelToCollection,
+  removeReelFromCollection: RemoveReelFromCollection,
+  addStoryToCollection: AddStoryToCollection,
+  removeStoryFromCollection: RemoveStoryFromCollection,
+}

@@ -207,7 +207,7 @@ function HomePage() {
         user={User}
       />
 
-      <Container minH={"full"}>
+      <Container >
         <HomePageTopNavBar
           changeTiktokAcount={changeTiktokAcount}
           changeAccount={changeAcount}
@@ -219,11 +219,12 @@ function HomePage() {
         {filtered !== null ? (
           <FilteredContents
             data={filtered}
+            allCollections={User.collections}
             cardCheckboxSelected={cardCheckboxSelected}
             setCardCheckBoxSelected={setCardCheckBoxSelected}
           />
         ) : (
-          <Box bg="#FAFAFA" px={5} minH={"100vh"} width={"100%"}>
+          <Box bg="#FAFAFA" px={5} pb={8} minH={"100vh"} width={"100%"}>
             <ResponsiveMasonry
               columnsCountBreakPoints={{ 575: 1, 720: 2, 900: 3, 1300: 4 }}
             >
@@ -232,6 +233,7 @@ function HomePage() {
                   ...instagramContents.map((instadata, i) => {
                     return (
                       <InstagramCard
+                        allCollections={User.collections}
                         cardCheckboxSelected={cardCheckboxSelected}
                         setCardCheckBoxSelected={setCardCheckBoxSelected}
                         data={instadata}
@@ -244,10 +246,11 @@ function HomePage() {
                     return (
                       <TiktokCard
                         cardCheckboxSelected={cardCheckboxSelected}
-                        setCardCheckBoxSelected={setCardCheckBoxSelected}
-                        deleteInstagramContents={deleteInstagramContents}
+                        allCollections={User?.collections.length > 0 ? User?.collections : []}
                         video={video}
                         key={`t${index}`}
+                        setCardCheckBoxSelected={setCardCheckBoxSelected}
+                        deleteInstagramContents={deleteInstagramContents}
                       />
                     );
                   }),
@@ -267,8 +270,9 @@ function HomePage() {
   );
 }
 
-const FilteredContents = ({ data, cardCheckboxSelected, setCardCheckBoxSelected, }: {
+const FilteredContents = ({ data, allCollections, cardCheckboxSelected, setCardCheckBoxSelected }: {
   data: any;
+  allCollections: any[];
   cardCheckboxSelected: any;
   setCardCheckBoxSelected: any;
 }) => {
@@ -327,7 +331,7 @@ const FilteredContents = ({ data, cardCheckboxSelected, setCardCheckBoxSelected,
   const toast = useToast();
 
   return (
-    <Box bg="#FAFAFA" px={5} minH={"100vh"} width={"100%"}>
+    <Box bg="#FAFAFA" px={5} pb={8} minH={"100vh"} width={"100%"}>
       <ResponsiveMasonry
         columnsCountBreakPoints={{ 575: 1, 720: 2, 900: 3, 1300: 4 }}
       >
@@ -338,11 +342,13 @@ const FilteredContents = ({ data, cardCheckboxSelected, setCardCheckBoxSelected,
                 return account.map((instadata, index) => {
                   return (
                     <InstagramCard
-                      cardCheckboxSelected={cardCheckboxSelected}
-                      setCardCheckBoxSelected={setCardCheckBoxSelected}
                       data={instadata}
-                      deleteInstagramContents={deleteInstagramContents}
+                      cardCheckboxSelected={cardCheckboxSelected}
+                      allCollections={allCollections}
                       key={`a${i}c${index}`}
+                      setCardCheckBoxSelected={setCardCheckBoxSelected}
+                      deleteInstagramContents={deleteInstagramContents}
+
                     />
                   );
                 })
@@ -351,10 +357,11 @@ const FilteredContents = ({ data, cardCheckboxSelected, setCardCheckBoxSelected,
             ...tiktokContents.map((video, index) => {
               return <TiktokCard
                 cardCheckboxSelected={cardCheckboxSelected}
-                setCardCheckBoxSelected={setCardCheckBoxSelected}
+                allCollections={allCollections}
                 video={video}
-                deleteInstagramContents={deleteInstagramContents}
                 key={`${video.id}`}
+                setCardCheckBoxSelected={setCardCheckBoxSelected}
+                deleteInstagramContents={deleteInstagramContents}
               />
             }),
           ]}

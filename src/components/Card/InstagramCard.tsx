@@ -7,6 +7,7 @@ import {
   Text,
   Image,
   IconButton,
+  Button,
 } from "@chakra-ui/react";
 import {
   Checkbox,
@@ -24,9 +25,16 @@ import {
   Plus,
   PlayCircle,
 } from "@phosphor-icons/react";
-import { Dispatch, SetStateAction, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useRef, useState, SyntheticEvent, ChangeEvent } from "react";
+import { CreateUserCollection, GetUserCollection } from "@/query/user";
+import { useMutation, useQuery } from "@apollo/client";
+import { InstagramCollectionMutation } from "@/query/instagram";
 import { handleDownload } from "@/utils";
 import { shortenNumber, timeAgo } from "@/utils/data-modifier";
+import client from "@/client";
+import { da } from "date-fns/locale";
+import { set } from "date-fns";
+import { all } from "axios";
 type cardCheckboxSelected = {
   ids: {
     posts: string[];
@@ -43,11 +51,13 @@ type cardCheckboxSelected = {
 };
 function InstagramCard({
   data,
+  allCollections,
   cardCheckboxSelected,
   setCardCheckBoxSelected,
   deleteInstagramContents,
 }: {
   data: any;
+  allCollections: any[];
   cardCheckboxSelected: cardCheckboxSelected;
   setCardCheckBoxSelected: (data: any) => void;
   deleteInstagramContents: (data: {
@@ -59,6 +69,50 @@ function InstagramCard({
 }) {
   const [showVideo, setShowVideo] = useState(false);
   const checkBoxRef = useRef<HTMLInputElement>(null);
+  const [collections, setCollections] = useState<any[]>(allCollections);
+  const [textSearch, setTextSearch] = useState("");
+  const [selectedCheckboxes, setSelectedCheckboxes] = useState<any[]>([]);
+
+  const [
+    createCollection,
+    {
+      data: createCollectionData,
+      loading: createCollectionLoading,
+      error: createCollectionError,
+    },
+  ] = useMutation(CreateUserCollection);
+
+  function handleChange(e: SyntheticEvent<HTMLInputElement>) {
+    setTextSearch(e.currentTarget.value);
+    setCollections(
+      allCollections.filter((item: any) => {
+        return item.name.includes(e.currentTarget.value);
+      })
+    );
+  }
+  const handleAddTo = async () => {
+    for (const item of selectedCheckboxes) {
+      let variables: any = {
+        collectionId: item.id,
+      };
+      data.type === "post" && (variables.postId = data.id);
+      data.type === "reel" && (variables.reelId = data.id);
+      data.type === "story" && (variables.storyId = data.id);
+      const response = await client.mutate({
+        mutation: data.type === "post" ? InstagramCollectionMutation.addPostToCollection : data.type === "reel" ? InstagramCollectionMutation.addReelToCollection : InstagramCollectionMutation.addStoryToCollection,
+        variables: {
+          jsonInput: JSON.stringify(variables),
+        },
+      });
+      const { success, message, data: resData } = response.data[data.type === "post" ? "addPostToCollection" : data.type === "reel" ? "addReelToCollection" : "addStoryToCollection"];
+      if (success) {
+
+      } else {
+
+      }
+    }
+  }
+
   return (
     <VStack
       role="group"
@@ -168,8 +222,93 @@ function InstagramCard({
             aria-label="download"
             icon={<DownloadSimple size={30} color="white" weight="duotone" />}
           />
+          <Menu
+            onClose={() => { setCollections([]) }}
+            onOpen={() => { setCollections(allCollections) }}
+            closeOnSelect={false}
+          >
+            <MenuButton>
+              <BookmarkSimple size={30} color="white" weight="fill" />
+            </MenuButton>
+            <MenuList>
+              <MenuItem>
+                <Input
+                  value={textSearch}
+                  onChange={handleChange}
+                  placeholder="Search or Create collection"
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </MenuItem>
+              <MenuItem
+                _hover={{
+                  backgroundColor: "white",
+                }}
+              >
+                <HStack spacing={4} width="100%" justifyContent="space-between">
+                  <Button
+                    isDisabled={
+                      !Boolean(selectedCheckboxes.length) || !collections.length
+                    }
+                    display={"flex"}
+                    onClick={handleAddTo}
+                  >
+                    <Plus size={24} color="#121212" weight="fill" />
+                    <Text>Add to</Text>
+                  </Button>
+                  <Button
+                    isDisabled={!!collections.length}
+                    onClick={() => {
+                      setTextSearch("");
+                      setCollections(allCollections);
+                      createCollection({
+                        variables: {
+                          jsonInput: JSON.stringify({
+                            name: textSearch,
+                          }),
+                        },
+                      });
+                    }}
+                  >
+                    Create
+                  </Button>
+                </HStack>
+              </MenuItem>
+              <MenuItem>
+                <HStack>
+                  <Checkbox />
+                  <Text>Select all</Text>
+                </HStack>
+              </MenuItem>
+              {collections.map((collection: any) => {
+                return (
+                  <MenuItem key={collection.id}>
+                    <HStack>
+                      <Checkbox
+                        onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                          if (e.currentTarget.checked) {
+                            setSelectedCheckboxes([
+                              ...selectedCheckboxes,
+                              collection,
+                            ]);
+                          } else {
+                            setSelectedCheckboxes(
+                              selectedCheckboxes.filter(
+                                (selectedCheckBox) =>
+                                  selectedCheckBox.id !== collection.id
+                              )
+                            );
+                          }
+                        }}
+                      />
 
-          <Menu closeOnSelect={false} autoSelect={false}>
+                      <Text>{collection.name}</Text>
+                    </HStack>
+                  </MenuItem>
+                );
+              })}
+            </MenuList>
+          </Menu>
+          {/* <Menu closeOnSelect={false} autoSelect={false}>
             <MenuButton>
               <BookmarkSimple size={30} color="white" weight="fill" />
             </MenuButton>
@@ -202,7 +341,7 @@ function InstagramCard({
                 </HStack>
               </MenuItem>
             </MenuList>
-          </Menu>
+          </Menu> */}
         </HStack>
       </Box>
 

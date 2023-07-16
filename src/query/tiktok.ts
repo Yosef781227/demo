@@ -33,10 +33,21 @@ export const GetTiktokQuery = gql`
 
 export const AddVideoToCollection = gql`
   mutation Mutation($jsonInput: String!) {
-    addVideoToCollection(json_input: $jsonInput) {
-      data
-      message
+    addPostToCollection(json_input: $jsonInput) {
       success
+      message
+      data
     }
   }
 `;
+
+export const RemoveVideoFromCollection = gql`
+  mutation Mutation($jsonInput: String!) {
+    removePostFromCollection(json_input: $jsonInput) {
+      success
+      message
+      data
+    }
+  }
+`
+
