@@ -215,8 +215,8 @@ function HomePage() {
                   ...tiktokContents.map((video, index) => {
                     return (
                       <TiktokCard
+                        page="CONTENT"
                         cardCheckboxSelected={cardCheckboxSelected}
-                        allCollections={User?.collections.length > 0 ? User?.collections : []}
                         video={video}
                         key={`t${index}`}
                         setCardCheckBoxSelected={setCardCheckBoxSelected}
@@ -325,8 +325,8 @@ const FilteredContents = ({ data, allCollections, cardCheckboxSelected, setCardC
             ),
             ...tiktokContents.map((video, index) => {
               return <TiktokCard
+                page="FILTER"
                 cardCheckboxSelected={cardCheckboxSelected}
-                allCollections={allCollections}
                 video={video}
                 key={`${video.id}`}
                 setCardCheckBoxSelected={setCardCheckBoxSelected}

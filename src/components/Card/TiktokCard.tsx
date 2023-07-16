@@ -32,12 +32,15 @@ import {
   useEffect,
   useRef,
   useState,
+  useContext,
 } from "react";
 import { CreateUserCollection, GetUserCollection } from "@/query/user";
 import { useMutation, useQuery } from "@apollo/client";
 import { AddVideoToCollection } from "@/query/tiktok";
 import { handleDownload } from "@/utils";
 import { shortenNumber, timeAgo } from "@/utils/data-modifier";
+import { UserContext } from "@/App";
+import { User } from "@/interfaces/user.interface";
 type cardCheckboxSelected = {
   ids: {
     posts: string[];
@@ -53,15 +56,15 @@ type cardCheckboxSelected = {
   };
 };
 const TiktokCard = ({
+  page,
   video,
   cardCheckboxSelected,
-  allCollections,
   setCardCheckBoxSelected,
   deleteInstagramContents,
 }: {
+  page: string;
   video: any;
   cardCheckboxSelected: cardCheckboxSelected;
-  allCollections: any[];
   setCardCheckBoxSelected: (data: any) => void;
   deleteInstagramContents: (data: {
     posts: string[];
@@ -72,9 +75,10 @@ const TiktokCard = ({
 }) => {
   const checkBoxRef = useRef<HTMLInputElement>(null);
   const [showVideo, setShowVideo] = useState(false);
-  const [collections, setCollections] = useState<any[]>(allCollections);
+  const [collections, setCollections] = useState<any[]>([]);
   const [textSearch, setTextSearch] = useState("");
   const [selectedCheckboxes, setSelectedCheckboxes] = useState<any[]>([]);
+  const User = useContext(UserContext) as User;
   const [
     createCollection,
     {
@@ -95,7 +99,7 @@ const TiktokCard = ({
   function handleChange(e: SyntheticEvent<HTMLInputElement>) {
     setTextSearch(e.currentTarget.value);
     setCollections(
-      allCollections.filter((item: any) => {
+      User.collections.filter((item: any) => {
         return item.name.includes(e.currentTarget.value);
       })
     );
@@ -237,7 +241,7 @@ const TiktokCard = ({
             onClose={() => {
               setCollections([]);
             }}
-            onOpen={() => setCollections(allCollections)}
+            onOpen={() => setCollections(User.collections)}
             closeOnSelect={false}
           >
             <MenuButton>
@@ -272,7 +276,7 @@ const TiktokCard = ({
                     isDisabled={!!collections.length}
                     onClick={() => {
                       setTextSearch("");
-                      setCollections(allCollections);
+                      setCollections(User.collections);
                       createCollection({
                         variables: {
                           jsonInput: JSON.stringify({
@@ -370,7 +374,9 @@ const TiktokCard = ({
                 })
               }
             >
-              Delete from Library
+              {page === "COLLECTION" && "Remove from collection" ||
+                page === "CONTENT" && "Delete from Library"
+              }
             </MenuItem>
           </MenuList>
         </Menu>

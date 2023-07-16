@@ -20,6 +20,8 @@ import {
   ModifyCollectionInstaContents,
   ModifyCollectionTikTokContents,
 } from "@/utils/data-modifier";
+import { InstagramCollectionMutation } from "@/query/instagram";
+import { RemoveVideoFromCollection } from "@/query/tiktok";
 type cardCheckboxSelectedType = {
   ids: {
     posts: string[];
@@ -98,9 +100,9 @@ function Collection() {
   useEffect(() => {
     setDeleteCount(
       cardCheckboxSelected.ids.posts.length +
-        cardCheckboxSelected.ids.reels.length +
-        cardCheckboxSelected.ids.stories.length +
-        cardCheckboxSelected.ids.videos.length
+      cardCheckboxSelected.ids.reels.length +
+      cardCheckboxSelected.ids.stories.length +
+      cardCheckboxSelected.ids.videos.length
     );
   }, [cardCheckboxSelected]);
 
@@ -172,6 +174,47 @@ function Collection() {
       });
   };
 
+  const RemoveFromCollection = async ({ collectionId, contentIds, type }:
+    { collectionId: string; contentIds: string[]; type: "post" | "reel" | "story" | "video"; }) => {
+    let variables: any = {
+      collectionId: collectionId,
+    };
+    type === "post" && (variables.postId = contentIds);
+    type === "reel" && (variables.reelId = contentIds);
+    type === "story" && (variables.storyId = contentIds);
+    type === "video" && (variables.videoId = contentIds);
+
+    const response = await client.mutate({
+      mutation: type === "post" ? InstagramCollectionMutation.removePostFromCollection : type === "reel" ? InstagramCollectionMutation.removeReelFromCollection : type === "story" ? InstagramCollectionMutation.removeStoryFromCollection : RemoveVideoFromCollection,
+      variables: {
+        jsonInput: JSON.stringify(variables),
+      },
+    })
+
+    const { success, message, data: resData } = response.data[type === "post" ? "removePostFromCollection" : type === "reel" ? "removeReelFromCollection" : type === "story" ? "removeStoryFromCollection" : "removeVideoFromCollection"];
+
+    if (success) {
+      if (type === "post" || type === "reel" || type === "story") {
+        const newInstagramContents = instagramContents.filter(
+          (content) => !contentIds.includes(content.id)
+        );
+        setInstagramContents(newInstagramContents);
+      } else {
+        const newTiktokContents = tiktokContents.filter(
+          (content) => !contentIds.includes(content.id)
+        );
+        setTiktokContents(newTiktokContents);
+      }
+    }
+    toast({
+      title: success ? "Success" : "Error",
+      description: message,
+      status: success ? "success" : "error",
+      duration: 5000,
+      isClosable: true,
+    });
+  };
+
   if (loading) {
     return <Loading />;
   }
@@ -209,9 +252,11 @@ function Collection() {
                 ...tiktokContents.map((video, index) => {
                   return (
                     <TiktokCard
+                      page="COLLECTION"
                       cardCheckboxSelected={cardCheckboxSelected}
                       setCardCheckBoxSelected={setCardCheckBoxSelected}
                       deleteInstagramContents={deleteInstagramContents}
+
                       video={video}
                       key={`t${index}`}
                     />
