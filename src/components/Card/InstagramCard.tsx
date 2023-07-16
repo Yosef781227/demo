@@ -25,6 +25,7 @@ import {
   Plus,
   PlayCircle,
 } from "@phosphor-icons/react";
+import play from "@assets/images/play.ico"
 import { Dispatch, SetStateAction, useRef, useState, SyntheticEvent, ChangeEvent, useEffect, useContext } from "react";
 import { CreateUserCollection, GetUserCollection } from "@/query/user";
 import { useMutation, useQuery } from "@apollo/client";
@@ -160,7 +161,19 @@ function InstagramCard({
             getAccess(data)
           ) : (
             <>
-              <IconButton
+              <Box
+                position={"absolute"}
+                top={"calc(50% - 25px)"}
+                left={"calc(50% - 25px)"}
+                onClick={() => setShowVideo(true)}
+                aria-label="start video">
+
+                <svg width="33" height="32" viewBox="0 0 33 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="0.666992" width="32" height="32" rx="16" fill="#8B5CF6" />
+                  <path d="M24.001 16C24.0014 16.1698 23.9579 16.3368 23.8746 16.4847C23.7914 16.6327 23.6713 16.7566 23.526 16.8444L14.521 22.3531C14.3692 22.4461 14.1953 22.4969 14.0173 22.5001C13.8393 22.5034 13.6636 22.4592 13.5085 22.3719C13.3548 22.286 13.2268 22.1606 13.1376 22.0088C13.0484 21.857 13.0012 21.6842 13.001 21.5081V10.4919C13.0012 10.3158 13.0484 10.143 13.1376 9.99118C13.2268 9.83937 13.3548 9.71406 13.5085 9.62813C13.6636 9.54085 13.8393 9.49657 14.0173 9.49987C14.1953 9.50316 14.3692 9.55391 14.521 9.64688L23.526 15.1556C23.6713 15.2434 23.7914 15.3673 23.8746 15.5153C23.9579 15.6633 24.0014 15.8302 24.001 16Z" fill="white" />
+                </svg>
+              </Box>
+              {/* <Button
                 position={"absolute"}
                 top={"calc(50% - 25px)"}
                 size={"lg"}
@@ -168,8 +181,17 @@ function InstagramCard({
                 onClick={() => setShowVideo(true)}
                 aria-label="start video"
                 shadow={"2xl"}
-                icon={<PlayCircle size={50} />}
-              />
+                borderRadius={"full"}
+                width={"max-content"}
+                height={"max-content"}
+                colorScheme='teal' variant='outline'
+              >
+                <svg width="33" height="32" viewBox="0 0 33 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="0.666992" width="32" height="32" rx="16" fill="#8B5CF6" />
+                  <path d="M24.001 16C24.0014 16.1698 23.9579 16.3368 23.8746 16.4847C23.7914 16.6327 23.6713 16.7566 23.526 16.8444L14.521 22.3531C14.3692 22.4461 14.1953 22.4969 14.0173 22.5001C13.8393 22.5034 13.6636 22.4592 13.5085 22.3719C13.3548 22.286 13.2268 22.1606 13.1376 22.0088C13.0484 21.857 13.0012 21.6842 13.001 21.5081V10.4919C13.0012 10.3158 13.0484 10.143 13.1376 9.99118C13.2268 9.83937 13.3548 9.71406 13.5085 9.62813C13.6636 9.54085 13.8393 9.49657 14.0173 9.49987C14.1953 9.50316 14.3692 9.55391 14.521 9.64688L23.526 15.1556C23.6713 15.2434 23.7914 15.3673 23.8746 15.5153C23.9579 15.6633 24.0014 15.8302 24.001 16Z" fill="white" />
+                </svg>
+
+              </Button> */}
               <Image src={data?.ig_content?.display_url} />
             </>
           )
