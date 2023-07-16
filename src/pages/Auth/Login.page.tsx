@@ -4,7 +4,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@chakra-ui/react";
 import { BASE_URL } from "@/constants";
-import { Text, Heading, VStack, FormHelperText,Button } from "@chakra-ui/react";
+import { Text, Heading, VStack, FormHelperText, Button } from "@chakra-ui/react";
 import logo from "@assets/logo.svg";
 import google from "@assets/google.svg";
 import { NavLink } from "react-router-dom";
@@ -204,6 +204,7 @@ function LoginPage() {
       });
     } finally {
       setLoading(false);
+      // to="/signup"
     }
   };
 
@@ -212,38 +213,37 @@ function LoginPage() {
 
   return (
     <AuthContainer>
-      <img src={logo} alt="" />
-      <RowContainer>
-        <Heading lineHeight={1} fontSize={"2xl"}>
+      <img src={logo} alt="Skim_social" />
+      <VStack>
+        <Heading lineHeight={1} fontSize={"3xl"} mt={8}>
           Sign in
         </Heading>
-        <Text fontSize={"sm"}>
-          Create a new account?{" "}
+        <Text fontSize={"sm"} pt={2}>
+          account?{" "}
           <ChakraNavLink
-            color="#8447EE"
+            color={"primary.600"}
             textDecoration={"underline"}
             to="/signup"
           >
-            Sign up
+            Sign in
           </ChakraNavLink>
         </Text>
-      </RowContainer>
-      <RowContainer>
+      </VStack>
+      <VStack gap={3}>
         <FormRow
           placeholder="janedoe@gmail.com"
           type="email"
-          label="work Email"
+          label="Email"
           onChange={(e) => {
             setEmail(e.target.value);
           }}
         />
         <FormRow
-        
-          placeholder="password"
+
           helperElement={
             <FormHelperText color={"primary.800"}>
               <ChakraNavLink
-                color={"primary.900"}
+                color={"primary.500"}
                 textDecoration={"underline"}
                 to="/reset-password"
                 mt={10}
@@ -252,50 +252,55 @@ function LoginPage() {
               </ChakraNavLink>
             </FormHelperText>
           }
+          placeholder="*********"
           type="password"
-          label="password"
+          label="Password"
           onChange={(e) => {
             setPassword(e.target.value);
           }}
         />
-      </RowContainer>
-      <RowContainer >
-        <Button mt={6} onClick={LoginWithEmail} colorScheme="purple" width={"740px"} h={"45px"}>Continue</Button>
-        <Button 
-      
-          mt={10}
-         width={"740px"} h={"45px"}
+      </VStack>
+      <VStack gap={3}>
+        <Button
+          mt={6}
+          onClick={LoginWithEmail}
+          colorScheme="primary"
+          width={"440px"}
+          h={"40px"}
+          borderRadius={"9px"}
+          fontWeight={"normal"}>
+          Continue
+        </Button>
+        <Button
+          w={"440px"}
+          h={"40px"}
+          borderRadius={"9px"}
+          colorScheme="primary"
           isLoading={loading}
           leftIcon={<img alt="logo" src={google} />}
           variant={"outline"}
-          onClick={ (e) => {
+          onClick={(e) => {
             login();
-          }} 
-          
+          }}
+
         >
 
           Sign In with Google
-          
-          </Button>
-      </RowContainer>
-      <Text
-        align={"center"}
-        fontSize={"sm"}
-        fontWeight={"thin"}
-        color="#525252"
-      >
-        You also agree to receive product-related marketing emails from
-        WildSocial, which you can unsubscribe from at any time.
-      </Text>
+
+        </Button>
+      </VStack >
+      <VStack w={"430px"} pt={"10px"} gap={0}>
+        <Text fontSize={"sm"}>You also agree to receive product-related marketing emails from</Text>
+        <Text fontSize={"sm"} pt={0} >WildSocial, which you can unsubscribe from at any time.</Text>
+
+      </VStack>
+
+
+
+
     </AuthContainer>
   );
 }
-function RowContainer({ children }: { children: React.ReactNode }) {
-  return (
-    <VStack w="full" m={"10"}>
-      {children}
-    </VStack>
-  );
-}
+
 
 export default LoginPage;

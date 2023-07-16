@@ -178,7 +178,7 @@ function HomePage() {
         user={User}
       />
 
-      <Container >
+      <Container>
         <HomePageTopNavBar
           changeTiktokAcount={changeTiktokAcount}
           changeAccount={changeAcount}
@@ -195,7 +195,7 @@ function HomePage() {
             setCardCheckBoxSelected={setCardCheckBoxSelected}
           />
         ) : (
-          <Box bg="#FAFAFA" px={5} pb={8} minH={"100vh"} width={"100%"}>
+          <Box bg="neutral.100" px={5} minH={"100vh"} width={"100%"} >
             <ResponsiveMasonry
               columnsCountBreakPoints={{ 575: 1, 720: 2, 900: 3, 1300: 4 }}
             >

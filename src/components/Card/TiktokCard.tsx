@@ -123,11 +123,10 @@ const TiktokCard = ({
       mt={"20px"}
       height={"auto"}
       overflow={"hidden"}
-      // minW={"18vw"}
-      // maxW={"max-content"}
       display={"inline-block"}
       border={"1px solid #EDEDED"}
       backgroundColor={"white"}
+
       rounded={"xl"}
       boxShadow={"0px 8px 8px -4px rgba(16, 24, 40, 0.03);"}
     >

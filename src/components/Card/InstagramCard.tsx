@@ -134,6 +134,7 @@ function InstagramCard({
       backgroundColor={"white"}
       rounded={"xl"}
       boxShadow={"0px 8px 8px -4px rgba(16, 24, 40, 0.03);"}
+
     >
       <HStack px={4} mt={2} py={2} flex="1" justify={"space-between"}>
         <HStack>

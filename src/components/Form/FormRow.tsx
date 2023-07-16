@@ -27,7 +27,7 @@ function FormRow({
   return (
     <FormControl>
       <FormLabel fontSize={"1rem"}>{label}</FormLabel>
-      <Input fontSize={"sm"} placeholder={placeholder} type={type} ref={ref} onChange={onChange} />
+      <Input fontSize={"sm"} placeholder={placeholder} type={type} ref={ref} onChange={onChange} height={"40px"} w={"440px"} borderRadius={"9px"} />
       {helperElement}
 
       {error && <FormErrorMessage>{error}</FormErrorMessage>}

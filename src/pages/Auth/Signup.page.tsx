@@ -1,4 +1,4 @@
-import { Text, Heading, VStack, Button } from "@chakra-ui/react";
+import { Text, Heading, VStack, Button, Link } from "@chakra-ui/react";
 import logo from "@assets/logo.svg";
 import google from "@assets/google.svg";
 import { NavLink, useNavigate } from "react-router-dom";
@@ -57,7 +57,7 @@ function SignupPage() {
       if (response.data.data.varifyEmail.success) {
         navigate("/login");
       }
-    } catch (error) {}
+    } catch (error) { }
   };
   useEffect(() => {
     const token = window.location.href.split("token=")[1];
@@ -123,7 +123,7 @@ function SignupPage() {
         } else {
           setError(response.data.errors[0].message);
         }
-      } catch (error) {}
+      } catch (error) { }
     } catch (error: any) {
       //setError(true);
     }
@@ -132,24 +132,24 @@ function SignupPage() {
   return (
     <AuthContainer>
       <img src={logo} alt="" />
-      <RowContainer>
-        <Heading lineHeight={1} fontSize={"3xl"}>
+      <VStack>
+        <Heading lineHeight={1} fontSize={"3xl"} mt={8}>
           Signup
         </Heading>
-        <Text fontSize={"sm"}>
+        <Text fontSize={"sm"} pt={2}>
           Already Have an account?{" "}
           <ChakraNavLink
-            color={"primary.900"}
+            color={"blue"}
             textDecoration={"underline"}
             to="/login"
           >
-            Signin
+            Sign in
           </ChakraNavLink>
         </Text>
-      </RowContainer>
-      <RowContainer>
+      </VStack>
+      <VStack pt={"15px"} w={"440px"}>
         <FormRow
-          placeholder="Name"
+          placeholder="Jane Doe"
           type="text"
           label="Name"
           onChange={(e) => setName(e.target.value)}
@@ -167,48 +167,56 @@ function SignupPage() {
           label="password"
           onChange={(e) => setPassword(e.target.value)}
         />
-      </RowContainer>
+      </VStack>
 
-      <RowContainer>
-        <Text ml={"30px"} mt={5}>
-          By continuing, you agree to our Terms Of Service, Privacy Policy, and
-          give us permission to  <Text mt={"5px"} ml={"80px"}>engage  with your brand’s online  community on
-          your behalf.</Text>
+      <VStack w={"420px"} pt={"10px"} gap={0}>
+        <Text fontSize={"sm"}>
+          By continuing, you agree to our{" "}
+          <Link href="" textDecoration="underline">Terms Of Service</Link>, {" "}
+          <Link href="" textDecoration="underline">Privacy Policy</Link>,
         </Text>
-      </RowContainer>
+        <Text fontSize={"sm"} >and give us permission to  engage  with your brand’s online </Text>
+        <Text fontSize={"sm"} >community on your behalf.</Text>
+      </VStack>
 
-      <RowContainer>
+      <VStack>
         <Button
           mt={6}
           onClick={signup}
-          colorScheme="purple"
-          width={"740px"}
-          h={"45px"}
+          colorScheme="primary"
+          width={"440px"}
+          h={"40px"}
+          borderRadius={"9px"}
+          fontWeight={"normal"}
         >
-          Agree to Sign Up
+          Agree {" "} and {" "} Sign Up
         </Button>
-       </RowContainer>
-       <RowContainer>
+      </VStack>
+      <VStack>
         <Button
-          mt={5}
-          width={"740px"}
-          h={"45px"}
+          mt={3}
+          width={"440px"}
+          h={"40px"}
+          borderRadius={"9px"}
           isLoading={loading}
           leftIcon={<img alt="logo" src={google} />}
           variant={"outline"}
+          fontWeight={"normal"}
         >
           Sign In with Google
         </Button>
-      </RowContainer>
-      <Text pt={5} align={"center"} fontWeight={"thin"} color="#525252">
-        You also agree to receive product-related marketing emails from
-        WildSocial, which you can unsubscribe from at any time.
-      </Text>
+      </VStack>
+      <VStack w={"430px"} pt={"10px"} gap={0}>
+        <Text fontSize={"sm"}>You also agree to receive product-related marketing emails from</Text>
+        <Text fontSize={"sm"} >WildSocial, which you can unsubscribe from at any time.</Text>
+
+      </VStack>
+
     </AuthContainer>
   );
 }
-function RowContainer({ children }: { children: React.ReactNode }) {
-  return <VStack w="full">{children}</VStack>;
-}
+// function RowContainer({ children }: { children: React.ReactNode }) {
+//   return <VStack w="full">{children}</VStack>;
+// }
 
 export default SignupPage;
