@@ -48,35 +48,7 @@ function HomePage() {
   const [tiktokContents, setTiktokContents] = useState<any[]>([]);
   const [filterLoading, setFilterLoading] = useState<boolean>(false);
   const toast = useToast();
-  const [filterState, dispatch] = useReducer(
-    reducer,
-    {
-      postType: ["post", "reel", "story", "video"],
-      verified: 2,
-      usageRight: ["PENDING", "APPROVED", "REJECTED", "DEFAULT"],
-      contentType: 2,
-      postDateRange: {
-        startDate: Math.floor(previousMonthDate.getTime() / 1000),
-        endDate: Math.floor(currentDate.getTime() / 1000),
-      },
-      collectionInclude:
-        User?.collections?.map((collection) => collection.name) ?? [],
-      collectionExclude: [],
-      userNames:
-        User.instagrams?.map((instagram: any) => instagram.username) || [],
-      uniqueIds: User?.tiktoks?.map((tiktok: any) => tiktok.uniqueId) || [],
-    },
-    (state) => {
-      return {
-        ...state,
-        initialState: {
-          ...state,
-        },
-      };
-    }
-  );
 
-  const [applyFilterState, setApplyFilterState] = useState<any>(null);
   const {
     isOpen: isFilterOpen,
     onOpen: onFilterOpen,
@@ -173,7 +145,6 @@ function HomePage() {
           setTiktokContents(newTiktokContents);
         }
       }
-      console.log(res)
       toast({
         title: res.data.deleteContents.success ? "Success" : "Error",
         description: res.data.deleteContents.message,
@@ -233,7 +204,6 @@ function HomePage() {
                   ...instagramContents.map((instadata, i) => {
                     return (
                       <InstagramCard
-                        allCollections={User.collections}
                         cardCheckboxSelected={cardCheckboxSelected}
                         setCardCheckBoxSelected={setCardCheckBoxSelected}
                         data={instadata}
@@ -344,7 +314,6 @@ const FilteredContents = ({ data, allCollections, cardCheckboxSelected, setCardC
                     <InstagramCard
                       data={instadata}
                       cardCheckboxSelected={cardCheckboxSelected}
-                      allCollections={allCollections}
                       key={`a${i}c${index}`}
                       setCardCheckBoxSelected={setCardCheckBoxSelected}
                       deleteInstagramContents={deleteInstagramContents}

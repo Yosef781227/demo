@@ -325,7 +325,7 @@ const TiktokCard = ({
       </Box>
 
       <HStack px={4} justify={"space-between"} h={"50px"}>
-        <Text>{timeAgo(new Date(+video.timestamp * 1000))}</Text>
+        <Text>{+video.timestamp === 0 ? "Unknown Time" : timeAgo(new Date(+video.timestamp * 1000))}</Text>
         <Menu direction="rtl">
           <MenuButton>
             <DotsThreeOutline size={24} color="black" weight="fill" />

@@ -25,16 +25,16 @@ import {
   Plus,
   PlayCircle,
 } from "@phosphor-icons/react";
-import { Dispatch, SetStateAction, useRef, useState, SyntheticEvent, ChangeEvent } from "react";
+import { Dispatch, SetStateAction, useRef, useState, SyntheticEvent, ChangeEvent, useEffect, useContext } from "react";
 import { CreateUserCollection, GetUserCollection } from "@/query/user";
 import { useMutation, useQuery } from "@apollo/client";
 import { InstagramCollectionMutation } from "@/query/instagram";
 import { handleDownload } from "@/utils";
 import { shortenNumber, timeAgo } from "@/utils/data-modifier";
 import client from "@/client";
-import { da } from "date-fns/locale";
-import { set } from "date-fns";
-import { all } from "axios";
+import { UserContext } from "@/App";
+import { User } from "@/interfaces/user.interface";
+
 type cardCheckboxSelected = {
   ids: {
     posts: string[];
@@ -51,13 +51,11 @@ type cardCheckboxSelected = {
 };
 function InstagramCard({
   data,
-  allCollections,
   cardCheckboxSelected,
   setCardCheckBoxSelected,
   deleteInstagramContents,
 }: {
   data: any;
-  allCollections: any[];
   cardCheckboxSelected: cardCheckboxSelected;
   setCardCheckBoxSelected: (data: any) => void;
   deleteInstagramContents: (data: {
@@ -67,9 +65,10 @@ function InstagramCard({
     videos: string[];
   }) => void;
 }) {
+  const User = useContext(UserContext) as User;
   const [showVideo, setShowVideo] = useState(false);
   const checkBoxRef = useRef<HTMLInputElement>(null);
-  const [collections, setCollections] = useState<any[]>(allCollections);
+  const [collections, setCollections] = useState<any[]>([]);
   const [textSearch, setTextSearch] = useState("");
   const [selectedCheckboxes, setSelectedCheckboxes] = useState<any[]>([]);
 
@@ -82,10 +81,20 @@ function InstagramCard({
     },
   ] = useMutation(CreateUserCollection);
 
+  useEffect(() => {
+    if (createCollectionData?.createCollection) {
+      User.setCollections((prev: any) => [...prev, {
+        id: createCollectionData?.createCollection?.data?.id,
+        name: createCollectionData?.createCollection?.data?.name,
+      }])
+      console.log(User.collections, User.collections)
+    }
+  }, [createCollectionData])
+
   function handleChange(e: SyntheticEvent<HTMLInputElement>) {
     setTextSearch(e.currentTarget.value);
     setCollections(
-      allCollections.filter((item: any) => {
+      User.collections.filter((item: any) => {
         return item.name.includes(e.currentTarget.value);
       })
     );
@@ -224,7 +233,7 @@ function InstagramCard({
           />
           <Menu
             onClose={() => { setCollections([]) }}
-            onOpen={() => { setCollections(allCollections) }}
+            onOpen={() => { setCollections(User.collections) }}
             closeOnSelect={false}
           >
             <MenuButton>
@@ -259,7 +268,7 @@ function InstagramCard({
                     isDisabled={!!collections.length}
                     onClick={() => {
                       setTextSearch("");
-                      setCollections(allCollections);
+                      setCollections(User.collections);
                       createCollection({
                         variables: {
                           jsonInput: JSON.stringify({
@@ -346,7 +355,7 @@ function InstagramCard({
       </Box>
 
       <HStack pb={5} px={5} justify={"space-between"}>
-        <Text>{timeAgo(new Date(+data.ig_content.taken_at * 1000))}</Text>
+        <Text>{+data.ig_content.taken_at === 0 ? "Unknown Time" : timeAgo(new Date(+data.ig_content.taken_at * 1000))}</Text>
         <Menu placement="bottom-end">
           <MenuButton>
             <DotsThreeOutline size={24} color="black" weight="fill" />

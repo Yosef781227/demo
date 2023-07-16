@@ -11,6 +11,7 @@ export interface User {
   tiktoks: any[];
   tiktokIndex: number;
   collections: any[];
+  setCollections: (value: any) => void;
   setHasInstagram: (value: boolean) => void;
   setInstagrams: (value: any[]) => void;
   setInstagramIndex: (value: number) => void;
