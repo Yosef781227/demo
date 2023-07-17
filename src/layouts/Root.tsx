@@ -2,7 +2,7 @@ import SideBar from "@/components/SideBar/SideBar";
 import { CSSReset } from "@chakra-ui/react";
 import { Outlet } from "react-router-dom";
 import { Global } from "@emotion/react";
-import Success from "@/components/messages/success";
+import SkimToast from "@/components/messages/skimtoast";
 
 function Root() {
   return (
@@ -30,7 +30,11 @@ function Root() {
       />
       <SideBar />
       <Outlet />
+<<<<<<< Updated upstream
       {/* <Success /> */}
+=======
+      <SkimToast />
+>>>>>>> Stashed changes
     </>
   );
 }

@@ -96,6 +96,214 @@
       transform: translate3d(38px, -84.4545px, 0px) !important;
     }
 
+    .notification,
+    .notification * {
+      box-sizing: border-box;
+    }
+
+    .notification {
+      background: var(--base-white, #ffffff);
+      border-radius: 12px;
+      border-style: solid;
+      border-color: var(--gray-200, #eaecf0);
+      border-width: 1px;
+      padding: 16px;
+      display: flex;
+      flex-direction: row;
+      gap: 16px;
+      align-items: flex-start;
+      justify-content: flex-start;
+      align-self: stretch;
+      flex-shrink: 0;
+      position: relative;
+      box-shadow: var(--shadow-lg-box-shadow,
+          0px 4px 6px -2px rgba(16, 24, 40, 0.03),
+          0px 12px 16px -4px rgba(16, 24, 40, 0.08));
+      overflow: hidden;
+    }
+
+    .content {
+      display: flex;
+      flex-direction: row;
+      gap: 16px;
+      align-items: flex-start;
+      justify-content: flex-start;
+      flex: 1;
+      position: relative;
+    }
+
+    .content2 {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      align-items: flex-start;
+      justify-content: flex-start;
+      flex: 1;
+      position: relative;
+    }
+
+    .featured-icon-outline {
+      border-radius: 20px;
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      position: relative;
+    }
+
+    .outline-inner {
+      border-radius: 24px;
+      border-style: solid;
+      border-color: var(--success-600, #079455);
+      border-width: 2px;
+      opacity: 0.30000001192092896;
+      width: 28px;
+      height: 28px;
+      position: absolute;
+      left: -4px;
+      top: -4px;
+      overflow: hidden;
+    }
+
+    .outline-outer {
+      border-radius: 24px;
+      border-style: solid;
+      border-color: var(--success-600, #079455);
+      border-width: 2px;
+      opacity: 0.10000000149011612;
+      width: 38px;
+      height: 38px;
+      position: absolute;
+      left: -9px;
+      top: -9px;
+      overflow: hidden;
+    }
+
+    .check-circle {
+      position: absolute;
+      left: 0px;
+      top: 0px;
+      overflow: visible;
+    }
+
+    .content3 {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      align-items: flex-start;
+      justify-content: flex-start;
+      align-self: stretch;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .text-and-supporting-text {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      align-items: flex-start;
+      justify-content: flex-start;
+      align-self: stretch;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .text {
+      color: var(--gray-900, #101828);
+      text-align: left;
+      font: var(--text-sm-bold, 700 14px/150% "Plus Jakarta Sans", sans-serif);
+      position: relative;
+      align-self: stretch;
+    }
+
+    .supporting-text {
+      color: var(--gray-600, #475467);
+      text-align: left;
+      font: var(--text-sm-regular, 400 14px/150% "Plus Jakarta Sans", sans-serif) !important;
+      position: relative;
+      align-self: stretch;
+    }
+
+    .actions {
+      display: flex;
+      flex-direction: row;
+      gap: 12px;
+      align-items: flex-start;
+      justify-content: flex-start;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .button {
+      border-radius: 8px;
+      border-style: solid;
+      border-color: var(--neutral-100, #f5f5f5);
+      border-width: 1px;
+      padding: 0px 12px 0px 12px;
+      display: flex;
+      flex-direction: row;
+      gap: 8px;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      height: 32px;
+      position: relative;
+    }
+
+    .children {
+      color: var(--neutral-600, #525252);
+      text-align: left;
+      font: var(--text-sm-medium, 500 14px/150% "Plus Jakarta Sans", sans-serif);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    .button2 {
+      background: var(--primary-400, #8b5cf6);
+      border-radius: 8px;
+      padding: 0px 12px 0px 12px;
+      display: flex;
+      flex-direction: row;
+      gap: 8px;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      height: 32px;
+      position: relative;
+    }
+
+    .children2 {
+      color: var(--white, #ffffff);
+      text-align: left;
+      font: var(--text-sm-medium, 500 14px/150% "Plus Jakarta Sans", sans-serif);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    .button-close-x {
+      border-radius: 8px;
+      padding: 8px;
+      display: flex;
+      flex-direction: row;
+      gap: 0px;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      position: absolute;
+      right: 8px;
+      top: 8px;
+      overflow: hidden;
+    }
+
+    .x-close {
+      flex-shrink: 0;
+      position: relative;
+      overflow: visible;
+    }
+
   </style>
 </head>
 
