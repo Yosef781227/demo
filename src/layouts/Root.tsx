@@ -30,11 +30,7 @@ function Root() {
       />
       <SideBar />
       <Outlet />
-<<<<<<< Updated upstream
-      {/* <Success /> */}
-=======
       <SkimToast />
->>>>>>> Stashed changes
     </>
   );
 }

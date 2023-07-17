@@ -33,8 +33,9 @@ import { InstagramCollectionMutation } from "@/query/instagram";
 import { handleDownload } from "@/utils";
 import { shortenNumber, timeAgo } from "@/utils/data-modifier";
 import client from "@/client";
-import { UserContext } from "@/App";
+import { MessageContext, UserContext } from "@/App";
 import { User } from "@/interfaces/user.interface";
+import { Message, MessageType } from "@/interfaces/message";
 
 type cardCheckboxSelected = {
   ids: {
@@ -76,6 +77,7 @@ function InstagramCard({
   const [collections, setCollections] = useState<any[]>([]);
   const [textSearch, setTextSearch] = useState("");
   const [selectedCheckboxes, setSelectedCheckboxes] = useState<any[]>([]);
+  const messageToast = useContext(MessageContext) as Message;
 
   const [
     createCollection,
@@ -104,6 +106,7 @@ function InstagramCard({
       })
     );
   }
+
   const handleAddTo = async () => {
     for (const item of selectedCheckboxes) {
       let variables: any = {
@@ -120,9 +123,17 @@ function InstagramCard({
       });
       const { success, message, data: resData } = response.data[data.type === "post" ? "addPostToCollection" : data.type === "reel" ? "addReelToCollection" : "addStoryToCollection"];
       if (success) {
-
+        messageToast.setType(MessageType.SUCCESS);
+        messageToast.setMessage(message as string);
+        messageToast.setTimeout(3000);
+        messageToast.setTitle("Success");
+        messageToast.setIsShow(true);
       } else {
-
+        messageToast.setType(MessageType.ERROR);
+        messageToast.setMessage(message as string);
+        messageToast.setTimeout(3000);
+        messageToast.setTitle("Error");
+        messageToast.setIsShow(true);
       }
     }
   }

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Button, Slide, VStack, Image, Text, Flex } from '@chakra-ui/react';
+import React, { useEffect } from 'react';
+import { Box, Button, Slide, Text, Flex } from '@chakra-ui/react';
 import { MessageContext } from '@/App';
 import { Message, MessageType } from '@/interfaces/message';
 

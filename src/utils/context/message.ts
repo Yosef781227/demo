@@ -6,7 +6,7 @@ const useMessage = () => {
     const [timeout, setTimeout] = useState<number>(3000);
     const [title, setTitle] = useState<string>("Successfully updated profile");
     const [message, setMessage] = useState<string>("Your changes have been saved and your profile is live. Your team can make edits.");
-    const [isShow, setIsShow] = useState<boolean>(true);
+    const [isShow, setIsShow] = useState<boolean>(false);
     return {
         type,
         timeout,
