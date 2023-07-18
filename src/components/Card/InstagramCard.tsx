@@ -25,8 +25,17 @@ import {
   Plus,
   PlayCircle,
 } from "@phosphor-icons/react";
-import play from "@assets/images/play.ico"
-import { Dispatch, SetStateAction, useRef, useState, SyntheticEvent, ChangeEvent, useEffect, useContext } from "react";
+import play from "@assets/images/play.ico";
+import {
+  Dispatch,
+  SetStateAction,
+  useRef,
+  useState,
+  SyntheticEvent,
+  ChangeEvent,
+  useEffect,
+  useContext,
+} from "react";
 import { CreateUserCollection, GetUserCollection } from "@/query/user";
 import { useMutation, useQuery } from "@apollo/client";
 import { InstagramCollectionMutation } from "@/query/instagram";
@@ -63,14 +72,25 @@ function InstagramCard({
   page: string;
   cardCheckboxSelected: cardCheckboxSelected;
   setCardCheckBoxSelected: (data: any) => void;
-  deleteInstagramContents: ((data: {
-    posts: string[];
-    reels: string[];
-    stories: string[];
-    videos: string[];
-  }) => void) | null;
-  RemoveFromCollection: (({ contentId, type }: { contentId: string; type: "post" | "reel" | "story" | "video"; }) => Promise<void>) | null;
+  deleteInstagramContents:
+    | ((data: {
+        posts: string[];
+        reels: string[];
+        stories: string[];
+        videos: string[];
+      }) => void)
+    | null;
+  RemoveFromCollection:
+    | (({
+        contentId,
+        type,
+      }: {
+        contentId: string;
+        type: "post" | "reel" | "story" | "video";
+      }) => Promise<void>)
+    | null;
 }) {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const User = useContext(UserContext) as User;
   const [showVideo, setShowVideo] = useState(false);
   const checkBoxRef = useRef<HTMLInputElement>(null);
@@ -90,13 +110,16 @@ function InstagramCard({
 
   useEffect(() => {
     if (createCollectionData?.createCollection) {
-      User.setCollections((prev: any) => [...prev, {
-        id: createCollectionData?.createCollection?.data?.id,
-        name: createCollectionData?.createCollection?.data?.name,
-      }])
-      console.log(User.collections, User.collections)
+      User.setCollections((prev: any) => [
+        ...prev,
+        {
+          id: createCollectionData?.createCollection?.data?.id,
+          name: createCollectionData?.createCollection?.data?.name,
+        },
+      ]);
+      console.log(User.collections, User.collections);
     }
-  }, [createCollectionData])
+  }, [createCollectionData]);
 
   function handleChange(e: SyntheticEvent<HTMLInputElement>) {
     setTextSearch(e.currentTarget.value);
@@ -107,8 +130,8 @@ function InstagramCard({
     );
   }
 
-
   const handleAddTo = async () => {
+    setIsMenuOpen(false);
     for (const item of selectedCheckboxes) {
       let variables: any = {
         collectionId: item.id,
@@ -117,12 +140,27 @@ function InstagramCard({
       data.type === "reel" && (variables.reelId = data.id);
       data.type === "story" && (variables.storyId = data.id);
       const response = await client.mutate({
-        mutation: data.type === "post" ? InstagramCollectionMutation.addPostToCollection : data.type === "reel" ? InstagramCollectionMutation.addReelToCollection : InstagramCollectionMutation.addStoryToCollection,
+        mutation:
+          data.type === "post"
+            ? InstagramCollectionMutation.addPostToCollection
+            : data.type === "reel"
+            ? InstagramCollectionMutation.addReelToCollection
+            : InstagramCollectionMutation.addStoryToCollection,
         variables: {
           jsonInput: JSON.stringify(variables),
         },
       });
-      const { success, message, data: resData } = response.data[data.type === "post" ? "addPostToCollection" : data.type === "reel" ? "addReelToCollection" : "addStoryToCollection"];
+      const {
+        success,
+        message,
+        data: resData,
+      } = response.data[
+        data.type === "post"
+          ? "addPostToCollection"
+          : data.type === "reel"
+          ? "addReelToCollection"
+          : "addStoryToCollection"
+      ];
       if (success) {
         messageToast.setType(MessageType.SUCCESS);
         messageToast.setMessage("Content added to collection successfully");
@@ -133,18 +171,17 @@ function InstagramCard({
         // messageToast.setOnButtonClick((data: any) => {
         //   alert("View Collection")
         // })
-        messageToast.setHasButton(true);
+        // messageToast.setHasButton(true);
       } else {
         messageToast.setType(MessageType.ERROR);
         messageToast.setMessage(message as string);
         messageToast.setTimeout(3000);
         messageToast.setTitle("Error");
-        messageToast.setIsShow(true);
+        // messageToast.setIsShow(true);
         // messageToast.buttonLabel = "View Collection";
-
       }
     }
-  }
+  };
 
   return (
     <VStack
@@ -158,7 +195,6 @@ function InstagramCard({
       backgroundColor={"white"}
       rounded={"xl"}
       boxShadow={"0px 8px 8px -4px rgba(16, 24, 40, 0.03);"}
-
     >
       <HStack px={4} mt={2} py={2} flex="1" justify={"space-between"}>
         <HStack>
@@ -168,7 +204,9 @@ function InstagramCard({
           ></Avatar>
           <VStack align={"start"}>
             <Text lineHeight={0.8}>{data.owner_full_name} </Text>
-            <Text lineHeight={0.8}>{shortenNumber(data.owner_followers)} followers</Text>
+            <Text lineHeight={0.8}>
+              {shortenNumber(data.owner_followers)} followers
+            </Text>
           </VStack>
         </HStack>
         <img width={"20"} src={instagram} alt="social media icon" />
@@ -188,10 +226,18 @@ function InstagramCard({
                 aria-label="start video"
                 cursor={"pointer"}
               >
-
-                <svg width="47" height="44" viewBox="0 0 47 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg
+                  width="47"
+                  height="44"
+                  viewBox="0 0 47 44"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
                   <rect width="47" height="44" rx="22" fill="#8B5CF6" />
-                  <path d="M30.6812 21.1597C31.3227 21.5436 31.3316 22.4701 30.6974 22.8661L20.9225 28.9705C20.2601 29.3842 19.4003 28.9128 19.3929 28.1319L19.2781 16.1107C19.2707 15.3297 20.1213 14.842 20.7915 15.243L30.6812 21.1597Z" fill="white" />
+                  <path
+                    d="M30.6812 21.1597C31.3227 21.5436 31.3316 22.4701 30.6974 22.8661L20.9225 28.9705C20.2601 29.3842 19.4003 28.9128 19.3929 28.1319L19.2781 16.1107C19.2707 15.3297 20.1213 14.842 20.7915 15.243L30.6812 21.1597Z"
+                    fill="white"
+                  />
                 </svg>
               </Box>
 
@@ -264,11 +310,23 @@ function InstagramCard({
             icon={<DownloadSimple size={30} color="white" weight="bold" />}
           />
           <Menu
-            onClose={() => { setCollections([]) }}
-            onOpen={() => { setCollections(User.collections) }}
             closeOnSelect={false}
+            onClose={() => {
+              setIsMenuOpen(false);
+              setCollections([]);
+            }}
+            // in
+            onOpen={() => {
+              setCollections(User.collections);
+              setIsMenuOpen(true);
+            }}
+            isOpen={isMenuOpen}
           >
-            <MenuButton>
+            <MenuButton
+              onClick={() => {
+                setIsMenuOpen((prev) => !prev);
+              }}
+            >
               <BookmarkSimple size={30} color="white" weight="bold" />
             </MenuButton>
             <MenuList>
@@ -388,7 +446,11 @@ function InstagramCard({
       </Box>
 
       <HStack pb={5} px={5} justify={"space-between"}>
-        <Text>{+data.ig_content.taken_at === 0 ? "Unknown Time" : timeAgo(new Date(+data.ig_content.taken_at * 1000))}</Text>
+        <Text>
+          {+data.ig_content.taken_at === 0
+            ? "Unknown Time"
+            : timeAgo(new Date(+data.ig_content.taken_at * 1000))}
+        </Text>
         <Menu placement="bottom-end">
           <MenuButton>
             <DotsThreeOutline size={24} color="black" weight="fill" />
@@ -417,9 +479,15 @@ function InstagramCard({
             {data.link && (
               <MenuItem
                 onClick={
-                  (e) => navigator.clipboard.writeText(data.link)
+                  (e) => {
+                    navigator.clipboard.writeText(data.link);
+                    messageToast.setType(MessageType.SUCCESS);
+                    messageToast.setMessage("Public Url copied successfully");
+                    messageToast.setTimeout(3000);
+                    messageToast.setTitle("Success");
+                    messageToast.setIsShow(true);
+                  }
                   //.then(() => showCopyLinkToast())
-
                 }
               >
                 Get public link
@@ -433,21 +501,22 @@ function InstagramCard({
                   RemoveFromCollection({
                     contentId: data.id,
                     type: data.type,
-                  })
-                } else if ((page === "CONTENT" || page === "FILTER") && deleteInstagramContents) {
+                  });
+                } else if (
+                  (page === "CONTENT" || page === "FILTER") &&
+                  deleteInstagramContents
+                ) {
                   deleteInstagramContents({
                     posts: data.type === "post" ? [data.id] : [],
                     reels: data.type === "reel" ? [data.id] : [],
                     stories: data.type === "story" ? [data.id] : [],
                     videos: [],
-                  })
+                  });
                 }
-              }
-              }
+              }}
             >
-              {page === "COLLECTION" && "Remove from collection" ||
-                page === "CONTENT" && "Delete from Library"
-              }
+              {(page === "COLLECTION" && "Remove from collection") ||
+                (page === "CONTENT" && "Delete from Library")}
             </MenuItem>
           </MenuList>
         </Menu>

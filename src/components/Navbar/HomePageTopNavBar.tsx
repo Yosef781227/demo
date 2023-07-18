@@ -3,8 +3,9 @@ import { HStack, Button, Select, Text } from "@chakra-ui/react";
 import { Funnel, Plus } from "@phosphor-icons/react";
 import { ChangeEvent, useContext } from "react";
 import Buttons from "@/components/Buttons/Button";
-import { UserContext } from "@/App";
+import { MessageContext, UserContext } from "@/App";
 import { User } from "@/interfaces/user.interface";
+import { Message } from "@/interfaces/message";
 
 function HomePageTopNavBar({
   changeAccount,
@@ -22,6 +23,7 @@ function HomePageTopNavBar({
   tiktokId: string;
 }) {
   const User = useContext(UserContext) as User;
+  const messageToast = useContext(MessageContext) as Message;
   return (
     <HStack bg="white" px="5" justifyContent={"space-between"}>
       <Text color={"black"} fontWeight={"semibold"} fontSize={"1.1rem"}>
@@ -48,7 +50,10 @@ function HomePageTopNavBar({
         >
           New
         </Button>
-        <Button colorScheme="primary" onClick={saveNewContent}>
+        <Button
+          colorScheme="primary"
+          onClick={() => saveNewContent(messageToast)}
+        >
           Save New Content
         </Button>
         {User.instagrams.length && (

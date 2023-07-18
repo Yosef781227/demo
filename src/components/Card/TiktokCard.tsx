@@ -22,7 +22,6 @@ import {
   BookmarkSimple,
   DotsThreeOutline,
   Plus,
-
 } from "@phosphor-icons/react";
 import {
   ChangeEvent,
@@ -36,8 +35,9 @@ import { useMutation } from "@apollo/client";
 import { AddVideoToCollection } from "@/query/tiktok";
 import { handleDownload } from "@/utils";
 import { shortenNumber, timeAgo } from "@/utils/data-modifier";
-import { UserContext } from "@/App";
+import { MessageContext, UserContext } from "@/App";
 import { User } from "@/interfaces/user.interface";
+import { Message, MessageType } from "@/interfaces/message";
 type cardCheckboxSelected = {
   ids: {
     posts: string[];
@@ -64,14 +64,25 @@ const TiktokCard = ({
   video: any;
   cardCheckboxSelected: cardCheckboxSelected;
   setCardCheckBoxSelected: (data: any) => void;
-  deleteInstagramContents: ((data: {
-    posts: string[];
-    reels: string[];
-    stories: string[];
-    videos: string[];
-  }) => void) | null;
-  RemoveFromCollection: (({ contentId, type }: { contentId: string; type: "post" | "reel" | "story" | "video"; }) => Promise<void>) | null;
+  deleteInstagramContents:
+    | ((data: {
+        posts: string[];
+        reels: string[];
+        stories: string[];
+        videos: string[];
+      }) => void)
+    | null;
+  RemoveFromCollection:
+    | (({
+        contentId,
+        type,
+      }: {
+        contentId: string;
+        type: "post" | "reel" | "story" | "video";
+      }) => Promise<void>)
+    | null;
 }) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const checkBoxRef = useRef<HTMLInputElement>(null);
   const [showVideo, setShowVideo] = useState(false);
   const [collections, setCollections] = useState<any[]>([]);
@@ -92,9 +103,10 @@ const TiktokCard = ({
       data: addVideoToCollectionData,
       loading: addVideoToCollectionLoading,
       error: addVideoToCollectionError,
+      reset,
     },
   ] = useMutation(AddVideoToCollection);
-
+  const messageToast = useContext(MessageContext) as Message;
   function handleChange(e: SyntheticEvent<HTMLInputElement>) {
     setTextSearch(e.currentTarget.value);
     setCollections(
@@ -108,14 +120,33 @@ const TiktokCard = ({
       addVideoToCollection({
         variables: {
           jsonInput: JSON.stringify({
-            collectionId: item.id,
+            collectionId: item.id, //TODO: ABSOLUTE TRASH
             videoId: video.id,
           }),
         },
       });
     });
-
-
+    setIsMenuOpen(false);
+  }
+  if (addVideoToCollectionData) {
+    messageToast.setType(MessageType.SUCCESS);
+    messageToast.setMessage("Content added to collection successfully");
+    messageToast.setTimeout(3000);
+    messageToast.setTitle("Success");
+    messageToast.setIsShow(true);
+    reset();
+    // messageToast.setButtonLabel("View Collection");
+    // messageToast.setOnButtonClick((data: any) => {
+    //   alert("View Collection")
+    // })
+    // messageToast.setHasButton(true);
+  } else {
+    messageToast.setType(MessageType.ERROR);
+    // messageToast.setMessage(message as string); //TODO : SHOW ERROR MESSAGE
+    messageToast.setTimeout(3000);
+    messageToast.setTitle("Error");
+    // messageToast.setIsShow(true);
+    // messageToast.buttonLabel = "View Collection";
   }
 
   return (
@@ -138,7 +169,9 @@ const TiktokCard = ({
           ></Avatar>
           <VStack align={"start"}>
             <Text lineHeight={0.8}>{video.owner.nickname} </Text>
-            <Text lineHeight={0.8}>{shortenNumber(video.owner.followerCount)} followers</Text>
+            <Text lineHeight={0.8}>
+              {shortenNumber(video.owner.followerCount)} followers
+            </Text>
           </VStack>
         </HStack>
         <img width={"20"} src={tiktok} alt="social media icon" />
@@ -159,7 +192,6 @@ const TiktokCard = ({
           />
         ) : (
           <>
-
             <Box
               position={"absolute"}
               top={"calc(50% - 25px)"}
@@ -167,13 +199,20 @@ const TiktokCard = ({
               onClick={() => setShowVideo(true)}
               aria-label="start video"
               cursor={"pointer"}
-
             >
-              <svg width="47" height="44" viewBox="0 0 47 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg
+                width="47"
+                height="44"
+                viewBox="0 0 47 44"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
                 <rect width="47" height="44" rx="22" fill="#8B5CF6" />
-                <path d="M30.6812 21.1597C31.3227 21.5436 31.3316 22.4701 30.6974 22.8661L20.9225 28.9705C20.2601 29.3842 19.4003 28.9128 19.3929 28.1319L19.2781 16.1107C19.2707 15.3297 20.1213 14.842 20.7915 15.243L30.6812 21.1597Z" fill="white" />
+                <path
+                  d="M30.6812 21.1597C31.3227 21.5436 31.3316 22.4701 30.6974 22.8661L20.9225 28.9705C20.2601 29.3842 19.4003 28.9128 19.3929 28.1319L19.2781 16.1107C19.2707 15.3297 20.1213 14.842 20.7915 15.243L30.6812 21.1597Z"
+                  fill="white"
+                />
               </svg>
-
             </Box>
             <Image src={video.display_url} />
           </>
@@ -246,12 +285,22 @@ const TiktokCard = ({
 
           <Menu
             onClose={() => {
+              setIsMenuOpen(false);
               setCollections([]);
             }}
-            onOpen={() => setCollections(User.collections)}
+            // in
+            onOpen={() => {
+              setCollections(User.collections);
+              setIsMenuOpen(true);
+            }}
+            isOpen={isMenuOpen}
             closeOnSelect={false}
           >
-            <MenuButton>
+            <MenuButton
+              onClick={() => {
+                setIsMenuOpen((prev) => !prev);
+              }}
+            >
               <BookmarkSimple size={30} color="white" weight="bold" />
             </MenuButton>
             <MenuList>
@@ -292,6 +341,7 @@ const TiktokCard = ({
                           }),
                         },
                       });
+                      setIsMenuOpen(false);
                     }}
                   >
                     Create
@@ -336,7 +386,11 @@ const TiktokCard = ({
       </Box>
 
       <HStack px={4} justify={"space-between"} h={"50px"}>
-        <Text>{+video.timestamp === 0 ? "Unknown Time" : timeAgo(new Date(+video.timestamp * 1000))}</Text>
+        <Text>
+          {+video.timestamp === 0
+            ? "Unknown Time"
+            : timeAgo(new Date(+video.timestamp * 1000))}
+        </Text>
         <Menu direction="rtl">
           <MenuButton>
             <DotsThreeOutline size={24} color="black" weight="fill" />
@@ -364,7 +418,14 @@ const TiktokCard = ({
             )}
             {video.link && (
               <MenuItem
-                onClick={(e) => navigator.clipboard.writeText(video.link)}
+                onClick={(e) => {
+                  navigator.clipboard.writeText(video.link);
+                  messageToast.setType(MessageType.SUCCESS);
+                  messageToast.setMessage("Public Url copied successfully");
+                  messageToast.setTimeout(3000);
+                  messageToast.setTitle("Success");
+                  messageToast.setIsShow(true);
+                }}
               >
                 Get public link
               </MenuItem>
@@ -374,22 +435,22 @@ const TiktokCard = ({
               color={"red"}
               onClick={(e) => {
                 if (page === "COLLECTION" && RemoveFromCollection) {
-                  RemoveFromCollection({ type: "video", contentId: video.id, });
-                } else if ((page === "CONTENT" || page === "FILTER") && deleteInstagramContents) {
+                  RemoveFromCollection({ type: "video", contentId: video.id });
+                } else if (
+                  (page === "CONTENT" || page === "FILTER") &&
+                  deleteInstagramContents
+                ) {
                   deleteInstagramContents({
                     posts: [],
                     reels: [],
                     stories: [],
                     videos: [video.id],
-                  })
+                  });
                 }
-              }
-
-              }
+              }}
             >
-              {page === "COLLECTION" && "Remove from collection" ||
-                page === "CONTENT" && "Delete from Library"
-              }
+              {(page === "COLLECTION" && "Remove from collection") ||
+                (page === "CONTENT" && "Delete from Library")}
             </MenuItem>
           </MenuList>
         </Menu>

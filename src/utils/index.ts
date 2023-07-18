@@ -1,6 +1,7 @@
 import { toast } from "react-toastify";
 import { BASE_URL } from "@/constants";
 import axios from "axios";
+import { MessageType } from "@/interfaces/message";
 
 export const handleDownload = (url: string) => {
   window.open(url.includes("https://") ? url : "https://" + url, "_current");
@@ -38,7 +39,7 @@ export const logout = async () => {
   }
 };
 
-export const saveNewContent = async () => {
+export const saveNewContent = async (messageToast: any) => {
   const index: number =
     localStorage.getItem("selectedInstagramIndex") !== null
       ? parseInt(localStorage.getItem("selectedInstagramIndex") || "")
@@ -72,10 +73,12 @@ export const saveNewContent = async () => {
         console.error("GraphQL errors", result.data.errors);
         toast.error("GraphQL errors: " + JSON.stringify(result.data.errors));
       } else if (!result.data.data) {
-        console.error("Unexpected server response", result.data);
-        toast.error(
+        messageToast.setType(MessageType.ERROR);
+        messageToast.setMessage(
           "Unexpected server response: " + JSON.stringify(result.data)
         );
+        messageToast.setTimeout(3000);
+        messageToast.setTitle("Error");
       } else {
         let toastMessage = "";
 
@@ -87,8 +90,11 @@ export const saveNewContent = async () => {
             "Posts and Reels: Error - " +
             result.data.data.savePostsAndReels.message;
         }
-
-        toast(toastMessage);
+        messageToast.setType(MessageType.SUCCESS);
+        messageToast.setMessage(toastMessage);
+        messageToast.setTimeout(3000);
+        messageToast.setTitle("Success");
+        messageToast.setIsShow(true);
       }
     })
     .catch((error) => {
