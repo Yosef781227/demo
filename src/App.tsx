@@ -13,12 +13,13 @@ function App() {
   const { loading, userInfo } = useGetMe();
   const messageDefault = useMessage();
 
+
   if (loading) {
     return <Loading />;
   }
   return (
     <UserContext.Provider value={{ ...userInfo, }} >
-      <MessageContext.Provider value={messageDefault}>
+      <MessageContext.Provider value={messageDefault} >
         <Router isAuth={userInfo.isAuth} />
       </MessageContext.Provider>
       <ToastContainer />

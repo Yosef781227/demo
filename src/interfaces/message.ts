@@ -6,6 +6,9 @@ export enum MessageType {
 }
 
 export interface Message {
+    buttonLabel: string;
+    onButtonClick: (data: any) => void;
+    hasButton: boolean;
     type: string;
     timeout: number;
     title: string;
@@ -16,4 +19,7 @@ export interface Message {
     setMessage: (value: string) => void;
     setTitle: (value: string) => void;
     setIsShow: (value: boolean) => void;
+    setButtonLabel: (value: string) => void;
+    setOnButtonClick: (value: (data: any) => void) => void;
+    setHasButton: (value: boolean) => void;
 }

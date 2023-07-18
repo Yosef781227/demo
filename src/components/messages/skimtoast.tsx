@@ -41,12 +41,13 @@ const SkimToast = () => {
                                     {message.message}
                                 </Text>
                                 <Flex direction="row" align="center" justify="start" gap="3">
-                                    <Button size="sm" variant="outline" borderColor="#F5F5F5" color="#525252">
-                                        Secondary
-                                    </Button>
-                                    <Button size="sm" colorScheme="purple">
-                                        Primary
-                                    </Button>
+
+                                    {message.hasButton &&
+                                        <Button onClick={message.onButtonClick} colorScheme='primary'>
+                                            {message.buttonLabel}
+                                        </Button>
+                                    }
+
                                 </Flex>
                             </Flex>
                             <Box position="absolute" top="1" right="1">

@@ -107,6 +107,7 @@ function InstagramCard({
     );
   }
 
+
   const handleAddTo = async () => {
     for (const item of selectedCheckboxes) {
       let variables: any = {
@@ -124,16 +125,23 @@ function InstagramCard({
       const { success, message, data: resData } = response.data[data.type === "post" ? "addPostToCollection" : data.type === "reel" ? "addReelToCollection" : "addStoryToCollection"];
       if (success) {
         messageToast.setType(MessageType.SUCCESS);
-        messageToast.setMessage(message as string);
+        messageToast.setMessage("Content added to collection successfully");
         messageToast.setTimeout(3000);
         messageToast.setTitle("Success");
         messageToast.setIsShow(true);
+        // messageToast.setButtonLabel("View Collection");
+        // messageToast.setOnButtonClick((data: any) => {
+        //   alert("View Collection")
+        // })
+        messageToast.setHasButton(true);
       } else {
         messageToast.setType(MessageType.ERROR);
         messageToast.setMessage(message as string);
         messageToast.setTimeout(3000);
         messageToast.setTitle("Error");
         messageToast.setIsShow(true);
+        // messageToast.buttonLabel = "View Collection";
+
       }
     }
   }
@@ -290,6 +298,7 @@ function InstagramCard({
                   </Button>
                   <Button
                     isDisabled={!!collections.length}
+                    colorScheme={!!collections.length ? "gray" : "primary"}
                     onClick={() => {
                       setTextSearch("");
                       setCollections(User.collections);
@@ -407,7 +416,11 @@ function InstagramCard({
             )}
             {data.link && (
               <MenuItem
-                onClick={(e) => navigator.clipboard.writeText(data.link)}
+                onClick={
+                  (e) => navigator.clipboard.writeText(data.link)
+                  //.then(() => showCopyLinkToast())
+
+                }
               >
                 Get public link
               </MenuItem>
