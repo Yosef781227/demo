@@ -172,7 +172,7 @@ function InstagramCard({
         //   alert("View Collection")
         // })
         // messageToast.setHasButton(true);
-      } else {
+      } else if (createCollectionError) {
         messageToast.setType(MessageType.ERROR);
         messageToast.setMessage(message as string);
         messageToast.setTimeout(3000);

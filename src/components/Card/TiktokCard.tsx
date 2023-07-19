@@ -140,7 +140,7 @@ const TiktokCard = ({
     //   alert("View Collection")
     // })
     // messageToast.setHasButton(true);
-  } else {
+  } else if (addVideoToCollectionError) {
     messageToast.setType(MessageType.ERROR);
     // messageToast.setMessage(message as string); //TODO : SHOW ERROR MESSAGE
     messageToast.setTimeout(3000);
