@@ -21,14 +21,11 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { RangeDatePicker } from "react-google-flight-datepicker";
-import { Dispatch, SetStateAction, useReducer, useState } from "react";
+import { useState } from "react";
 import "react-google-flight-datepicker/dist/main.css";
 import { User } from "@/interfaces/user.interface";
-import { GetUserCollection } from "@/query/user";
-import { set } from "date-fns";
 import client from "@/client";
-import { FilterContent } from "@/query";
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 const currentDate = new Date();
 const previousMonthDate = new Date(currentDate);
 previousMonthDate.setMonth(previousMonthDate.getMonth() - 1);
@@ -46,9 +43,18 @@ function FilterModal({
   setFilterLoading: (data: boolean) => void;
   user: User;
 }) {
-  const [startDate, setStartDate] = useState<number>(Math.floor(previousMonthDate.getTime() / 1000));
-  const [endDate, setEndDate] = useState<number>(Math.floor(currentDate.getTime() / 1000));
-  const [type, setPostType] = useState<string[]>(["post", "reel", "story", "video"]);
+  const [startDate, setStartDate] = useState<number>(
+    Math.floor(previousMonthDate.getTime() / 1000)
+  );
+  const [endDate, setEndDate] = useState<number>(
+    Math.floor(currentDate.getTime() / 1000)
+  );
+  const [type, setPostType] = useState<string[]>([
+    "post",
+    "reel",
+    "story",
+    "video",
+  ]);
   const [collection_include, setCollection_include] = useState<string[]>([]);
   const [usernames, setUsernames] = useState<string[]>([]);
   const [unique_ids, setUnique_ids] = useState<string[]>([]);
@@ -165,8 +171,14 @@ function FilterModal({
                       <Checkbox
                         onChange={(e) => {
                           e.target.checked
-                            ? setPostType((prev) => !prev.includes("reel") ? [...prev, "reel"] : prev)
-                            : setPostType((prev) => prev.filter((type) => type !== "reel"));
+                            ? setPostType((prev) =>
+                                !prev.includes("reel")
+                                  ? [...prev, "reel"]
+                                  : prev
+                              )
+                            : setPostType((prev) =>
+                                prev.filter((type) => type !== "reel")
+                              );
                         }}
                         isChecked={type.includes("reel")}
                         colorScheme={"primary"}
@@ -176,8 +188,14 @@ function FilterModal({
                       <Checkbox
                         onChange={(e) => {
                           e.target.checked
-                            ? setPostType((prev) => !prev.includes("post") ? [...prev, "post"] : prev)
-                            : setPostType((prev) => prev.filter((type) => type !== "post"));
+                            ? setPostType((prev) =>
+                                !prev.includes("post")
+                                  ? [...prev, "post"]
+                                  : prev
+                              )
+                            : setPostType((prev) =>
+                                prev.filter((type) => type !== "post")
+                              );
                         }}
                         isChecked={type.includes("post")}
                         colorScheme={"primary"}
@@ -187,8 +205,14 @@ function FilterModal({
                       <Checkbox
                         onChange={(e) => {
                           e.target.checked
-                            ? setPostType((prev) => !prev.includes("story") ? [...prev, "story"] : prev)
-                            : setPostType((prev) => prev.filter((type) => type !== "story"));
+                            ? setPostType((prev) =>
+                                !prev.includes("story")
+                                  ? [...prev, "story"]
+                                  : prev
+                              )
+                            : setPostType((prev) =>
+                                prev.filter((type) => type !== "story")
+                              );
                         }}
                         isChecked={type.includes("story")}
                         colorScheme={"primary"}
@@ -204,8 +228,14 @@ function FilterModal({
                     <Checkbox
                       onChange={(e) => {
                         e.target.checked
-                          ? setPostType((prev) => !prev.includes("video") ? [...prev, "video"] : prev)
-                          : setPostType((prev) => prev.filter((type) => type !== "video"));
+                          ? setPostType((prev) =>
+                              !prev.includes("video")
+                                ? [...prev, "video"]
+                                : prev
+                            )
+                          : setPostType((prev) =>
+                              prev.filter((type) => type !== "video")
+                            );
                       }}
                       isChecked={type.includes("video")}
                       mt={3}
@@ -231,8 +261,16 @@ function FilterModal({
                           mt={2}
                           onChange={(e) => {
                             e.target.checked
-                              ? setUsernames((prev) => [...prev, instagram.username])
-                              : setUsernames((prev) => prev.filter((username) => username !== instagram.username));
+                              ? setUsernames((prev) => [
+                                  ...prev,
+                                  instagram.username,
+                                ])
+                              : setUsernames((prev) =>
+                                  prev.filter(
+                                    (username) =>
+                                      username !== instagram.username
+                                  )
+                                );
                           }}
                           isChecked={usernames.includes(instagram.username)}
                           colorScheme={"primary"}
@@ -253,9 +291,17 @@ function FilterModal({
                           size={"sm"}
                           mt={2}
                           colorScheme={"primary"}
-
                           onChange={(e) => {
-                            e.target.checked ? setUnique_ids((prev) => [...prev, tiktok.uniqueId]) : setUnique_ids((prev) => prev.filter((unique_id) => unique_id !== tiktok.uniqueId));
+                            e.target.checked
+                              ? setUnique_ids((prev) => [
+                                  ...prev,
+                                  tiktok.uniqueId,
+                                ])
+                              : setUnique_ids((prev) =>
+                                  prev.filter(
+                                    (unique_id) => unique_id !== tiktok.uniqueId
+                                  )
+                                );
                           }}
                           isChecked={unique_ids.includes(tiktok.uniqueId)}
                         >
@@ -296,7 +342,15 @@ function FilterModal({
                     colorScheme={"primary"}
                     isChecked={usage_right.includes("PENDING")}
                     onChange={(e) => {
-                      e.target.checked ? setUsage_right((prev) => !prev.includes("PENDING") ? [...prev, "PENDING"] : prev) : setUsage_right((prev) => prev.filter((usage) => usage !== "PENDING"));
+                      e.target.checked
+                        ? setUsage_right((prev) =>
+                            !prev.includes("PENDING")
+                              ? [...prev, "PENDING"]
+                              : prev
+                          )
+                        : setUsage_right((prev) =>
+                            prev.filter((usage) => usage !== "PENDING")
+                          );
                     }}
                   >
                     Pending
@@ -305,7 +359,15 @@ function FilterModal({
                     colorScheme={"primary"}
                     isChecked={usage_right.includes("APPROVED")}
                     onChange={(e) => {
-                      e.target.checked ? setUsage_right((prev) => !prev.includes("APPROVED") ? [...prev, "APPROVED"] : prev) : setUsage_right((prev) => prev.filter((usage) => usage !== "APPROVED"));
+                      e.target.checked
+                        ? setUsage_right((prev) =>
+                            !prev.includes("APPROVED")
+                              ? [...prev, "APPROVED"]
+                              : prev
+                          )
+                        : setUsage_right((prev) =>
+                            prev.filter((usage) => usage !== "APPROVED")
+                          );
                     }}
                   >
                     Approved
@@ -314,7 +376,15 @@ function FilterModal({
                     colorScheme={"primary"}
                     isChecked={usage_right.includes("REJECTED")}
                     onChange={(e) => {
-                      e.target.checked ? setUsage_right((prev) => !prev.includes("REJECTED") ? [...prev, "REJECTED"] : prev) : setUsage_right((prev) => prev.filter((usage) => usage !== "REJECTED"));
+                      e.target.checked
+                        ? setUsage_right((prev) =>
+                            !prev.includes("REJECTED")
+                              ? [...prev, "REJECTED"]
+                              : prev
+                          )
+                        : setUsage_right((prev) =>
+                            prev.filter((usage) => usage !== "REJECTED")
+                          );
                     }}
                   >
                     Rejected
@@ -324,7 +394,15 @@ function FilterModal({
                     isChecked={usage_right.includes("DEFAULT")}
                     defaultChecked={true}
                     onChange={(e) => {
-                      e.target.checked ? setUsage_right((prev) => !prev.includes("DEFAULT") ? [...prev, "DEFAULT"] : prev) : setUsage_right((prev) => prev.filter((usage) => usage !== "DEFAULT"));
+                      e.target.checked
+                        ? setUsage_right((prev) =>
+                            !prev.includes("DEFAULT")
+                              ? [...prev, "DEFAULT"]
+                              : prev
+                          )
+                        : setUsage_right((prev) =>
+                            prev.filter((usage) => usage !== "DEFAULT")
+                          );
                     }}
                   >
                     Default
@@ -380,7 +458,9 @@ function FilterModal({
               <Box mt={5}>
                 <Text textColor={"gray.500"}>Engagement</Text>
                 <VStack alignItems={"flex-start"} mt={3}>
-                  <Checkbox checked={true} colorScheme={"primary"}>Views</Checkbox>
+                  <Checkbox checked={true} colorScheme={"primary"}>
+                    Views
+                  </Checkbox>
                   <HStack pl="10%">
                     <Select placeholder="Select" defaultValue={"option1"}>
                       <option value="option1">1k</option>
@@ -395,7 +475,10 @@ function FilterModal({
                   </HStack>
                 </VStack>
                 <VStack alignItems={"flex-start"}>
-                  <Checkbox colorScheme={"primary"} checked={true}> Plays</Checkbox>
+                  <Checkbox colorScheme={"primary"} checked={true}>
+                    {" "}
+                    Plays
+                  </Checkbox>
                   <HStack pl="10%">
                     <Select placeholder="Select" defaultValue={"1k"}>
                       <option value="1k">1k</option>
@@ -425,10 +508,19 @@ function FilterModal({
                   <TabPanels>
                     <TabPanel>
                       <HStack>
-                        <Checkbox colorScheme={"primary"} isChecked={user?.collections?.length === collection_include.length}
+                        <Checkbox
+                          colorScheme={"primary"}
+                          isChecked={
+                            user?.collections?.length ===
+                            collection_include.length
+                          }
                           onChange={(e) => {
                             if (e.target.checked) {
-                              setCollection_include(user.collections?.map((collection) => collection.name));
+                              setCollection_include(
+                                user.collections?.map(
+                                  (collection) => collection.name
+                                )
+                              );
                             } else {
                               setCollection_include([]);
                             }
@@ -440,12 +532,22 @@ function FilterModal({
                           return (
                             <Checkbox
                               colorScheme={"primary"}
-                              isChecked={collection_include.includes(collection.name)}
+                              isChecked={collection_include.includes(
+                                collection.name
+                              )}
                               onChange={(e) => {
                                 if (e.target.checked) {
-                                  setCollection_include((prev) => [...prev, collection.name]);
+                                  setCollection_include((prev) => [
+                                    ...prev,
+                                    collection.name,
+                                  ]);
                                 } else {
-                                  setCollection_include((prev) => prev.filter((collection_name) => collection_name !== collection.name));
+                                  setCollection_include((prev) =>
+                                    prev.filter(
+                                      (collection_name) =>
+                                        collection_name !== collection.name
+                                    )
+                                  );
                                 }
                               }}
                               key={collection.id}
@@ -462,7 +564,6 @@ function FilterModal({
                         onChange={(e) => {
                           if (e.target.checked) {
                           } else {
-
                           }
                         }}
                       >
@@ -474,9 +575,7 @@ function FilterModal({
                             colorScheme={"primary"}
                             onChange={(e) => {
                               if (e.target.checked) {
-
                               } else {
-
                               }
                             }}
                             key={collection.id}
@@ -501,7 +600,7 @@ function FilterModal({
                         setVerified(0);
                       }
                     }}
-                    isChecked={verified === 2 || verified == 1}
+                    isChecked={verified === 2 || verified === 1}
                   >
                     Verified
                   </Checkbox>
@@ -510,7 +609,7 @@ function FilterModal({
                     onChange={(e) => {
                       e.target.checked ? setVerified(2) : setVerified(1);
                     }}
-                    isChecked={verified === 2 || verified == 0}
+                    isChecked={verified === 2 || verified === 0}
                   >
                     Not Verified
                   </Checkbox>
@@ -528,7 +627,7 @@ function FilterModal({
                 setCollection_include([]);
                 setVerified(2);
                 setContent_type(2);
-                setPostType(["post", "reel", "story", "video"])
+                setPostType(["post", "reel", "story", "video"]);
                 setUsernames([]);
                 setUnique_ids([]);
                 setUsage_rights(["DEFAULT"]);
@@ -536,11 +635,7 @@ function FilterModal({
             >
               Reset All
             </Button>
-            <Button
-              colorScheme="primary"
-              mr={3}
-              onClick={handleFiter}
-            >
+            <Button colorScheme="primary" mr={3} onClick={handleFiter}>
               Apply All
             </Button>
           </ModalFooter>
@@ -600,8 +695,9 @@ const generateQuery = (type: string[]) => {
         posts_count
         reels_count
         stories_count
-        ${type.includes("post") ?
-      `posts {
+        ${
+          type.includes("post")
+            ? `posts {
           id
           caption
           mentions
@@ -622,9 +718,12 @@ const generateQuery = (type: string[]) => {
             taken_at
             is_video
           }
-        }` : ""}
-        ${type.includes("reel") ?
-      `reels {
+        }`
+            : ""
+        }
+        ${
+          type.includes("reel")
+            ? `reels {
           id
           caption
           mentions
@@ -645,10 +744,12 @@ const generateQuery = (type: string[]) => {
             taken_at
             is_video
           }
-        }` : ""
-    }
-        ${type.includes("story") ?
-      `stories {
+        }`
+            : ""
+        }
+        ${
+          type.includes("story")
+            ? `stories {
           id
           mentions
           usage_right
@@ -668,12 +769,13 @@ const generateQuery = (type: string[]) => {
             taken_at
             is_video
           }
-        }` : ""
-    }
+        }`
+            : ""
+        }
       }
     }
-  }`
+  }`;
   return gql(query);
-}
+};
 
 export default FilterModal;

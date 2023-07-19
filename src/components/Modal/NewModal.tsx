@@ -1,4 +1,5 @@
 import client from "@/client";
+import { Message, MessageType } from "@/interfaces/message";
 import { User } from "@/interfaces/user.interface";
 import { gql } from "@apollo/client";
 import { Box, Text, Button, Input, ModalFooter } from "@chakra-ui/react";
@@ -16,144 +17,149 @@ function NewModal({
   isOpen,
   onClose,
   user,
+  messageToast,
 }: {
+  messageToast: Message;
   isOpen: boolean;
   onClose: () => any;
   user: User;
 }) {
-  const toast = useToast();
   const ref = React.useRef<HTMLInputElement>(null);
   const handleSaveNewContent = async (url: string) => {
-    const tiktok_regex = /^https?:\/\/(?:www\.)?tiktok\.com\/@[\w.-]+\/video\/\d+$/;
-    const insta_regex = /^https:\/\/www\.instagram\.com\/(stories\/[^\/]+\/\d+\/?|p\/[^\/]+\/?)$/;
+    const tiktok_regex =
+      /^https?:\/\/(?:www\.)?tiktok\.com\/@[\w.-]+\/video\/\d+$/;
+    const insta_regex =
+      /^https:\/\/www\.instagram\.com\/(stories\/[^\/]+\/\d+\/?|p\/[^\/]+\/?)$/;
     if (!tiktok_regex.test(url) && !insta_regex.test(url)) {
-      toast({
-        title: "Invalid URL",
-        description: "Please enter a valid TikTok or Instagram URL",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
+      onClose();
+      messageToast.setType(MessageType.ERROR);
+      messageToast.setMessage(
+        "Please enter a valid TikTok or Instagram URL" as string
+      );
+      messageToast.setTimeout(3000);
+      messageToast.setTitle("Invalid URL");
+      messageToast.setIsShow(true);
       return;
     }
     if (tiktok_regex.test(url)) {
       if (!user.hasTiktok) {
-        toast({
-          title: "You don't have a TikTok account linked",
-          description: "Please connect your TikTok account first",
-          status: "error",
-          duration: 5000,
-          isClosable: true,
-        });
+        onClose();
+        messageToast.setType(MessageType.ERROR);
+        messageToast.setMessage(
+          "Please connect your TikTok account first" as string
+        );
+        messageToast.setTimeout(3000);
+        messageToast.setTitle("You don't have a TikTok account linked");
+        messageToast.setIsShow(true);
         return;
       } else {
-        client.query({
+        client
+          .query({
+            query: gql`
+              query SaveTikTokVideoWithUrl($jsonInput: String!) {
+                saveTikTokVideoWithUrl(json_input: $jsonInput) {
+                  success
+                  message
+                  url
+                  thumbnail
+                }
+              }
+            `,
+            variables: {
+              jsonInput: JSON.stringify({
+                url: url,
+                tiktok_id: user.tiktokId,
+              }),
+            },
+          })
+          .then((res) => {
+            if (res.data.saveTikTokVideoWithUrl.success) {
+              onClose();
+              messageToast.setType(MessageType.SUCCESS);
+              messageToast.setMessage("Content Saved successfully");
+              messageToast.setTimeout(3000);
+              messageToast.setTitle("Saved");
+              messageToast.setIsShow(true);
+            } else {
+              onClose();
+              messageToast.setType(MessageType.ERROR);
+              messageToast.setMessage(
+                res.data.saveTikTokVideoWithUrl.message as string
+              );
+              messageToast.setTimeout(3000);
+              messageToast.setTitle("Error");
+              messageToast.setIsShow(true);
+            }
+          })
+          .catch((err) => {
+            onClose();
+            messageToast.setType(MessageType.ERROR);
+            messageToast.setMessage(err.message as string);
+            messageToast.setTimeout(3000);
+            messageToast.setTitle("Error");
+            messageToast.setIsShow(true);
+          });
+      }
+    } else {
+      if (!user.hasInstagram) {
+        messageToast.setType(MessageType.ERROR);
+        messageToast.setMessage(
+          "Please connect your Instagram account first" as string
+        );
+        messageToast.setTimeout(3000);
+        messageToast.setTitle("You don't have an Instagram account linked");
+        messageToast.setIsShow(true);
+        return;
+      }
+      client
+        .query({
           query: gql`
-            query SaveTikTokVideoWithUrl($jsonInput: String!) {
-              saveTikTokVideoWithUrl(json_input: $jsonInput) {
+            query SaveInstagramContentWithUrl($jsonInput: String!) {
+              saveInstagramContentWithUrl(json_input: $jsonInput) {
                 success
                 message
-                url
-                thumbnail
+                contents {
+                  url
+                  display_url
+                  is_video
+                }
               }
             }
           `,
           variables: {
             jsonInput: JSON.stringify({
               url: url,
-              tiktok_id: user.tiktokId,
+              instagram_id: user.instagramId,
             }),
           },
-        }).then((res) => {
-          if (res.data.saveTikTokVideoWithUrl.success) {
-            toast({
-              title: "Saved!",
-              description: "Your TikTok has been saved",
-              status: "success",
-              duration: 5000,
-              isClosable: true,
-            });
+        })
+        .then((res) => {
+          if (res.data.saveInstagramContentWithUrl.success) {
             onClose();
+            messageToast.setType(MessageType.SUCCESS);
+            messageToast.setMessage("Your Instagram content has been saved");
+            messageToast.setTimeout(3000);
+            messageToast.setTitle("Saved");
+            messageToast.setIsShow(true);
           } else {
-            toast({
-              title: "Error",
-              description: res.data.saveTikTokVideoWithUrl.message,
-              status: "error",
-              duration: 5000,
-              isClosable: true,
-            });
+            onClose();
+            messageToast.setType(MessageType.ERROR);
+            messageToast.setMessage(
+              res.data.saveInstagramContentWithUrl.message as string
+            );
+            messageToast.setTimeout(3000);
+            messageToast.setTitle("Error");
+            messageToast.setIsShow(true);
           }
-        }).catch((err) => {
-          toast({
-            title: "Error",
-            description: err.message,
-            status: "error",
-            duration: 5000,
-            isClosable: true,
-          });
-        });
-
-      }
-    } else {
-      if (!user.hasInstagram) {
-        toast({
-          title: "You don't have an Instagram account linked",
-          description: "Please connect your Instagram account first",
-          status: "error",
-          duration: 5000,
-          isClosable: true,
-        });
-        return;
-      }
-      client.query({
-        query: gql`
-          query SaveInstagramContentWithUrl($jsonInput: String!) {
-            saveInstagramContentWithUrl(json_input: $jsonInput) {
-              success
-              message
-              contents {
-                url
-                display_url
-                is_video
-              }
-            }
-          }
-        `,
-        variables: {
-          jsonInput: JSON.stringify({
-            url: url,
-            instagram_id: user.instagramId,
-          }),
-        },
-      }).then((res) => {
-        if (res.data.saveInstagramContentWithUrl.success) {
-          toast({
-            title: "Saved!",
-            description: "Your Instagram content has been saved",
-            status: "success",
-            duration: 5000,
-            isClosable: true,
-          });
+        })
+        .catch((err) => {
           onClose();
-        } else {
-          toast({
-            title: "Error",
-            description: res.data.saveInstagramContentWithUrl.message,
-            status: "error",
-            duration: 5000,
-            isClosable: true,
-          });
-        }
-      }
-      ).catch((err) => {
-        toast({
-          title: "Error",
-          description: err.message,
-          status: "error",
-          duration: 5000,
-          isClosable: true,
+          messageToast.setType(MessageType.ERROR);
+          messageToast.setMessage(err.message as string);
+          messageToast.setTimeout(3000);
+          messageToast.setTitle("Error");
+          messageToast.setIsShow(true);
         });
-      });
     }
   };
   return (
@@ -203,7 +209,12 @@ function NewModal({
           <Button variant="ghost" mr={3}>
             Go Back
           </Button>
-          <Button colorScheme="primary" onClick={(e) => handleSaveNewContent(ref.current?.value as string)}>Save Post</Button>
+          <Button
+            colorScheme="primary"
+            onClick={(e) => handleSaveNewContent(ref.current?.value as string)}
+          >
+            Save Post
+          </Button>
         </ModalFooter>
       </ModalContent>
     </Modal>
