@@ -73,22 +73,22 @@ function InstagramCard({
   cardCheckboxSelected: cardCheckboxSelected;
   setCardCheckBoxSelected: (data: any) => void;
   deleteInstagramContents:
-    | ((data: {
-        posts: string[];
-        reels: string[];
-        stories: string[];
-        videos: string[];
-      }) => void)
-    | null;
+  | ((data: {
+    posts: string[];
+    reels: string[];
+    stories: string[];
+    videos: string[];
+  }) => void)
+  | null;
   RemoveFromCollection:
-    | (({
-        contentId,
-        type,
-      }: {
-        contentId: string;
-        type: "post" | "reel" | "story" | "video";
-      }) => Promise<void>)
-    | null;
+  | (({
+    contentId,
+    type,
+  }: {
+    contentId: string;
+    type: "post" | "reel" | "story" | "video";
+  }) => Promise<void>)
+  | null;
 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const User = useContext(UserContext) as User;
@@ -144,8 +144,8 @@ function InstagramCard({
           data.type === "post"
             ? InstagramCollectionMutation.addPostToCollection
             : data.type === "reel"
-            ? InstagramCollectionMutation.addReelToCollection
-            : InstagramCollectionMutation.addStoryToCollection,
+              ? InstagramCollectionMutation.addReelToCollection
+              : InstagramCollectionMutation.addStoryToCollection,
         variables: {
           jsonInput: JSON.stringify(variables),
         },
@@ -158,27 +158,31 @@ function InstagramCard({
         data.type === "post"
           ? "addPostToCollection"
           : data.type === "reel"
-          ? "addReelToCollection"
-          : "addStoryToCollection"
-      ];
+            ? "addReelToCollection"
+            : "addStoryToCollection"
+        ];
       if (success) {
         messageToast.setType(MessageType.SUCCESS);
-        messageToast.setMessage("Content added to collection successfully");
-        messageToast.setTimeout(3000);
+        messageToast.setMessage("Added to collection successfully");
+        messageToast.setTimeout(10000);
         messageToast.setTitle("Success");
         messageToast.setIsShow(true);
-        // messageToast.setButtonLabel("View Collection");
-        // messageToast.setOnButtonClick((data: any) => {
-        //   alert("View Collection")
-        // })
-        // messageToast.setHasButton(true);
-      } else if (createCollectionError) {
+        messageToast.setButtonLabel("View Collection");
+        messageToast.setOnButtonClick((data: any) => {
+          alert("View Collection")
+        })
+        messageToast.setHasButton(true);
+      } else {
+        console.log("hello world error", message);
         messageToast.setType(MessageType.ERROR);
-        messageToast.setMessage(message as string);
-        messageToast.setTimeout(3000);
+        messageToast.setMessage("errpor");
+        messageToast.setTimeout(10000);
         messageToast.setTitle("Error");
-        // messageToast.setIsShow(true);
-        // messageToast.buttonLabel = "View Collection";
+        messageToast.setIsShow(true);
+
+
+        messageToast.setIsShow(true);
+        messageToast.buttonLabel = "View Collection";
       }
     }
   };
@@ -211,7 +215,6 @@ function InstagramCard({
         </HStack>
         <img width={"20"} src={instagram} alt="social media icon" />
       </HStack>
-
       <Box position="relative">
         {data?.ig_content?.is_video ? (
           showVideo ? (
@@ -408,44 +411,11 @@ function InstagramCard({
               })}
             </MenuList>
           </Menu>
-          {/* <Menu closeOnSelect={false} autoSelect={false}>
-            <MenuButton>
-              <BookmarkSimple size={30} color="white" weight="fill" />
-            </MenuButton>
-            <MenuList>
-              <MenuItem>
-                <Input
-                  onClick={(e) => e.stopPropagation()}
-                  placeholder="Search or Create collection"
-                />
-              </MenuItem>
-              <MenuItem>
-                <HStack spacing={4} width="100%" justifyContent="space-between">
-                  <HStack>
-                    <Plus size={24} color="#121212" weight="fill" />
-                    <Text>Add to</Text>
-                  </HStack>
-                  <Text>Create</Text>
-                </HStack>
-              </MenuItem>
-              <MenuItem>
-                <HStack>
-                  <Checkbox />
-                  <Text>Select all</Text>
-                </HStack>
-              </MenuItem>
-              <MenuItem>
-                <HStack>
-                  <Checkbox />
-                  <Text>Favourite</Text>
-                </HStack>
-              </MenuItem>
-            </MenuList>
-          </Menu> */}
+
         </HStack>
       </Box>
 
-      <HStack pb={5} px={5} justify={"space-between"}>
+      <HStack pb={5} mt={5} px={5} justify={"space-between"}>
         <Text>
           {+data.ig_content.taken_at === 0
             ? "Unknown Time"
@@ -487,7 +457,7 @@ function InstagramCard({
                     messageToast.setTitle("Success");
                     messageToast.setIsShow(true);
                   }
-                  //.then(() => showCopyLinkToast())
+
                 }
               >
                 Get public link

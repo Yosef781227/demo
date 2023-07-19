@@ -9,7 +9,7 @@ import {
   ModalContent,
   ModalBody,
   ModalCloseButton,
-  useToast,
+
 } from "@chakra-ui/react";
 import React from "react";
 
@@ -42,6 +42,7 @@ function NewModal({
       return;
     }
     if (tiktok_regex.test(url)) {
+
       if (!user.hasTiktok) {
         onClose();
         messageToast.setType(MessageType.ERROR);
@@ -52,7 +53,11 @@ function NewModal({
         messageToast.setTitle("You don't have a TikTok account linked");
         messageToast.setIsShow(true);
         return;
-      } else {
+      }
+
+      else {
+
+
         client
           .query({
             query: gql`
@@ -99,6 +104,7 @@ function NewModal({
             messageToast.setTitle("Error");
             messageToast.setIsShow(true);
           });
+
       }
     } else {
       if (!user.hasInstagram) {
@@ -206,9 +212,10 @@ function NewModal({
         </ModalBody>
 
         <ModalFooter mb={10}>
-          <Button variant="ghost" mr={3}>
+          <Button variant="ghost" mr={3} onClick={onClose || (() => { })}>
             Go Back
           </Button>
+
           <Button
             colorScheme="primary"
             onClick={(e) => handleSaveNewContent(ref.current?.value as string)}

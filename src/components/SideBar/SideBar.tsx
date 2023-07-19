@@ -10,7 +10,7 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
-  IconButton,
+
 } from "@chakra-ui/react";
 import { useContext } from "react";
 import { UserContext } from "@/App";
@@ -103,7 +103,7 @@ function SideBar() {
         {sideBarListBuilder(matches[matches.length - 1]?.pathname)}
       </VStack>
       <HStack pb={"15px"}>
-        <Avatar name= {user?.name} bg={"primary.400"} />
+        <Avatar name={user?.name} bg={"primary.400"} />
         <VStack alignItems={"flex-start"}>
           <Text
             lineHeight={"text"}

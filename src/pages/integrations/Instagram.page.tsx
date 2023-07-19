@@ -53,7 +53,7 @@ function InstagramPage() {
   return (
     <Container background={"neutral.50"}>
       <Box alignSelf={"center"} w={"70%"} gap={"40px"}>
-        <RowContainer width={"988px"}>
+        {/* <RowContainer width={"988px"}>
           <VStack>
             <Image w={"200px"} h={"100px"} ml={"10px"} src={logo} alt="" />
 
@@ -97,7 +97,7 @@ function InstagramPage() {
               </Button>
             </VStack>
           </VStack>
-        </RowContainer>
+        </RowContainer> */}
 
         <RowContainer height={"214px"} width={"988px"}>
           <Heading fontSize={"2xl"} size={"md"}>

@@ -65,22 +65,22 @@ const TiktokCard = ({
   cardCheckboxSelected: cardCheckboxSelected;
   setCardCheckBoxSelected: (data: any) => void;
   deleteInstagramContents:
-    | ((data: {
-        posts: string[];
-        reels: string[];
-        stories: string[];
-        videos: string[];
-      }) => void)
-    | null;
+  | ((data: {
+    posts: string[];
+    reels: string[];
+    stories: string[];
+    videos: string[];
+  }) => void)
+  | null;
   RemoveFromCollection:
-    | (({
-        contentId,
-        type,
-      }: {
-        contentId: string;
-        type: "post" | "reel" | "story" | "video";
-      }) => Promise<void>)
-    | null;
+  | (({
+    contentId,
+    type,
+  }: {
+    contentId: string;
+    type: "post" | "reel" | "story" | "video";
+  }) => Promise<void>)
+  | null;
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const checkBoxRef = useRef<HTMLInputElement>(null);
@@ -162,7 +162,7 @@ const TiktokCard = ({
       boxShadow={"0px 8px 8px -4px rgba(16, 24, 40, 0.03);"}
     >
       <HStack px={4} pt={4} justify={"space-between"}>
-        <HStack>
+        <HStack pb={2}>
           <Avatar
             name={video.owner.nickname}
             src={video.owner?.profileUrl}

@@ -27,11 +27,13 @@ function Router({ isAuth }: { isAuth: boolean }) {
               <Route path="instagram" element={<InstagramPage />} />
             </Route>
           </Route>
+          <Route>
+            <Route path="download" element={<Download />} />
+          </Route>
         </Routes>
       ) : (
         <Routes>
           <Route path="/">
-          <Route path="download" element={<Download/>} />
             <Route index element={<LoginPage />} />
             <Route path="signup" element={<SignupPage />} />
             <Route path="reset-password" element={<ResetPassword />} />
