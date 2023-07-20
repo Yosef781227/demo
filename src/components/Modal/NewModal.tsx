@@ -218,7 +218,7 @@ function NewModal({
             colorScheme="primary"
             onClick={async (e) => {
               onClose();
-              messageToast.setType(MessageType.ERROR);
+              messageToast.setType(MessageType.INFO);
               messageToast.setMessage("We are trying to save your content Please wait ...");
               messageToast.setTimeout(3000);
               messageToast.setTitle("Error");

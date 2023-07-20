@@ -167,22 +167,15 @@ function InstagramCard({
         messageToast.setTimeout(10000);
         messageToast.setTitle("Success");
         messageToast.setIsShow(true);
-        messageToast.setButtonLabel("View Collection");
-        messageToast.setOnButtonClick((data: any) => {
-          alert("View Collection")
-        })
-        messageToast.setHasButton(true);
+
+
+
       } else {
-        console.log("hello world error", message);
         messageToast.setType(MessageType.ERROR);
         messageToast.setMessage("errpor");
         messageToast.setTimeout(10000);
         messageToast.setTitle("Error");
         messageToast.setIsShow(true);
-
-
-        messageToast.setIsShow(true);
-        messageToast.buttonLabel = "View Collection";
       }
     }
   };
