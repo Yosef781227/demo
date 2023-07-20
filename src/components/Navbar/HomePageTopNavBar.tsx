@@ -1,5 +1,5 @@
 import { saveNewContent, logout } from "@/utils";
-import { HStack, Button, Select, Text } from "@chakra-ui/react";
+import { HStack, Button, Select, Text, Avatar } from "@chakra-ui/react";
 import { Funnel, Plus } from "@phosphor-icons/react";
 import { ChangeEvent, useContext } from "react";
 import Buttons from "@/components/Buttons/Button";
@@ -65,6 +65,7 @@ function HomePageTopNavBar({
             {User.instagrams.map((instagram: any, index: number) => {
               return (
                 <option key={index + 1} value={instagram.id}>
+                  <Avatar size={"sm"}>{instagram.owner_profile_pic_url}</Avatar>
                   {instagram.username}
                 </option>
               );

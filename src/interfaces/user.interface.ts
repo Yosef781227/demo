@@ -1,5 +1,6 @@
 export interface User {
   isAuth: boolean;
+  instagram_user_profile: any;
   hasInstagram: boolean;
   instagramIndex: number;
   instagramId: string;

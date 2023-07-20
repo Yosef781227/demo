@@ -172,7 +172,7 @@ function InstagramCard({
 
       } else {
         messageToast.setType(MessageType.ERROR);
-        messageToast.setMessage("errpor");
+        messageToast.setMessage(message as string);
         messageToast.setTimeout(10000);
         messageToast.setTitle("Error");
         messageToast.setIsShow(true);

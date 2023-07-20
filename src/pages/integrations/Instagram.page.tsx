@@ -53,51 +53,7 @@ function InstagramPage() {
   return (
     <Container background={"neutral.50"}>
       <Box alignSelf={"center"} w={"70%"} gap={"40px"}>
-        {/* <RowContainer width={"988px"}>
-          <VStack>
-            <Image w={"200px"} h={"100px"} ml={"10px"} src={logo} alt="" />
 
-            <VStack align={"start"} ml={"15px"}>
-              <Text
-                ml={"15px"}
-                fontWeight={"extrabold"}
-                fontSize={"3xl"}
-                fontFamily={"body"}
-              >
-                Download our Chrome extension{" "}
-                <Text mt={"0px"} ml={"40px"}>
-                  to connect your accounts
-                </Text>
-              </Text>
-              <Text fontSize={"md"} ml={"30px"} mt={"10px"}>
-                We use a chrome extension to connect to your accounts so please{" "}
-                <Text mt={"0px"} ml={"40px"}>
-                  {" "}
-                  download the chrome extension and follow the tutorial
-                </Text>
-              </Text>
-            </VStack>
-            <VStack mt={"5px"} gap={"25px"}>
-              <Image
-                w={"600px"}
-                h={"400px"}
-                mt={"30px"}
-                src={screen}
-                alt="Icon"
-              />
-              <Button
-                // mt={60}
-                width={"600px"}
-                height={"50px"}
-                bg={"primary.400"}
-                color={"white"}
-                borderRadius={"10px"}
-              >
-                Download Extension
-              </Button>
-            </VStack>
-          </VStack>
-        </RowContainer> */}
 
         <RowContainer height={"214px"} width={"988px"}>
           <Heading fontSize={"2xl"} size={"md"}>

@@ -15,7 +15,7 @@ const SkimToast = () => {
     }
   }, [message.isShow]);
   return (
-    <Box position="fixed" bottom="0" right="0" m="4" zIndex={1000}>
+    <Box position="fixed" bottom="0" right="0" m="4" zIndex={1000} >
       {message.isShow && (
         <Slide direction="bottom" in={message.isShow}>
           <Box
@@ -28,6 +28,7 @@ const SkimToast = () => {
             width={359}
             right="0"
             m="4"
+            borderColor={"red"}
           >
             <Flex direction="column" align="start" justify="start" gap="4">
               {message.type === MessageType.ERROR ? (
