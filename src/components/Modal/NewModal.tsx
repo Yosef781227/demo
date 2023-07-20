@@ -210,15 +210,32 @@ function NewModal({
             Past a tik tok or instagram Link
           </Text>
         </ModalBody>
-
         <ModalFooter mb={10}>
           <Button variant="ghost" mr={3} onClick={onClose || (() => { })}>
             Go Back
           </Button>
-
           <Button
             colorScheme="primary"
-            onClick={(e) => handleSaveNewContent(ref.current?.value as string)}
+            onClick={async (e) => {
+              onClose();
+              messageToast.setType(MessageType.ERROR);
+              messageToast.setMessage("We are trying to save your content Please wait ...");
+              messageToast.setTimeout(3000);
+              messageToast.setTitle("Error");
+              messageToast.setIsShow(true);
+
+              try {
+                await handleSaveNewContent(ref.current?.value as string);
+              } catch (err) {
+
+                messageToast.setType(MessageType.ERROR);
+                messageToast.setMessage("Erro while trying to save your post");
+                messageToast.setTimeout(3000);
+                messageToast.setTitle("Error");
+                messageToast.setIsShow(true);
+              }
+            }}
+
           >
             Save Post
           </Button>
