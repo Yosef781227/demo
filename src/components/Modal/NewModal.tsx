@@ -221,7 +221,7 @@ function NewModal({
               messageToast.setType(MessageType.INFO);
               messageToast.setMessage("We are trying to save your content Please wait ...");
               messageToast.setTimeout(3000);
-              messageToast.setTitle("Error");
+              messageToast.setTitle("Saving");
               messageToast.setIsShow(true);
 
               try {
