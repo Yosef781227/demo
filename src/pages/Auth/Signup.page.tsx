@@ -207,7 +207,7 @@ function SignupPage() {
       </VStack>
       <VStack w={"430px"} pt={"10px"} gap={0}>
         <Text fontSize={"sm"}>You also agree to receive product-related marketing emails from</Text>
-        <Text fontSize={"sm"} >WildSocial, which you can unsubscribe from at any time.</Text>
+        <Text fontSize={"sm"} >SkimSocial, which you can unsubscribe from at any time.</Text>
 
       </VStack>
 
