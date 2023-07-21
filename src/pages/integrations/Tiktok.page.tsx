@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import {
@@ -53,8 +52,6 @@ function TiktokPage() {
   return (
     <Container background={"neutral.50"}>
       <Box alignSelf={"center"} w={"70%"} gap={"40px"}>
-
-
         <RowContainer height={"214px"} width={"988px"}>
           <Heading fontSize={"2xl"} size={"md"}>
             Connected Account

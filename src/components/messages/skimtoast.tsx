@@ -37,6 +37,8 @@ const SkimToast = () => {
                 <SuccessSVG />
               ) : message.type === MessageType.WARNING ? (
                 <WarningSVG />
+              ) : message.type === MessageType.INFO ? (
+                <InfoSVG />
               ) : null}
               <Flex direction="column" align="start" justify="start" gap="4">
                 <Text color="#101828" fontSize="14px" fontWeight="700">
@@ -227,4 +229,31 @@ const WarningSVG = () => {
       </defs>
     </svg>
   );
+};
+
+const InfoSVG = () => {
+  return (
+    <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g clip-path="url(#clip0_942_5720)">
+        <g opacity="0.3">
+          <path d="M32 19C32 11.8203 26.1797 6 19 6C11.8203 6 6 11.8203 6 19C6 26.1797 11.8203 32 19 32C26.1797 32 32 26.1797 32 19Z" stroke="#5800E9" stroke-width="2" />
+        </g>
+        <g opacity="0.1">
+          <path d="M37 19C37 9.05887 28.9411 1 19 1C9.05887 1 1 9.05887 1 19C1 28.9411 9.05887 37 19 37C28.9411 37 37 28.9411 37 19Z" stroke="#5700E6" stroke-width="2" />
+        </g>
+        <mask id="mask0_942_5720" maskUnits="userSpaceOnUse" x="9" y="9" width="20" height="20">
+          <path d="M29 9H9V29H29V9Z" fill="white" />
+        </mask>
+        <g mask="url(#mask0_942_5720)">
+          <path d="M15.2493 19.0003L17.7493 21.5003L22.7493 16.5003M27.3327 19.0003C27.3327 23.6027 23.6017 27.3336 18.9993 27.3336C14.397 27.3336 10.666 23.6027 10.666 19.0003C10.666 14.3979 14.397 10.667 18.9993 10.667C23.6017 10.667 27.3327 14.3979 27.3327 19.0003Z" stroke="#8B5CF6" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round" />
+        </g>
+      </g>
+      <defs>
+        <clipPath id="clip0_942_5720">
+          <rect width="38" height="38" fill="white" />
+        </clipPath>
+      </defs>
+    </svg>
+
+  )
 };
