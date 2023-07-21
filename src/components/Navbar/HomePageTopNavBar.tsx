@@ -39,7 +39,6 @@ function HomePageTopNavBar({
           width="91px"
           variant="outline"
         />
-
         <Button
           colorScheme="primary"
           width={"91px"}
@@ -50,12 +49,12 @@ function HomePageTopNavBar({
         >
           New
         </Button>
-        <Button
+        {/* <Button
           colorScheme="primary"
           onClick={() => saveNewContent(messageToast)}
         >
           Save New Content
-        </Button>
+        </Button> */}
         {User.instagrams.length && (
           <Select
             width={"auto"}

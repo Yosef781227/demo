@@ -23,12 +23,11 @@ import {
   BookmarkSimple,
   DotsThreeOutline,
   Plus,
-  PlayCircle,
+
 } from "@phosphor-icons/react";
-import play from "@assets/images/play.ico";
+
 import {
-  Dispatch,
-  SetStateAction,
+
   useRef,
   useState,
   SyntheticEvent,

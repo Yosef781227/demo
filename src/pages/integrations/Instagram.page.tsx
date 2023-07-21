@@ -21,7 +21,7 @@ import {
 import Container from "@components/Container";
 import insta from "@assets/icons/social/instagram.svg";
 import { DotsThreeOutline, Plus } from "@phosphor-icons/react";
-import { bg } from "date-fns/locale";
+
 
 function InstagramPage() {
   const navigate = useNavigate();
@@ -193,8 +193,7 @@ type RowContainerProps = {
   pr?: string | number;
   mb?: string | number;
   pb?: string | number;
-};
-
+}
 function RowContainer({
   children,
   height = "auto",

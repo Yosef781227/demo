@@ -1,5 +1,4 @@
-
-import {Heading,VStack,Text,HStack,Input,Progress,Accordion,AccordionButton,AccordionIcon,AccordionItem,AccordionPanel,Box,Link,Button, Flex} from "@chakra-ui/react";
+import { Heading, VStack, Text, HStack, Input, Progress, Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Link, Button, Flex } from "@chakra-ui/react";
 import Container from "@components/Container";
 import { useState } from "react";
 import { Tag, TagCloseButton } from "@chakra-ui/react";
@@ -29,16 +28,15 @@ function Setting() {
     const newTeamMates = teamMates.filter((mate) => mate.id !== idToRemove);
     setTeamMates(newTeamMates);
     localStorage.setItem("teamMates", JSON.stringify(newTeamMates));
-  };   
+  };
 
   return (
     <Container background={"neutral.50"}>
-      
       <Box alignSelf={"center"} w={"70%"}  >
         <Heading size={"lg"} mt={"10px"} pt={10}>
           Settings
         </Heading>
-        <RowContainer height={"270px"}  width={"1000px"}>
+        <RowContainer height={"270px"} width={"1000px"}>
           <RowItem>
             <Heading size={"md"}>Invited Users</Heading>
             <Text style={{ fontSize: "18px" }}>
@@ -62,8 +60,8 @@ function Setting() {
               />
               <Button
                 //text="Invite"
-               // fontsize="16px"
-               // fontweight="medium"
+                // fontsize="16px"
+                // fontweight="medium"
                 textColor="525252"
                 color="gray"
                 width="80px"
@@ -74,69 +72,69 @@ function Setting() {
           </RowItem>
         </RowContainer>
 
-        <RowContainer  width={"1000px"}>
+        <RowContainer width={"1000px"}>
           <RowItem>
             <Heading size={"md"}>Weekly UGC Digest</Heading>
             <Text style={{ fontSize: "18px" }}>
               Add the email addresses of anyone on your team who wants to
-              receive your brand's <br/> weekly UGC digest email.
+              receive your brand's <br /> weekly UGC digest email.
             </Text>
           </RowItem>
           <RowItem>
-      <Text
-        size="sm"
-        style={{ fontSize: "18px", fontWeight: "regular" }}
-        color="#1F1F1F"
-      >
-        Add your teammates
-      </Text>
-      <HStack>
-        <Input
-          placeholder="mail@email.com"
-          type="email"
-          width="770px"
-          height={"40px"}
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <Button
-          textColor="525252"
-          color="gray"
-          width="80px"
-          height="40px"
-          variant="outline"
-          onClick={handleAdd}
-        >
-          Add
-        </Button>
-      </HStack>
-      <Flex wrap="wrap" maxWidth={"80%"}>
-        {teamMates.map(({ id, text }) => (
-          <Tag
-            key={id}
-            size="lg"
-            borderRadius="full"
-            colorScheme="gray"
-            mr={3}
-            mb={3}
-            mt={3}
-          >
-            {text}
-            <TagCloseButton mt={0} onClick={() => handleRemove(id)} />
-          </Tag>
-        ))}
-      </Flex>
-    </RowItem>
+            <Text
+              size="sm"
+              style={{ fontSize: "18px", fontWeight: "regular" }}
+              color="#1F1F1F"
+            >
+              Add your teammates
+            </Text>
+            <HStack>
+              <Input
+                placeholder="mail@email.com"
+                type="email"
+                width="770px"
+                height={"40px"}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <Button
+                textColor="525252"
+                color="gray"
+                width="80px"
+                height="40px"
+                variant="outline"
+                onClick={handleAdd}
+              >
+                Add
+              </Button>
+            </HStack>
+            <Flex wrap="wrap" maxWidth={"80%"}>
+              {teamMates.map(({ id, text }) => (
+                <Tag
+                  key={id}
+                  size="lg"
+                  borderRadius="full"
+                  colorScheme="gray"
+                  mr={3}
+                  mb={3}
+                  mt={3}
+                >
+                  {text}
+                  <TagCloseButton mt={0} onClick={() => handleRemove(id)} />
+                </Tag>
+              ))}
+            </Flex>
+          </RowItem>
         </RowContainer>
 
-    
+
 
         <RowContainer width={"1000px"}>
           <RowItem>
             <Heading size={"md"}>Billing</Heading>
             <Text fontSize="18px">
               Review & Manage your plan. Upgrade or downgrade anytime with zero
-              fees. Looking<br/> for our full pricing page?{" "}
+              fees. Looking<br /> for our full pricing page?{" "}
               <Link color="#7C3AED" href="#" textDecoration="underline">
                 It’s here
               </Link>
@@ -145,10 +143,10 @@ function Setting() {
           </RowItem>
           <RowItem>
             <HStack spacing={550}>
-            <Heading size={"md"} fontWeight={"bold"}>Your on the Free plan</Heading>
-            <Button
-               
-                
+              <Heading size={"md"} fontWeight={"bold"}>Your on the Free plan</Heading>
+              <Button
+
+
                 textColor="525252"
                 color="gray"
                 width="120px"
@@ -156,7 +154,7 @@ function Setting() {
                 variant="outline"
               >Mange Plan</Button>
             </HStack>
-            
+
             <Text size={"14px"} fontWeight={"semibold"}>
               Social Profiles
             </Text>

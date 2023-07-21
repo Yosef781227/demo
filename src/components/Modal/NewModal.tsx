@@ -9,9 +9,9 @@ import {
   ModalContent,
   ModalBody,
   ModalCloseButton,
-
 } from "@chakra-ui/react";
 import React from "react";
+
 
 function NewModal({
   isOpen,

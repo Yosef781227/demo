@@ -1,21 +1,11 @@
-import { Flex, Image, Spacer, VStack, Text, Button, Container } from '@chakra-ui/react';
+import { Image, VStack, Text, Button, Container } from '@chakra-ui/react';
 import logo from "@assets/logo.svg";
 import screen from "@assets/images/screen.png"
-
-
+import AuthContainer from "@/components/Auth/Containers/AuthContainer";
 
 export default function Download() {
   return (
-    <Flex
-      width={['68%', '78%', '88%', '98%']}
-      height={['65vh', '75vh', '85vh', '95vh']}
-      direction="column"
-      bg="neutral.50"
-      ml={"20px"}
-      borderRadius={"20"}
-      mt={"20px"}
-      p="5"
-    >
+    <AuthContainer>
       <Container>
         <VStack align={"center"}>
           <Image
@@ -24,7 +14,6 @@ export default function Download() {
             mt={"100px"}
             ml={"10px"}
             src={logo} alt=""
-
           />
           <VStack align={"start"} ml={"15px"}>
             <Text ml={"15px"} fontWeight={"extrabold"} fontSize={"3xl"} fontFamily={"body"}>
@@ -56,7 +45,6 @@ export default function Download() {
           </VStack>
         </VStack>
       </Container>
-      <Spacer />
-    </Flex>
+    </AuthContainer>
   )
 }

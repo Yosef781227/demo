@@ -154,7 +154,6 @@ function SignupPage() {
           label="Name"
           onChange={(e) => setName(e.target.value)}
         />
-
         <FormRow
           placeholder="janedoe@gmail.com"
           type="email"
