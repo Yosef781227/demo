@@ -4,13 +4,21 @@ import IntegrationIcon from "@/assets/icons/Filled/IntegrationIcon";
 import CollectionIcon from "@/assets/icons/Filled/CollectionIcon";
 import SettingIcon from "@/assets/icons/Filled/SettingIcon";
 import Logo from "../Logo";
-import { Link, NavLink, Navigate, useNavigate } from "react-router-dom";
+import {
+  Link,
+  NavLink,
+  Navigate,
+  useLocation,
+  useMatch,
+  useMatches,
+  useNavigate,
+} from "react-router-dom";
 import {
   Menu,
   MenuButton,
   MenuList,
   MenuItem,
-
+  IconButton,
 } from "@chakra-ui/react";
 import { useContext } from "react";
 import { UserContext } from "@/App";
@@ -33,7 +41,19 @@ const sideBarElements = [
   {
     id: "integration",
     text: "Integration",
+    link: "/integration",
+    icon: <IntegrationIcon />,
+  },
+  {
+    id: "instagram",
+    text: "Instagram",
     link: "/integration/instagram",
+    icon: <IntegrationIcon />,
+  },
+  {
+    id: "tiktok",
+    text: "Tiktok",
+    link: "/integration/tiktok",
     icon: <IntegrationIcon />,
   },
   {
@@ -61,9 +81,54 @@ function sideBarListBuilder(pathname: string) {
       pr={5}
     >
       {sideBarElements.map(({ id, link, text, icon }, i) => {
+        console.log(pathname);
         if ("/integration" === pathname) {
-          return <Navigate to="/integration/tiktok" />;
+          return <Navigate to="/integration/instagram" />;
         }
+        if (id === "tiktok" || id === "instagram") {
+          if (!pathname.startsWith("/integration")) {
+            return null;
+          }
+          if (id == "tiktok" && pathname.startsWith("/integration/tiktok")) {
+            return (
+              <ChakraNavLink
+                key={id}
+                rounded={"lg"}
+                end={true}
+                alignSelf={"flex-end"}
+                style={{ width: "80%" }}
+                to={`${link}`}
+              >
+                <HStack cursor={"pointer"} px={4} py={2} width={"full"} key={i}>
+                  {icon}
+                  <Text color="white">{text}</Text>
+                </HStack>
+              </ChakraNavLink>
+            );
+          } else {
+            return (
+              <ChakraNavLink
+                key={id}
+                rounded={"lg"}
+                end={true}
+                alignSelf={"flex-end"}
+                style={{ width: "80%" }}
+                to={`${link}`}
+              >
+                <HStack cursor={"pointer"} px={4} py={2} width={"full"} key={i}>
+                  {icon}
+                  <Text color="white">{text}</Text>
+                </HStack>
+              </ChakraNavLink>
+            );
+          }
+        }
+        // if (
+        //   (id === "tiktok" || id === "instagram") &&
+        //   !pathname.startsWith("/integration")
+        // ) {
+        //   return null;
+        // }
         return (
           <ChakraNavLink
             key={id}
@@ -85,6 +150,7 @@ function sideBarListBuilder(pathname: string) {
 function SideBar() {
   const user = useContext(UserContext);
   const matches: any = [];
+  const { pathname } = useLocation();
   const navigate = useNavigate();
   return (
     <VStack
@@ -97,18 +163,15 @@ function SideBar() {
       className="sidebar"
     >
       <VStack>
-        <Box width={"full"}  >
+        <Box width={"full"}>
           <Logo />
         </Box>
-        {sideBarListBuilder(matches[matches.length - 1]?.pathname)}
+        {sideBarListBuilder(pathname)}
       </VStack>
       <HStack pb={"15px"}>
         <Avatar name={user?.name} bg={"primary.400"} />
         <VStack alignItems={"flex-start"}>
-          <Text
-            lineHeight={"text"}
-            color="whiteAlpha.800"
-          >
+          <Text lineHeight={"text"} color="whiteAlpha.800">
             {user?.name}
           </Text>
           <Text
