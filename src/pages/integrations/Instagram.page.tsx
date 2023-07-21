@@ -20,9 +20,9 @@ import {
 } from "@chakra-ui/react";
 import Container from "@components/Container";
 import insta from "@assets/icons/social/instagram.svg";
-import { DotsThreeOutline } from "@phosphor-icons/react";
-import logo from "@assets/logo.svg";
-import screen from "@assets/images/screen.png";
+import { DotsThreeOutline, Plus } from "@phosphor-icons/react";
+import { bg } from "date-fns/locale";
+
 function InstagramPage() {
   const navigate = useNavigate();
   const [hashtag, setHashtag] = useState<string>("");
@@ -52,10 +52,10 @@ function InstagramPage() {
   };
   return (
     <Container background={"neutral.50"}>
-      <Box alignSelf={"center"} w={"70%"} gap={"40px"}>
+      <Box alignSelf={"center"} w={"70%"} gap={"40px"} >
 
-
-        <RowContainer height={"214px"} width={"988px"}>
+        <Heading size={"lg"} mt={"20px"} ml={"40px"} pt={10}>Instagram</Heading>
+        <RowContainer height={"260px"} width={"988px"} ml={"40px"}>
           <Heading fontSize={"2xl"} size={"md"}>
             Connected Account
           </Heading>
@@ -88,10 +88,14 @@ function InstagramPage() {
                 </Text>
               </VStack>
             </HStack>
+
+
           </HStack>
+          <Button height={"40px"} mt={"10px"} bg={"white"} borderRadius={"9px"} leftIcon={<Plus size={24} color="#121212" weight="bold" />}>Add another account</Button>
+
         </RowContainer>
 
-        <RowContainer height={"225px"} width={"988px"}>
+        <RowContainer height={"225px"} width={"988px"} ml={"40px"}>
           <Heading fontSize={"2xl"} fontWeight={"bold"} mt={5}>
             Automatic like @mention
           </Heading>
@@ -107,7 +111,7 @@ function InstagramPage() {
           </HStack>
         </RowContainer>
 
-        <RowContainer width={"988px"}>
+        <RowContainer width={"988px"} ml={"40px"}>
           <Heading fontSize={"2xl"} fontWeight={"bold"} mt={5}>
             Hashtags
           </Heading>
@@ -170,7 +174,9 @@ function InstagramPage() {
             </Text>
           </VStack>
         </RowContainer>
+
       </Box>
+
     </Container>
   );
 }
@@ -180,6 +186,13 @@ type RowContainerProps = {
   width?: string | number;
   mt?: string | number;
   py?: string | number;
+  bg?: string;
+  ml?: string | number;
+  pl?: string | number;
+  mr?: string | number;
+  pr?: string | number;
+  mb?: string | number;
+  pb?: string | number;
 };
 
 function RowContainer({
@@ -188,6 +201,14 @@ function RowContainer({
   width = "auto",
   mt = "50px",
   py = "10",
+  bg = "white",
+  ml = "110px",
+  pl = "10",
+  mr = "40px",
+  pr = "10",
+  mb = "40px",
+  pb = "10",
+
 }: RowContainerProps) {
   return (
     <VStack
@@ -197,12 +218,18 @@ function RowContainer({
       width={width}
       backgroundColor={"white"}
       mt={mt}
-      ml={"110px"}
-      mb={"40px"}
+      ml={ml}
+      pl={pl}
+      pr={pr}
+      mr={mr}
       px={10}
+      mb={mb}
+      pb={pb}
       py={py}
       gap={4}
       rounded={"lg"}
+      bg={bg}
+
     >
       {children}
     </VStack>

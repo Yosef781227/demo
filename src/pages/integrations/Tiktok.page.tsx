@@ -7,7 +7,7 @@ import {
   HStack,
   Image,
   Text,
-  Switch,
+
   Menu,
   MenuButton,
   MenuList,
@@ -20,7 +20,7 @@ import {
 } from "@chakra-ui/react";
 import Container from "@components/Container";
 import tiktok from "@assets/icons/social/tiktok.svg";
-import { DotsThreeOutline } from "@phosphor-icons/react";
+import { DotsThreeOutline, Plus } from "@phosphor-icons/react";
 function TiktokPage() {
   const navigate = useNavigate();
   const [hashtag, setHashtag] = useState<string>("");
@@ -52,7 +52,8 @@ function TiktokPage() {
   return (
     <Container background={"neutral.50"}>
       <Box alignSelf={"center"} w={"70%"} gap={"40px"}>
-        <RowContainer height={"214px"} width={"988px"}>
+        <Heading size={"lg"} mt={"20px"} ml={"40px"} pt={10}>Tik Tok</Heading>
+        <RowContainer height={"260px"} width={"988px"} ml={"40px"}>
           <Heading fontSize={"2xl"} size={"md"}>
             Connected Account
           </Heading>
@@ -86,25 +87,12 @@ function TiktokPage() {
               </VStack>
             </HStack>
           </HStack>
+          <Button height={"40px"} mt={"10px"} bg={"white"} borderRadius={"9px"} leftIcon={<Plus size={24} color="#121212" weight="bold" />}>Add another account</Button>
         </RowContainer>
 
-        <RowContainer height={"225px"} width={"988px"}>
-          <Heading fontSize={"2xl"} fontWeight={"bold"} mt={5}>
-            Automatic like @mention
-          </Heading>
-          <Text fontWeight={"lg"} fontSize={"lg"}>
-            Turn this feature on to have Archive automatically "like" every
-            Story that @mentions <br /> your brand.
-          </Text>
-          <HStack justifyContent={"space-between"} pr={5}>
-            <Text fontWeight={"lg"} fontSize={"lg"}>
-              Auto-like stories
-            </Text>
-            <Switch colorScheme="purple"></Switch>
-          </HStack>
-        </RowContainer>
 
-        <RowContainer width={"988px"}>
+
+        <RowContainer width={"988px"} ml={"40px"}>
           <Heading fontSize={"2xl"} fontWeight={"bold"} mt={5}>
             Hashtags
           </Heading>
@@ -177,6 +165,13 @@ type RowContainerProps = {
   width?: string | number;
   mt?: string | number;
   py?: string | number;
+  bg?: string;
+  ml?: string | number;
+  pl?: string | number;
+  mr?: string | number;
+  pr?: string | number;
+  mb?: string | number;
+  pb?: string | number;
 };
 
 function RowContainer({
@@ -185,6 +180,14 @@ function RowContainer({
   width = "auto",
   mt = "50px",
   py = "10",
+  bg = "white",
+  ml = "110px",
+  pl = "10",
+  mr = "40px",
+  pr = "10",
+  mb = "40px",
+  pb = "10",
+
 }: RowContainerProps) {
   return (
     <VStack
@@ -194,12 +197,18 @@ function RowContainer({
       width={width}
       backgroundColor={"white"}
       mt={mt}
-      ml={"110px"}
-      mb={"40px"}
+      ml={ml}
+      pl={pl}
+      pr={pr}
+      mr={mr}
       px={10}
+      mb={mb}
+      pb={pb}
       py={py}
       gap={4}
       rounded={"lg"}
+      bg={bg}
+
     >
       {children}
     </VStack>
