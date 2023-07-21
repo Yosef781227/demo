@@ -1,7 +1,8 @@
-import { Image, VStack, Text, Button, Container } from '@chakra-ui/react';
+import { Image, VStack, Text, Button, Container, Center } from '@chakra-ui/react';
 import logo from "@assets/logo.svg";
 import screen from "@assets/images/screen.png"
-import AuthContainer from "@/components/Auth/Containers/AuthContainer";
+//import AuthContainer from "@/components/Auth/Containers/AuthContainer";
+import { useBreakpointValue } from "@chakra-ui/react";
 
 export default function Download() {
   return (
@@ -11,8 +12,8 @@ export default function Download() {
           <Image
             w={"200px"}
             h={"100px"}
-            mt={"100px"}
-            ml={"10px"}
+            //mt={"100px"}
+            //ml={"10px"}
             src={logo} alt=""
           />
           <VStack align={"start"} ml={"15px"}>
@@ -47,4 +48,26 @@ export default function Download() {
       </Container>
     </AuthContainer>
   )
+}
+
+function AuthContainer({ children }: { children: React.ReactNode }) {
+  const width = useBreakpointValue(["100%", "85%", "75%", "50%"]);
+
+  return (
+    <Center p={1} overflow={"hidden"} h="100vh" w="100vw">
+      <Center
+        width={"98%"}
+        height={"96%"}
+        rounded={"md"}
+        py={10}
+        pt={5}
+        overflow={"auto"}
+        bg="white"
+      >
+        <VStack width={width} gap={1}>
+          {children}
+        </VStack>
+      </Center>
+    </Center>
+  );
 }
