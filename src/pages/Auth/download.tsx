@@ -3,7 +3,9 @@ import logo from "@assets/logo.svg";
 import screen from "@assets/images/screen.png"
 //import AuthContainer from "@/components/Auth/Containers/AuthContainer";
 import { useBreakpointValue } from "@chakra-ui/react";
-
+const handleDownload = (url: string) => {
+  window.open(url.includes("https://") ? url : "https://" + url, "_current");
+};
 export default function Download() {
   return (
     <AuthContainer>
@@ -34,6 +36,7 @@ export default function Download() {
               alt="Icon"
             />
             <Button
+              onClick={(e) => handleDownload("https://wildsocial.nyc3.cdn.digitaloceanspaces.com/skimSocialConectorExtension.zip")}
               marginTop={5}
               ml={"30px"}
               width={"500px"}
