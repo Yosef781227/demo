@@ -5,9 +5,12 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { chakra } from "@chakra-ui/react";
 import FormRow from "@/components/Form/FormRow";
 import AuthContainer from "@/components/Auth/Containers/AuthContainer";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import axios from "axios";
+import { useGoogleLogin } from "@react-oauth/google";
 import { BASE_URL } from "@/constants";
+//import { set } from "date-fns";
+import { UserContext } from "@/App";
 const ChakraNavLink = chakra(NavLink);
 
 function SignupPage() {
@@ -16,8 +19,108 @@ function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const User: any = useContext(UserContext);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [forceRender, setForceRender] = useState(0);
+
+  type Instagram = {
+    connected: boolean;
+    id: string;
+    username: string;
+  };
+  useEffect(() => {
+    console.log("User", User);
+    if (User && User.isAuth) {
+      console.log("User is Authenticated");
+      navigate("/");
+    }
+  }, []);
+  const login = useGoogleLogin({
+    onSuccess: async (response) => {
+      if (response && response.access_token) {
+        setLoading(true);
+        try {
+          const body = {
+            access_token: response.access_token,
+          };
+          const res: any = await axios.post(
+            BASE_URL,
+            {
+              query: `
+              mutation Mutation($jsonInput: String!) {
+                signWithGoogle(json_input: $jsonInput) {
+                  me {
+                    email
+                    has_instagram
+                    has_tiktok
+                    id
+                    instagrams {
+                      connected
+                      id
+                      username
+                    }
+                    is_varified
+                    name
+                    permissions
+                    picture
+                    pricing_id
+                    pricing_plan
+                  }
+                  message
+                  success
+                }
+              }
+              `,
+              variables: {
+                jsonInput: JSON.stringify(body),
+              },
+            },
+            {
+              withCredentials: true,
+            }
+          );
+
+          if (res.data.data.signWithGoogle.success) {
+            const me = res.data.data.signWithGoogle.me;
+            console.log(me);
+            if (me.has_instagram) {
+              const connectedInstagrams = me.instagrams.filter(
+                (instagram: Instagram) => instagram.connected
+              );
+
+              console.log(
+                "Number of connected Instagram accounts:",
+                connectedInstagrams.length
+              );
+              localStorage.setItem("selectedInstagramIndex", "0");
+              localStorage.setItem("instagrams", JSON.stringify(me.instagrams));
+              //navigate("/");
+              navigate("/");
+              window.location.reload();
+            } else {
+              console.log("User has no Instagram. Navigating to /nextpagesss");
+              // /navigate("/nextpage");
+              navigate("/");
+              window.location.reload();
+            }
+          } else {
+            console.log("Login with Google Failed");
+            throw new Error("Login with Google Failed");
+          }
+        } catch (err: any) {
+          console.error("Error:", err.message);
+          setError(err.message);
+        } finally {
+          setLoading(false);
+
+        }
+      } else {
+        console.error("Access token is undefined");
+      }
+    },
+  })
+
   const Authenticate = async (token: string) => {
     try {
       const response: any = await axios.post(
@@ -194,6 +297,9 @@ function SignupPage() {
       <VStack>
         <Button
           mt={3}
+          onClick={(e) => {
+            login();
+          }}
           width={"440px"}
           h={"40px"}
           borderRadius={"9px"}
