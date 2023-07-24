@@ -237,16 +237,16 @@ function SignupPage() {
       <img src={logo} alt="" />
       <VStack>
         <Heading lineHeight={1} fontSize={"3xl"} mt={8}>
-          Signup
+          Sign up
         </Heading>
         <Text fontSize={"sm"} pt={2}>
-          Already Have an account?{" "}
+          Already have an account? {" "}
           <ChakraNavLink
-            color={"blue"}
+            color={"#7C3AED"}
             textDecoration={"underline"}
             to="/login"
           >
-            Sign in
+            Sign In
           </ChakraNavLink>
         </Text>
       </VStack>
@@ -273,11 +273,11 @@ function SignupPage() {
 
       <VStack w={"420px"} pt={"10px"} gap={0}>
         <Text fontSize={"sm"}>
-          By continuing, you agree to our{" "}
+          By continuing, you agree to our {" "}
           <Link href="" textDecoration="underline">Terms Of Service</Link>, {" "}
-          <Link href="" textDecoration="underline">Privacy Policy</Link>,
+          <Link href="" textDecoration="underline"> Privacy Policy</Link>,
         </Text>
-        <Text fontSize={"sm"} >and give us permission to  engage  with your brand’s online </Text>
+        <Text fontSize={"sm"} >and give us permission to engage with your brand’s online </Text>
         <Text fontSize={"sm"} >community on your behalf.</Text>
       </VStack>
 
@@ -307,14 +307,18 @@ function SignupPage() {
           leftIcon={<img alt="logo" src={google} />}
           variant={"outline"}
           fontWeight={"normal"}
+          onClick={() => {
+            window.location.href =
+              "https://wildsocial.ca/api/auth/google";
+
+          }}
         >
-          Sign In with Google
+          Sign Up With Google
         </Button>
       </VStack>
       <VStack w={"430px"} pt={"10px"} gap={0}>
         <Text fontSize={"sm"}>You also agree to receive product-related marketing emails from</Text>
-        <Text fontSize={"sm"} >SkimSocial, which you can unsubscribe from at any time.</Text>
-
+        <Text fontSize={"sm"} >WildSocial, which you can unsubscribe from at any time.</Text>
       </VStack>
 
     </AuthContainer>
