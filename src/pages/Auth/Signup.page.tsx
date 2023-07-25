@@ -236,8 +236,8 @@ function SignupPage() {
     <AuthContainer>
       <img src={logo} alt="" />
       <VStack>
-        <Heading lineHeight={1} fontSize={"3xl"} mt={8}>
-          Sign up
+        <Heading lineHeight={1} fontSize={"3xl"} mt={8} fontWeight={"bold"}>
+          Sign Up
         </Heading>
         <Text fontSize={"sm"} pt={2}>
           Already have an account? {" "}
@@ -275,9 +275,9 @@ function SignupPage() {
         <Text fontSize={"sm"}>
           By continuing, you agree to our {" "}
           <Link href="" textDecoration="underline">Terms Of Service</Link>, {" "}
-          <Link href="" textDecoration="underline"> Privacy Policy</Link>,
+          <Link href="" textDecoration="underline">Privacy Policy</Link>,
         </Text>
-        <Text fontSize={"sm"} >and give us permission to engage with your brand’s online </Text>
+        <Text fontSize={"sm"} >and give us permission to engage with your brand’s online</Text>
         <Text fontSize={"sm"} >community on your behalf.</Text>
       </VStack>
 
