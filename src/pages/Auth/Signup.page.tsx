@@ -271,10 +271,10 @@ function SignupPage() {
         />
       </VStack>
 
-      <VStack w={"420px"} pt={"10px"} gap={0}>
+      <VStack w={"420px"} pt={"30px"} gap={0}>
         <Text fontSize={"sm"}>
           By continuing, you agree to our {" "}
-          <Link href="" textDecoration="underline">Terms Of Service</Link>, {" "}
+          <Link href="" textDecoration="underline">Terms Of Service</Link>, {"  "}
           <Link href="" textDecoration="underline">Privacy Policy</Link>,
         </Text>
         <Text fontSize={"sm"} >and give us permission to engage with your brand’s online</Text>
@@ -312,7 +312,7 @@ function SignupPage() {
           Sign Up With Google
         </Button>
       </VStack>
-      <VStack w={"430px"} pt={"10px"} gap={0}>
+      <VStack w={"430px"} pt={"40px"} gap={0}>
         <Text fontSize={"sm"}>You also agree to receive product-related marketing emails from</Text>
         <Text fontSize={"sm"} >WildSocial, which you can unsubscribe from at any time.</Text>
       </VStack>

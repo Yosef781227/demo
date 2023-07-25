@@ -225,7 +225,7 @@ function LoginPage() {
             textDecoration={"underline"}
             to="/signup"
           >
-            Sign in
+            Sign Up
           </ChakraNavLink>
         </Text>
       </VStack>
