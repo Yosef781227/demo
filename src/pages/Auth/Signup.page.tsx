@@ -307,11 +307,7 @@ function SignupPage() {
           leftIcon={<img alt="logo" src={google} />}
           variant={"outline"}
           fontWeight={"normal"}
-          onClick={() => {
-            window.location.href =
-              "https://wildsocial.ca/api/auth/google";
 
-          }}
         >
           Sign Up With Google
         </Button>
