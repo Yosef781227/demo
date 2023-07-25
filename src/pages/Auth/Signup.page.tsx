@@ -38,6 +38,17 @@ function SignupPage() {
       navigate("/");
     }
   }, []);
+  useEffect(() => {
+    if (window.location.href.includes("token=") && window.location.href.includes("&id=")) {
+      const [token, id] = window.location.href.split("token=")[1].split("&id=");
+      //console.log(token);
+
+      if (token && id) {
+        //console.log("varify email", token);
+        Authenticate(token, id);
+      }
+    }
+  }, []);
   const login = useGoogleLogin({
     onSuccess: async (response) => {
       if (response && response.access_token) {
@@ -123,7 +134,7 @@ function SignupPage() {
     },
   })
 
-  const Authenticate = async (token: string) => {
+  const Authenticate = async (token: string, id: string) => {
     try {
       const response: any = await axios.post(
         BASE_URL,
@@ -158,25 +169,70 @@ function SignupPage() {
           withCredentials: true,
         }
       );
-      console.log(response.data.data.varifyEmail.success);
-      if (response.data.data.varifyEmail.success) {
-        navigate("/login");
-      }
-    } catch (error) { }
-  };
-  useEffect(() => {
-    const token = window.location.href.split("token=")[1];
-    //console.log(token);
 
-    if (token) {
-      //console.log("varify email", token);
-      Authenticate(token);
+      console.log(response.data);
+      if (response.data?.data?.varifyEmail?.success) {
+        messageToast.setType(MessageType.SUCCESS);
+        messageToast.setMessage("Email varified successfully");
+        messageToast.setTimeout(3000);
+        messageToast.setTitle("Success");
+        messageToast.setIsShow(true);
+        navigate("/");
+      } else {
+        if (response.data?.errors) {
+          if (response.data.errors[0].message === "Email already verified") {
+            messageToast.setType(MessageType.INFO);
+            messageToast.setMessage(response.data.errors[0].message);
+            messageToast.setTimeout(3000);
+            messageToast.setTitle("Info");
+            messageToast.setIsShow(true);
+            navigate("/");
+          } else if (response.data.errors[0].message === "Token expired") {
+            let res: any = await axios.post(
+              BASE_URL,
+              {
+                query: `
+                mutation Mutation($jsonInput: String!) {
+                  sendVarifyEmail(json_input: $jsonInput)
+                }
+                `,
+                variables: {
+                  jsonInput: JSON.stringify({
+                    id: id,
+                  }),
+                },
+              }
+            );
+            console.log("send", res);
+            messageToast.setType(MessageType.INFO);
+            messageToast.setMessage(response.data.errors[0].message + res.data?.data?.sendVarifyEmail ? "\n we send Varification email again" : "");
+            messageToast.setTimeout(3000);
+            messageToast.setTitle("Error");
+            messageToast.setIsShow(true);
+          } else {
+            messageToast.setType(MessageType.ERROR);
+            messageToast.setMessage(response.data.errors[0].message);
+            messageToast.setTimeout(3000);
+            messageToast.setTitle("Error");
+            messageToast.setIsShow(true);
+          }
+
+        }
+      }
+    } catch (error: any) {
+      console.log(error);
+      messageToast.setType(MessageType.ERROR);
+      messageToast.setMessage(error.message);
+      messageToast.setTimeout(3000);
+      messageToast.setTitle("Error");
+      messageToast.setIsShow(true);
     }
-  }, []);
+  };
+
 
   const signup = async () => {
     try {
-      setLoading(true);
+
       //validate email
       if (name === "") {
         messageToast.setType(MessageType.ERROR);
@@ -231,6 +287,7 @@ function SignupPage() {
         return;
       }
       // console.log("signup");
+      setLoading(true);
       try {
         //send request to server
         const response: any = await axios.post(BASE_URL, {
@@ -239,9 +296,7 @@ function SignupPage() {
             signUpWithEmail(json_input: $jsonInput) {
               success
               message
-              me {
-                id
-              }
+              data
             }
           }`,
           variables: {
@@ -253,14 +308,29 @@ function SignupPage() {
             }),
           },
         });
-        console.log(response.data);
-        if (response.data.data) {
-          console.log("varify email");
-          //navigate("/nextpage");
+        setLoading(false);
+        if (response.data?.data?.signUpWithEmail?.success) {
+          messageToast.setType(MessageType.SUCCESS);
+          messageToast.setMessage("Please check your email to verify your account");
+          messageToast.setTimeout(5000);
+          messageToast.setTitle("Sign Up Success");
+          messageToast.setIsShow(true);
         } else {
+          messageToast.setType(MessageType.ERROR);
+          messageToast.setMessage(response.data?.errors[0]?.message || 'Something went wrong');
+          messageToast.setTimeout(3000);
+          messageToast.setTitle("Error");
+          messageToast.setIsShow(true);
           setError(response.data.errors[0].message);
         }
-      } catch (error) { }
+      } catch (error: any) {
+        setLoading(false);
+        messageToast.setType(MessageType.ERROR);
+        messageToast.setMessage(error.message);
+        messageToast.setTimeout(3000);
+        messageToast.setTitle("Error");
+        messageToast.setIsShow(true);
+      }
     } catch (error: any) {
       //setError(true);
     }
@@ -323,7 +393,7 @@ function SignupPage() {
           h={"40px"}
           borderRadius={"9px"}
           fontWeight={"normal"}
-
+          isLoading={loading}
         >
           Agree {" "} and {" "} Sign Up
         </Button>
@@ -340,6 +410,7 @@ function SignupPage() {
           leftIcon={<img alt="logo" src={google} />}
           variant={"outline"}
           fontWeight={"normal"}
+          isLoading={loading}
         >
           Sign Up With Google
         </Button>

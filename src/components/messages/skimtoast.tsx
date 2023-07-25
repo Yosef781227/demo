@@ -86,7 +86,7 @@ const SuccessSVG = () => {
           height="26"
           rx="13"
           stroke="#079455"
-          stroke-width="2"
+          strokeWidth="2"
         />
       </g>
       <g opacity="0.1">
@@ -97,16 +97,16 @@ const SuccessSVG = () => {
           height="36"
           rx="18"
           stroke="#079455"
-          stroke-width="2"
+          strokeWidth="2"
         />
       </g>
       <g clipPath="url(#clip0_1385_18782)">
         <path
           d="M15.2493 19L17.7493 21.5L22.7493 16.5M27.3327 19C27.3327 23.6024 23.6017 27.3333 18.9993 27.3333C14.397 27.3333 10.666 23.6024 10.666 19C10.666 14.3976 14.397 10.6667 18.9993 10.6667C23.6017 10.6667 27.3327 14.3976 27.3327 19Z"
           stroke="#079455"
-          stroke-width="1.66667"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeWidth="1.66667"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
       </g>
       <defs>
@@ -140,7 +140,7 @@ const ErrorSVG = () => {
           height="26"
           rx="13"
           stroke="#D92D20"
-          stroke-width="2"
+          strokeWidth="2"
         />
       </g>
       <g opacity="0.1">
@@ -151,16 +151,16 @@ const ErrorSVG = () => {
           height="36"
           rx="18"
           stroke="#D92D20"
-          stroke-width="2"
+          strokeWidth="2"
         />
       </g>
       <g clipPath="url(#clip0_1385_18820)">
         <path
           d="M18.9993 15.6667V19M18.9993 22.3334H19.0077M27.3327 19C27.3327 23.6024 23.6017 27.3334 18.9993 27.3334C14.397 27.3334 10.666 23.6024 10.666 19C10.666 14.3976 14.397 10.6667 18.9993 10.6667C23.6017 10.6667 27.3327 14.3976 27.3327 19Z"
           stroke="#D92D20"
-          stroke-width="1.66667"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeWidth="1.66667"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
       </g>
       <defs>
@@ -194,7 +194,7 @@ const WarningSVG = () => {
           height="26"
           rx="13"
           stroke="#DC6803"
-          stroke-width="2"
+          strokeWidth="2"
         />
       </g>
       <g opacity="0.1">
@@ -205,16 +205,16 @@ const WarningSVG = () => {
           height="36"
           rx="18"
           stroke="#DC6803"
-          stroke-width="2"
+          strokeWidth="2"
         />
       </g>
       <g clipPath="url(#clip0_1385_18807)">
         <path
           d="M18.9993 15.6667V19M18.9993 22.3333H19.0077M27.3327 19C27.3327 23.6024 23.6017 27.3333 18.9993 27.3333C14.397 27.3333 10.666 23.6024 10.666 19C10.666 14.3976 14.397 10.6667 18.9993 10.6667C23.6017 10.6667 27.3327 14.3976 27.3327 19Z"
           stroke="#DC6803"
-          stroke-width="1.66667"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeWidth="1.66667"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
       </g>
       <defs>
@@ -236,16 +236,16 @@ const InfoSVG = () => {
     <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
       <g clipPath="url(#clip0_942_5720)">
         <g opacity="0.3">
-          <path d="M32 19C32 11.8203 26.1797 6 19 6C11.8203 6 6 11.8203 6 19C6 26.1797 11.8203 32 19 32C26.1797 32 32 26.1797 32 19Z" stroke="#5800E9" stroke-width="2" />
+          <path d="M32 19C32 11.8203 26.1797 6 19 6C11.8203 6 6 11.8203 6 19C6 26.1797 11.8203 32 19 32C26.1797 32 32 26.1797 32 19Z" stroke="#5800E9" strokeWidth="2" />
         </g>
         <g opacity="0.1">
-          <path d="M37 19C37 9.05887 28.9411 1 19 1C9.05887 1 1 9.05887 1 19C1 28.9411 9.05887 37 19 37C28.9411 37 37 28.9411 37 19Z" stroke="#5700E6" stroke-width="2" />
+          <path d="M37 19C37 9.05887 28.9411 1 19 1C9.05887 1 1 9.05887 1 19C1 28.9411 9.05887 37 19 37C28.9411 37 37 28.9411 37 19Z" stroke="#5700E6" strokeWidth="2" />
         </g>
         <mask id="mask0_942_5720" maskUnits="userSpaceOnUse" x="9" y="9" width="20" height="20">
           <path d="M29 9H9V29H29V9Z" fill="white" />
         </mask>
         <g mask="url(#mask0_942_5720)">
-          <path d="M15.2493 19.0003L17.7493 21.5003L22.7493 16.5003M27.3327 19.0003C27.3327 23.6027 23.6017 27.3336 18.9993 27.3336C14.397 27.3336 10.666 23.6027 10.666 19.0003C10.666 14.3979 14.397 10.667 18.9993 10.667C23.6017 10.667 27.3327 14.3979 27.3327 19.0003Z" stroke="#8B5CF6" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M15.2493 19.0003L17.7493 21.5003L22.7493 16.5003M27.3327 19.0003C27.3327 23.6027 23.6017 27.3336 18.9993 27.3336C14.397 27.3336 10.666 23.6027 10.666 19.0003C10.666 14.3979 14.397 10.667 18.9993 10.667C23.6017 10.667 27.3327 14.3979 27.3327 19.0003Z" stroke="#8B5CF6" strokeWidth="1.66667" strokeLinecap="round" strokeLinejoin="round" />
         </g>
       </g>
       <defs>

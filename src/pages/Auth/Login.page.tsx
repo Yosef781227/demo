@@ -100,8 +100,7 @@ function LoginPage() {
               window.location.reload();
             } else {
               console.log("User has no Instagram. Navigating to /nextpagesss");
-              // /navigate("/nextpage");
-              window.location.reload();
+              return navigate("/download");
             }
           } else {
             console.log("Login with Google Failed");

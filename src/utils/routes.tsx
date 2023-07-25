@@ -31,6 +31,7 @@ function Router({ isAuth }: { isAuth: boolean }) {
           <Route>
             <Route path="download" element={<Download />} />
           </Route>
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       ) : (
         <div>
