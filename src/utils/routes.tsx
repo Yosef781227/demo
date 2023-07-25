@@ -10,6 +10,7 @@ import TiktokPage from "@pages/integrations/Tiktok.page";
 import InstagramPage from "@pages/integrations/Instagram.page";
 import Collection from "@/pages/Collections/Collection.page";
 import Download from "@/pages/Auth/download";
+import SkimToast from "@/components/messages/skimtoast";
 
 function Router({ isAuth }: { isAuth: boolean }) {
   return (
@@ -32,14 +33,17 @@ function Router({ isAuth }: { isAuth: boolean }) {
           </Route>
         </Routes>
       ) : (
-        <Routes>
-          <Route path="/">
-            <Route index element={<LoginPage />} />
-            <Route path="signup" element={<SignupPage />} />
-            <Route path="reset-password" element={<ResetPassword />} />
-            <Route path="*" element={<Navigate to="/" />} />
-          </Route>
-        </Routes>
+        <div>
+          <Routes>
+            <Route path="/">
+              <Route index element={<LoginPage />} />
+              <Route path="signup" element={<SignupPage />} />
+              <Route path="reset-password" element={<ResetPassword />} />
+              <Route path="*" element={<Navigate to="/" />} />
+            </Route>
+          </Routes>
+          <SkimToast />
+        </div>
       )}
     </BrowserRouter>
   );

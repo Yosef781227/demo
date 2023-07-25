@@ -29,7 +29,6 @@ export const logout = async () => {
     if (response.data.data.logout.success) {
       localStorage.removeItem("selectedInstagramIndex");
       localStorage.removeItem("instagrams");
-      //navigate("/login");
       window.location.reload();
     } else {
       toast.error(response.data.data.logout.message);
@@ -81,7 +80,6 @@ export const saveNewContent = async (messageToast: any) => {
         messageToast.setTitle("Error");
       } else {
         let toastMessage = "";
-
         if (result.data.data.savePostsAndReels.success) {
           toastMessage +=
             "Posts and Reels: " + result.data.data.savePostsAndReels.message;

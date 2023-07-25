@@ -1,12 +1,19 @@
-import { Image, VStack, Text, Button, Container, Center } from '@chakra-ui/react';
+import { Image, VStack, Text, Button, Container, Center, Modal, ModalOverlay, ModalContent, ModalBody, AspectRatio, useDisclosure } from '@chakra-ui/react';
+import { useBreakpointValue } from "@chakra-ui/react";
 import logo from "@assets/logo.svg";
 import screen from "@assets/images/screen.png"
-//import AuthContainer from "@/components/Auth/Containers/AuthContainer";
-import { useBreakpointValue } from "@chakra-ui/react";
+
 const handleDownload = (url: string) => {
   window.open(url.includes("https://") ? url : "https://" + url, "_current");
 };
+
 export default function Download() {
+  const { isOpen, onOpen, onClose } = useDisclosure()
+
+  const onClickImage = () => {
+    onOpen();
+  };
+
   return (
     <AuthContainer>
       <Container>
@@ -14,15 +21,14 @@ export default function Download() {
           <Image
             w={"200px"}
             h={"100px"}
-            //mt={"100px"}
-            //ml={"10px"}
             src={logo} alt=""
+
           />
-          <VStack align={"start"} ml={"15px"}>
-            <Text ml={"15px"} fontWeight={"extrabold"} fontSize={"3xl"} fontFamily={"body"}>
-              Download our Chrome extension <Text mt={"0px"} ml={"40px"}>to connect  your accounts</Text>
+          <VStack align={"start"} >
+            <Text fontWeight="bold" fontSize={"xl"} ml={12}>
+              Download our Chrome extension <Text mt={"0px"} ml={10}>to Connect your accounts</Text>
             </Text>
-            <Text fontSize={"md"} ml={"30px"} mt={"10px"}>
+            <Text fontSize={"sm"} mt={"10px"}>
               We use a chrome extension to connect to your accounts so please <Text mt={"0px"} ml={"40px"}> download the chrome extension and follow the tutorial</Text>
             </Text>
           </VStack>
@@ -31,14 +37,29 @@ export default function Download() {
               w={"500px"}
               h={"300px"}
               mt={"30px"}
-              ml={"30px"}
+
               src={screen}
               alt="Icon"
+              onClick={onClickImage}
             />
+            <Modal isOpen={isOpen} onClose={onClose} size={"xl"}>
+              <ModalOverlay />
+              <ModalContent>
+                <ModalBody>
+                  <AspectRatio ratio={16 / 9}>
+                    <iframe
+                      title="video"
+                      src="https://www.loom.com/embed/df44a635598541e9968e4229ea9d386f"
+                      allowFullScreen
+                    />
+                  </AspectRatio>
+                </ModalBody>
+              </ModalContent>
+            </Modal>
             <Button
               onClick={(e) => handleDownload("https://wildsocial.nyc3.cdn.digitaloceanspaces.com/skimSocialConectorExtension.zip")}
               marginTop={5}
-              ml={"30px"}
+
               width={"500px"}
               height={"50px"}
               bg={"primary.400"}

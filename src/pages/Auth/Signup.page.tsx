@@ -10,7 +10,8 @@ import axios from "axios";
 import { useGoogleLogin } from "@react-oauth/google";
 import { BASE_URL } from "@/constants";
 //import { set } from "date-fns";
-import { UserContext } from "@/App";
+import { MessageContext, UserContext } from "@/App";
+import { Message, MessageType } from "@/interfaces/message";
 const ChakraNavLink = chakra(NavLink);
 
 function SignupPage() {
@@ -23,6 +24,7 @@ function SignupPage() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [forceRender, setForceRender] = useState(0);
+  const messageToast = useContext(MessageContext) as Message;
 
   type Instagram = {
     connected: boolean;
@@ -177,43 +179,75 @@ function SignupPage() {
       setLoading(true);
       //validate email
       if (name === "") {
-        setError("Name is required");
+        messageToast.setType(MessageType.ERROR);
+        messageToast.setMessage("Name is required");
+        messageToast.setTimeout(3000);
+        messageToast.setTitle("Error");
+        messageToast.setIsShow(true);
         return;
       }
-      if (lastName === "") {
-        setError("Last Name is required");
+
+      if (name.split(" ").length < 2) {
+        messageToast.setType(MessageType.ERROR);
+        messageToast.setMessage("Last name is required");
+        messageToast.setTimeout(3000);
+        messageToast.setTitle("Error");
+        messageToast.setIsShow(true);
         return;
       }
+
+
       if (email === "") {
-        setError("Email is required");
+        messageToast.setType(MessageType.ERROR);
+        messageToast.setMessage("Email name is required");
+        messageToast.setTimeout(3000);
+        messageToast.setTitle("Error");
+        messageToast.setIsShow(true);
         return;
       }
       if (!email.includes("@") && !email.includes(".")) {
-        setError("Email is not valid");
+        messageToast.setType(MessageType.ERROR);
+        messageToast.setMessage("Email is not valid");
+        messageToast.setTimeout(3000);
+        messageToast.setTitle("Error");
+        messageToast.setIsShow(true);
         return;
       }
       if (password === "") {
-        setError("Password is required");
+        messageToast.setType(MessageType.ERROR);
+        messageToast.setMessage("Password is required");
+        messageToast.setTimeout(3000);
+        messageToast.setTitle("Error");
+        messageToast.setIsShow(true);
         return;
       }
+
+      if (password.length < 6) {
+        messageToast.setType(MessageType.ERROR);
+        messageToast.setMessage("Password must be at least 6 characters");
+        messageToast.setTimeout(3000);
+        messageToast.setTitle("Error");
+        messageToast.setIsShow(true);
+        return;
+      }
+      // console.log("signup");
       try {
         //send request to server
         const response: any = await axios.post(BASE_URL, {
           query: `
-            mutation Mutation($jsonInput: String!) {
-              signUpWithEmail(json_input: $jsonInput) {
-                success
-                message
-                me {
-                  id
-                }
+          mutation Mutation($jsonInput: String!) {
+            signUpWithEmail(json_input: $jsonInput) {
+              success
+              message
+              me {
+                id
               }
             }
-            `,
+          }`,
           variables: {
             jsonInput: JSON.stringify({
-              name: name,
-              lastname: lastName,
+              name: name.split(" ")[0],
+              lastname: name.split(" ")[1],
               email: email,
               password: password,
             }),
@@ -280,7 +314,6 @@ function SignupPage() {
         <Text fontSize={"sm"} >and give us permission to engage with your brand’s online</Text>
         <Text fontSize={"sm"} >community on your behalf.</Text>
       </VStack>
-
       <VStack>
         <Button
           mt={6}
@@ -290,6 +323,7 @@ function SignupPage() {
           h={"40px"}
           borderRadius={"9px"}
           fontWeight={"normal"}
+
         >
           Agree {" "} and {" "} Sign Up
         </Button>
@@ -303,11 +337,9 @@ function SignupPage() {
           width={"440px"}
           h={"40px"}
           borderRadius={"9px"}
-          isLoading={loading}
           leftIcon={<img alt="logo" src={google} />}
           variant={"outline"}
           fontWeight={"normal"}
-
         >
           Sign Up With Google
         </Button>
@@ -316,7 +348,6 @@ function SignupPage() {
         <Text fontSize={"sm"}>You also agree to receive product-related marketing emails from</Text>
         <Text fontSize={"sm"} >WildSocial, which you can unsubscribe from at any time.</Text>
       </VStack>
-
     </AuthContainer>
   );
 }

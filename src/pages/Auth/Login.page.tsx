@@ -170,7 +170,7 @@ function LoginPage() {
           withCredentials: true,
         }
       );
-      //console.log(res.data);
+      console.log(res.data);
       if (res.data.data.logInWithEmail.success) {
         const me = res.data.data.logInWithEmail.me;
         if (me.has_instagram) {
@@ -186,7 +186,7 @@ function LoginPage() {
           navigate("/");
         } else {
           console.log("User has no Instagram. Navigating to /nextpage");
-          navigate("/nextpage");
+          navigate("/download");
         }
       } else {
         console.log("Login Failed");
@@ -215,11 +215,11 @@ function LoginPage() {
     <AuthContainer>
       <img src={logo} alt="Skim_social" />
       <VStack>
-        <Heading lineHeight={1} fontSize={"3xl"} mt={8}>
-          Sign in
+        <Heading lineHeight={1} fontSize={"3xl"} mt={5}>
+          Sign In
         </Heading>
-        <Text fontSize={"sm"} pt={2}>
-          account?{" "}
+        <Text fontSize={"sm"} pt={1}>
+          Need to create a new account?  {" "}
           <ChakraNavLink
             color={"primary.600"}
             textDecoration={"underline"}
@@ -229,7 +229,7 @@ function LoginPage() {
           </ChakraNavLink>
         </Text>
       </VStack>
-      <VStack gap={3}>
+      <VStack gap={3} mt={5}>
         <FormRow
           placeholder="janedoe@gmail.com"
           type="email"
@@ -268,7 +268,10 @@ function LoginPage() {
           width={"440px"}
           h={"40px"}
           borderRadius={"9px"}
-          fontWeight={"normal"}>
+          fontWeight={"normal"}
+          isLoading={loading}
+        >
+
           Continue
         </Button>
         <Button
