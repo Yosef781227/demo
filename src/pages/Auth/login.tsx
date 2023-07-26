@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
-import { FaGoogle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { Box, Button, useToast } from "@chakra-ui/react";
+import { Box, useToast } from "@chakra-ui/react";
 import { BASE_URL } from "@/constants";
-import Buttons from "@/components/Buttons/Button";
+
 
 const GoogleOAuth = () => {
   const [error, setError] = useState(null);
@@ -103,8 +102,8 @@ const GoogleOAuth = () => {
       // loadingText="Signing in"
       onClick={login}
       /> */}
-       
-     
+
+
     </Box>
   );
 };

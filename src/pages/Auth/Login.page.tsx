@@ -20,6 +20,7 @@ function LoginPage() {
   const User: any = useContext(UserContext);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [loading1, setLoading1] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -127,7 +128,7 @@ function LoginPage() {
 
   const LoginWithEmail = async () => {
     try {
-      setLoading(true);
+      setLoading1(true);
       if (!email || !password) {
         throw new Error("Please fill all the fields");
       }
@@ -202,13 +203,13 @@ function LoginPage() {
         isClosable: true,
       });
     } finally {
-      setLoading(false);
+      setLoading1(false);
       // to="/signup"
     }
   };
 
   error && console.error(error);
-  loading && console.log("Loading...");
+  loading1 && console.log("Loading...");
 
   return (
     <AuthContainer>
@@ -244,7 +245,7 @@ function LoginPage() {
               <ChakraNavLink
                 color={"primary.500"}
                 textDecoration={"underline"}
-                to="/reset-password"
+                to=""
                 mt={10}
               >
                 Forgot password?
@@ -268,7 +269,7 @@ function LoginPage() {
           h={"40px"}
           borderRadius={"9px"}
           fontWeight={"normal"}
-          isLoading={loading}
+          isLoading={loading1}
         >
 
           Continue
