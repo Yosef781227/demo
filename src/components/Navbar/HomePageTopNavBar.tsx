@@ -55,7 +55,7 @@ function HomePageTopNavBar({
         >
           Save New Content
         </Button> */}
-        {User.instagrams.length && (
+        {/* {User.instagrams.length && (
           <Select
             width={"auto"}
             onChange={changeAccount}
@@ -85,7 +85,7 @@ function HomePageTopNavBar({
               );
             })}
           </Select>
-        )}
+        )} */}
       </HStack>
     </HStack>
   );
